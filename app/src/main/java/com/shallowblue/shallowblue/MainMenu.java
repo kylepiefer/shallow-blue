@@ -1,12 +1,14 @@
 package com.shallowblue.shallowblue;
 
 import android.annotation.SuppressLint;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -86,7 +88,7 @@ public class MainMenu extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main_menu);
 
         mVisible = true;
@@ -106,6 +108,18 @@ public class MainMenu extends AppCompatActivity {
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
         findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+    }
+    public void multiplayerSettings(View multiplayer) {
+        Intent startMultiplayer = new Intent(getApplicationContext(), MultiplayerSettings.class);
+        startActivity(startMultiplayer);
+    }
+    public void singleplayerSettings(View singleplayer) {
+        Intent startSingleplayer = new Intent(getApplicationContext(), SingleplayerSettings.class);
+        startActivity(startSingleplayer);
+    }
+    public void optionsSettings(View options) {
+        Intent options_settings = new Intent(getApplicationContext(), Options_Settings_MAIN.class);
+        startActivity(options_settings);
     }
 
     @Override

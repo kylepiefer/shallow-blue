@@ -19,6 +19,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".GameBoard" />
+        <activity android:name=".MultiplayerSettings" />
+        <activity android:name=".SingleplayerSettings" />
+        <activity android:name=".Options_Settings_MAIN"></activity>
     </application>
 
 </manifest>
