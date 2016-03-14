@@ -18,20 +18,6 @@
         android:textAlignment="center"
         android:id="@+id/linearLayout2">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Game Type Selection"
-            android:id="@+id/gameTypeSelection"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:textColor="#000000"
-            android:textSize="20dp"
-            android:textAlignment="center"
-            android:layout_weight="0.06"
-            android:layout_marginTop="15dp" />
-
     </LinearLayout>
 
     <LinearLayout
@@ -41,37 +27,56 @@
         android:layout_toRightOf="@+id/linearLayout2"
         android:layout_toEndOf="@+id/linearLayout2">
 
-        <RadioGroup
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="New Game"
-                android:id="@+id/radioButton" />
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Load Game"
-                android:id="@+id/radioButton2" />
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Custom Game"
-                android:id="@+id/radioButton3" />
-        </RadioGroup>
     </LinearLayout>
 
-    <ToggleButton
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Game Type Selection"
+        android:id="@+id/gameTypeSelection"
+        android:textColor="#000000"
+        android:textSize="20dp"
+        android:textAlignment="center"
+        android:layout_weight="0.06"
+        android:layout_below="@+id/linearLayout2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/gameselection"
+        android:layout_below="@+id/gameTypeSelection"
+        android:textAlignment="center"
+        android:layout_marginLeft="100dp">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Game"
+            android:id="@+id/newgame"
+            android:textAlignment="center" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Load Game"
+            android:id="@+id/loadgame" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Custom Game"
+            android:id="@+id/customgame" />
+    </RadioGroup>
+
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New ToggleButton"
-        android:id="@+id/toggleButton"
-        android:layout_below="@+id/linearLayout2"
-        android:layout_toRightOf="@+id/linearLayout2"
-        android:layout_toEndOf="@+id/linearLayout2" />
+        android:text="Start Game!"
+        android:id="@+id/startpvpgamebutton"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:onClick="newgamestart"/>
 
 </RelativeLayout>

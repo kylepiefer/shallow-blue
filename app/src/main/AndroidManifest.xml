@@ -22,7 +22,10 @@
         <activity android:name=".GameBoard" />
         <activity android:name=".MultiplayerSettings" />
         <activity android:name=".SingleplayerSettings" />
-        <activity android:name=".Options_Settings_MAIN"></activity>
+        <activity android:name=".Options_Settings_MAIN" />
+        <activity android:name=".PVPGameBoard" />
+        <activity android:name=".CustomGameBoard" />
+        <activity android:name=".loadgame"></activity>
     </application>
 
 </manifest>
