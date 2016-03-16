@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Shallow Blue</string>
 
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="GameBoardActivity_undo">Undo</string>
+    <string name="GameBoardActivity_redo">Redo</string>
+    <string name="GameBoardActivity_suggest_alternate_move">Suggest alternate move</string>
+    <string name="GameBoardActivity_start_helper">Start Helper</string>
+    <string name="GameBoardActivity_help_text_default">Helpful hints will often appear here!</string>
+    <string name="GameBoardActivity_options">Options</string>
 </resources>

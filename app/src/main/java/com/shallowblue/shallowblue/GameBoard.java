@@ -2,6 +2,7 @@ package com.shallowblue.shallowblue;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 public class GameBoard extends AppCompatActivity {
 
