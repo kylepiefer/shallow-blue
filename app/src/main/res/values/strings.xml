@@ -1,6 +1,29 @@
 <resources>
     <string name="app_name">Shallow Blue</string>
 
+    <string name="StartgameActivity_difficulty">Difficulty</string>
+    <string name="StartGameActivity_play_as_white">Play as White</string>
+    <string name="StartGameActivity_play_as_black">Play as Black</string>
+    <string name="StartGameActivity_opponent_ai">Opponent AI</string>
+    <string name="StartGameActivity_suggestion_ai">Suggestion AI</string>
+    <string name="StartGameActivity_load_game">Load Game</string>
+    <string name="StartGameActivity_create_scenario">Create Scenario</string>
+    <string name="StartGameActivity_start_game">Start Game</string>
+
+    <string-array name="StartGameActivity_ai_array">
+        <item>Aggressive</item>
+        <item>Balanced</item>
+        <item>Defensive</item>
+    </string-array>
+
+    <string name="GameBoardActivity_undo">Undo</string>
+    <string name="GameBoardActivity_redo">Redo</string>
+    <string name="GameBoardActivity_suggest_alternate_move">Suggest alternate move</string>
+    <string name="GameBoardActivity_start_helper">Start Helper</string>
+    <string name="GameBoardActivity_help_text_default">Helpful hints will often appear here!</string>
+    <string name="GameBoardActivity_options">Options</string>
+
+    <string name="title_activity_start_game">StartGameActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>
