@@ -210,6 +210,12 @@ public class GameBoard {
             canmove = true;
             tempint = movelist.get(i);
             while (tempint != from){
+                if(from[0]-tempint[0] != 0) {
+                    tempint[0] = (int) (tempint[0] + Math.signum(from[0] - tempint[0]));
+                }
+                if(from[1]-tempint[1] != 0) {
+                    tempint[1] = (int) (tempint[1] + Math.signum(from[1] - tempint[1]));
+                }
                 if ( gameBoard[tempint[0]][tempint[1]] != null && movelist.contains(tempint)){
                     canmove = false;
                     if(from[0]-tempint[0] != 0) {
@@ -220,6 +226,10 @@ public class GameBoard {
                     }
                 }
             }
+            if(canmove){
+                templist.add(movelist.get(i));
+            }
+            i++;
         }
         return templist;
     }
