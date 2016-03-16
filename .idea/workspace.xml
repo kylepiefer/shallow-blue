@@ -87,13 +87,15 @@
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/shallowblue/shallowblue/GameBoardLogic.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.7634783">
-              <caret line="231" column="16" selection-start-line="231" selection-start-column="16" selection-end-line="231" selection-end-column="16" />
+              <caret line="242" column="25" selection-start-line="242" selection-start-column="25" selection-end-line="242" selection-end-column="25" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#8310#8311#0" expanded="true" />
                 <element signature="e#8337#8338#0" expanded="true" />
                 <element signature="e#8382#8383#0" expanded="true" />
                 <element signature="e#8404#8405#0" expanded="true" />
+                <element signature="e#8441#8442#0" expanded="true" />
+                <element signature="e#8473#8474#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -2042,6 +2044,8 @@
             <element signature="e#8337#8338#0" expanded="true" />
             <element signature="e#8382#8383#0" expanded="true" />
             <element signature="e#8404#8405#0" expanded="true" />
+            <element signature="e#8441#8442#0" expanded="true" />
+            <element signature="e#8473#8474#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2125,6 +2129,8 @@
             <element signature="e#8337#8338#0" expanded="true" />
             <element signature="e#8382#8383#0" expanded="true" />
             <element signature="e#8404#8405#0" expanded="true" />
+            <element signature="e#8441#8442#0" expanded="true" />
+            <element signature="e#8473#8474#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2353,13 +2359,15 @@
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/shallowblue/shallowblue/GameBoardLogic.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.7634783">
-          <caret line="231" column="16" selection-start-line="231" selection-start-column="16" selection-end-line="231" selection-end-column="16" />
+          <caret line="242" column="25" selection-start-line="242" selection-start-column="25" selection-end-line="242" selection-end-column="25" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#8310#8311#0" expanded="true" />
             <element signature="e#8337#8338#0" expanded="true" />
             <element signature="e#8382#8383#0" expanded="true" />
             <element signature="e#8404#8405#0" expanded="true" />
+            <element signature="e#8441#8442#0" expanded="true" />
+            <element signature="e#8473#8474#0" expanded="true" />
           </folding>
         </state>
       </provider>

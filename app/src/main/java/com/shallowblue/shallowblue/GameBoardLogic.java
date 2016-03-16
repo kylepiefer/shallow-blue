@@ -239,5 +239,8 @@ public class GameBoard {
     public void unpack(String packedString){
         return;
     }
+    public Piece[][] getGameBoard(){
+        return gameBoard;
+    }
 }
 
