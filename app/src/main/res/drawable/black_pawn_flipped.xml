@@ -1,5 +1,9 @@
-<vector android:height="24dp" android:viewportHeight="45.0"
-    android:viewportWidth="45.0" android:width="24dp" xmlns:android="http://schemas.android.com/apk/res/android">
+<vector android:height="24dp"
+    android:viewportHeight="45.0"
+    android:viewportWidth="45.0"
+    android:width="24dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/black_pawn_flipped">
     <path android:fillAlpha="1" android:fillColor="#000000"
         android:pathData="m22,39.5c2.21,0 4,-1.79 4,-4 0,-0.89 -0.29,-1.71 -0.78,-2.38C27.17,32 28.5,29.91 28.5,27.5 28.5,25.47 27.56,23.66 26.09,22.47 29.09,21.41 33.5,16.92 33.5,9l-23,0c0,7.92 4.41,12.41 7.41,13.47C16.44,23.66 15.5,25.47 15.5,27.5c0,2.41 1.33,4.5 3.28,5.63C18.29,33.79 18,34.61 18,35.5c0,2.21 1.79,4 4,4z"
         android:strokeAlpha="1" android:strokeColor="#000000"

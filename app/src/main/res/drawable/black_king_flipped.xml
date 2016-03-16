@@ -1,5 +1,9 @@
-<vector android:height="24dp" android:viewportHeight="45.0"
-    android:viewportWidth="45.0" android:width="24dp" xmlns:android="http://schemas.android.com/apk/res/android">
+<vector android:height="24dp"
+    android:viewportHeight="45.0"
+    android:viewportWidth="45.0"
+    android:width="24dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/black_king_flipped">
     <path android:fillAlpha="1" android:fillColor="#000000"
         android:pathData="M22.5,20C22.5,20 18,27.5 19.5,30.5C19.5,30.5 20.5,33 22.5,33C24.5,33 25.5,30.5 25.5,30.5C27,27.5 22.5,20 22.5,20" android:strokeLineJoin="round"/>
     <path android:fillColor="#000000"
