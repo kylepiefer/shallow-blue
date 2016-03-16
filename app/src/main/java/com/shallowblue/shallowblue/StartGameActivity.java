@@ -1,15 +1,9 @@
 package com.shallowblue.shallowblue;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.MotionEvent;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.MenuItem;
-import android.support.v4.app.NavUtils;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
@@ -34,6 +28,14 @@ public class StartGameActivity extends AppCompatActivity {
     public void newGame(View button) {
         Intent newGameIntent = new Intent(getApplicationContext(), GameBoardActivity.class);
         startActivity(newGameIntent);
+    }
+    public void createGame(View button){
+        Intent createGameIntent = new Intent(getApplicationContext(), CustomGame.class);
+        startActivity(createGameIntent);
+    }
+    public void loadGame(View button){
+        Intent loadGameIntent = new Intent(getApplicationContext(), loadgame.class);
+        startActivity(loadGameIntent);
     }
 
 }

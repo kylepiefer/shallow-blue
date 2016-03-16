@@ -1,9 +1,6 @@
 package com.shallowblue.shallowblue;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -21,7 +18,7 @@ public class MainMenuActivity extends AppCompatActivity {
     }
 
     public void startMultiplayerGame(View button) {
-        Intent startGameIntent = new Intent(getApplicationContext(), StartGameActivity.class);
+        Intent startGameIntent = new Intent(getApplicationContext(), MultiplayerSettings.class);
         startActivity(startGameIntent);
     }
 
