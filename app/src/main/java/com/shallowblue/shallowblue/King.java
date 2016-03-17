@@ -8,7 +8,7 @@ public class King extends Piece {
 	private Position initialPosition;
 	
 	public King(Position argPosition, Color color) {
-		super(pieceType.KING, argPosition, color);
+		super(argPosition, color);
 		initialPosition = argPosition;
 		
 	}

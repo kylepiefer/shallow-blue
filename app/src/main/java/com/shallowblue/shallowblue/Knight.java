@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class Knight extends Piece {
 
 	public Knight(Position argPosition, Color color) {
-		super(pieceType.KNIGHT, argPosition, color);
+		super(argPosition, color);
 		
 	}
 
