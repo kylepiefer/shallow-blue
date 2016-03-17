@@ -12,7 +12,7 @@ public class GameBoard {
     private List<String> gameHistory;
     public GameBoard() {
         gameBoard = new Piece[8][9];
-        gameBoard[0][1] = new Rook(0);
+        gameBoard[0][1] = new Rook(Color.WHITE);
         gameBoard[1][1] = new Knight(Color.WHITE);
         gameBoard[2][1] = new Bishop(Color.WHITE);
         gameBoard[3][1] = new Queen(Color.WHITE);
@@ -28,38 +28,7 @@ public class GameBoard {
         gameBoard[5][2] = new Pawn(Color.WHITE);
         gameBoard[6][2] = new Pawn(Color.WHITE);
         gameBoard[7][2] = new Pawn(Color.WHITE);
-        gameBoard[0][3] = null;
-        gameBoard[1][3] = null;
-        gameBoard[2][3] = null;
-        gameBoard[3][3] = null;
-        gameBoard[4][3] = null;
-        gameBoard[5][3] = null;
-        gameBoard[6][3] = null;
-        gameBoard[7][3] = null;
-        gameBoard[0][4] = null;
-        gameBoard[1][4] = null;
-        gameBoard[2][4] = null;
-        gameBoard[3][4] = null;
-        gameBoard[4][4] = null;
-        gameBoard[5][4] = null;
-        gameBoard[6][4] = null;
-        gameBoard[7][4] = null;
-        gameBoard[0][5] = null;
-        gameBoard[1][5] = null;
-        gameBoard[2][5] = null;
-        gameBoard[3][5] = null;
-        gameBoard[4][5] = null;
-        gameBoard[5][5] = null;
-        gameBoard[6][5] = null;
-        gameBoard[7][5] = null;
-        gameBoard[0][6] = null;
-        gameBoard[1][6] = null;
-        gameBoard[2][6] = null;
-        gameBoard[3][6] = null;
-        gameBoard[4][6] = null;
-        gameBoard[5][6] = null;
-        gameBoard[6][6] = null;
-        gameBoard[7][6] = null;
+
         gameBoard[0][7] = new Pawn(Color.BLACK);
         gameBoard[1][7] = new Pawn(Color.BLACK);
         gameBoard[2][7] = new Pawn(Color.BLACK);

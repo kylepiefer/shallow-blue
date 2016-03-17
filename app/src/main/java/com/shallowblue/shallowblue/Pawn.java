@@ -8,7 +8,7 @@ public class Pawn extends Piece {
 	private Position initialPosition;
 	
 	public Pawn(Position argPosition, Color color) {
-		super(pieceType.PAWN, argPosition, color);
+		super(argPosition, color);
 		initialPosition = argPosition;
 	}
 

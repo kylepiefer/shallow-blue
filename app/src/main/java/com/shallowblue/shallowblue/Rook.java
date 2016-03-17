@@ -7,8 +7,8 @@ public class Rook extends Piece {
 
 	private Position initialPosition;
 	
-	public Rook(pieceType type, Position argPosition, Color color) {
-		super(pieceType.ROOK, argPosition, color);
+	public Rook(Position argPosition, Color color) {
+		super(argPosition, color);
 		
 	}
 

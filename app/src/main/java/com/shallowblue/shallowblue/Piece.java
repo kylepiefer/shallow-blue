@@ -11,16 +11,12 @@ import java.util.ArrayList;
 
 public abstract class Piece {
 
-	
-	private pieceType pieceType; //See pieceType.java
 	private Position position; //See Position.java
 	private Color color; //See Color.java
 	
-	public Piece(pieceType type, Position argPosition, Color color) {
-		this.pieceType = type;
+	public Piece(Position argPosition, Color color) {
 		this.position = argPosition;
 		this.color = color;
-		
 	}
 	
 	/**
@@ -49,7 +45,6 @@ public abstract class Piece {
 	public abstract ArrayList<Position> possibleMoves();
 	
 	//Getters & Setters
-	public pieceType getPieceType(){return pieceType;};
 	public Position getPosition(){return position;};
 	public void setPosition(Position newPosition) {position = newPosition;}
 	public Color getColor() {return color;}

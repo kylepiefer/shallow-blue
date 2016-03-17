@@ -16,7 +16,7 @@ public class Position {
 		row = x;
 		column = y;
 	}
-	
+
 
 
 
