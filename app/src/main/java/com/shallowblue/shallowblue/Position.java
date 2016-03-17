@@ -1,3 +1,4 @@
+package com.shallowblue.shallowblue;
 
 /**
  * A chess Position is described by two integer values, a row and a column.
