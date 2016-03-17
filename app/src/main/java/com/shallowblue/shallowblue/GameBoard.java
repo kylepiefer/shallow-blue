@@ -11,43 +11,42 @@ public class GameBoard {
     private Piece gameBoard[][];
     private List<String> gameHistory;
     public GameBoard() {
-        gameBoard = new Piece[8][9];
-        gameBoard[0][1] = new Rook(Color.WHITE);
-        gameBoard[1][1] = new Knight(Color.WHITE);
-        gameBoard[2][1] = new Bishop(Color.WHITE);
-        gameBoard[3][1] = new Queen(Color.WHITE);
-        gameBoard[4][1] = new King(Color.WHITE);
-        gameBoard[5][1] = new Bishop(Color.WHITE);
-        gameBoard[6][1] = new Knight(Color.WHITE);
-        gameBoard[7][1] = new Rook(Color.WHITE);
-        gameBoard[0][2] = new Pawn(Color.WHITE);
-        gameBoard[1][2] = new Pawn(Color.WHITE);
-        gameBoard[2][2] = new Pawn(Color.WHITE);
-        gameBoard[3][2] = new Pawn(Color.WHITE);
-        gameBoard[4][2] = new Pawn(Color.WHITE);
-        gameBoard[5][2] = new Pawn(Color.WHITE);
-        gameBoard[6][2] = new Pawn(Color.WHITE);
-        gameBoard[7][2] = new Pawn(Color.WHITE);
+        gameBoard = new Piece[8][8];
+        gameBoard[0][0] = new Rook(new Position(0,0), Color.WHITE);
+        gameBoard[1][0] = new Knight(new Position(1,0), Color.WHITE);
+        gameBoard[2][0] = new Bishop(new Position(2,0), Color.WHITE);
+        gameBoard[3][0] = new Queen(new Position(3,0), Color.WHITE);
+        gameBoard[4][0] = new King(new Position(4,0), Color.WHITE);
+        gameBoard[5][0] = new Bishop(new Position(5,0), Color.WHITE);
+        gameBoard[6][0] = new Knight(new Position(6,0), Color.WHITE);
+        gameBoard[7][0] = new Rook(new Position(7,0), Color.WHITE);
+        gameBoard[0][1] = new Pawn(new Position(0,1), Color.WHITE);
+        gameBoard[1][1] = new Pawn(new Position(1,1), Color.WHITE);
+        gameBoard[2][1] = new Pawn(new Position(2,1), Color.WHITE);
+        gameBoard[3][1] = new Pawn(new Position(3,1), Color.WHITE);
+        gameBoard[4][1] = new Pawn(new Position(4,1), Color.WHITE);
+        gameBoard[5][1] = new Pawn(new Position(5,1), Color.WHITE);
+        gameBoard[6][1] = new Pawn(new Position(6,1), Color.WHITE);
+        gameBoard[7][1] = new Pawn(new Position(7,1), Color.WHITE);
 
-        gameBoard[0][7] = new Pawn(Color.BLACK);
-        gameBoard[1][7] = new Pawn(Color.BLACK);
-        gameBoard[2][7] = new Pawn(Color.BLACK);
-        gameBoard[3][7] = new Pawn(Color.BLACK);
-        gameBoard[4][7] = new Pawn(Color.BLACK);
-        gameBoard[5][7] = new Pawn(Color.BLACK);
-        gameBoard[6][7] = new Pawn(Color.BLACK);
-        gameBoard[7][7] = new Pawn(Color.BLACK);
-        gameBoard[0][8] = new Rook(Color.BLACK);
-        gameBoard[1][8] = new Knight(Color.BLACK);
-        gameBoard[2][8] = new Bishop(Color.BLACK);
-        gameBoard[3][8] = new Queen(Color.BLACK);
-        gameBoard[4][8] = new King(Color.BLACK);
-        gameBoard[5][8] = new Bishop(Color.BLACK);
-        gameBoard[6][8] = new Knight(Color.BLACK);
-        gameBoard[7][8] = new Rook(Color.BLACK);
+        gameBoard[0][6] = new Pawn(new Position(0,6), Color.BLACK);
+        gameBoard[1][6] = new Pawn(new Position(1,6), Color.BLACK);
+        gameBoard[2][6] = new Pawn(new Position(2,6), Color.BLACK);
+        gameBoard[3][6] = new Pawn(new Position(3,6), Color.BLACK);
+        gameBoard[4][6] = new Pawn(new Position(4,6), Color.BLACK);
+        gameBoard[5][6] = new Pawn(new Position(5,6), Color.BLACK);
+        gameBoard[6][6] = new Pawn(new Position(6,6), Color.BLACK);
+        gameBoard[7][6] = new Pawn(new Position(7,6), Color.BLACK);
+        gameBoard[0][7] = new Rook(new Position(0,7), Color.BLACK);
+        gameBoard[1][7] = new Knight(new Position(1,7), Color.BLACK);
+        gameBoard[2][7] = new Bishop(new Position(2,7), Color.BLACK);
+        gameBoard[3][7] = new Queen(new Position(3,7), Color.BLACK);
+        gameBoard[4][7] = new King(new Position(4,7), Color.BLACK);
+        gameBoard[5][7] = new Bishop(new Position(5,7), Color.BLACK);
+        gameBoard[6][7] = new Knight(new Position(6,7), Color.BLACK);
+        gameBoard[7][7] = new Rook(new Position(7,7), Color.BLACK);
+
         gameHistory = new ArrayList<String>();
-
-
     }
     public GameBoard(GameBoard in) {
         gameBoard = new Piece[8][9];
@@ -74,7 +73,7 @@ public class GameBoard {
                 }
             }
         }
-
+        return templist;
     }
 
     public boolean Move(int from[], int to[]){						//Returns true iff successful
@@ -194,26 +193,30 @@ public class GameBoard {
         gameBoard[from[0]][from[1]] = gameBoard[to[0]][to[1]];
         gameBoard[to[0]][to[1]] = null;
         switch (temp.charAt(3)) {
-            case 'p': this.put(new Pawn(0), to);
-            case 'k': this.put(new King(0), to);
-            case 'r': this.put(new Rook(0), to);
-            case 'n': this.put(new Knight(0), to);
-            case 'b': this.put(new Bishop(0), to);
-            case 'q': this.put(new Queen(0), to);
+            // TODO: Construct the pieces properly here
+            case 'p': this.put(new Pawn(new Position(0,0), Color.BLACK), to);
+            case 'k': this.put(new King(new Position(0,0), Color.BLACK), to);
+            case 'r': this.put(new Rook(new Position(0,0), Color.BLACK), to);
+            case 'n': this.put(new Knight(new Position(0,0), Color.BLACK), to);
+            case 'b': this.put(new Bishop(new Position(0,0), Color.BLACK), to);
+            case 'q': this.put(new Queen(new Position(0,0), Color.BLACK), to);
             case '_':
         }
         gameHistory.remove(gameHistory.get(gameHistory.size()-1));
         return;
     }
     public List<int[][]> getLegalMoves(int[] from){
-        ArrayList<int[]> movelist = gameBoard[from[0]][from[1]].getPossibleMoves();
+        ArrayList<Position> movelist = gameBoard[from[0]][from[1]].possibleMoves();
         ArrayList<int[][]> templist = new ArrayList<int[][]>();
         int i = 0;
         boolean canmove;
         int[] tempint;
         while(i<movelist.size()){
             canmove = true;
-            tempint = movelist.get(i);
+            tempint = new int[2];
+            Position temppos = movelist.get(i);
+            tempint[0] = temppos.getRow();
+            tempint[1] = temppos.getColumn();
             while (tempint != from){
                 if(from[0]-tempint[0] != 0) {
                     tempint[0] = (int) (tempint[0] + Math.signum(from[0] - tempint[0]));
