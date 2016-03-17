@@ -33,18 +33,7 @@ public class Position {
 		
 		return column;
 	}
-
-    public int hashCode() {
-        return row + 8*column;
-    }
-
-    public boolean equals(Object o) {
-        if(!(o instanceof Position))
-            return false;
-        Position p = (Position) o;
-        return p.getColumn() == column && p.getRow() == row;
-    }
-
+	
 	public void setColumn(int newCol) {
 		column = newCol;
 	}
