@@ -13,21 +13,21 @@ public class GameBoard {
     public GameBoard() {
         gameBoard = new Piece[8][9];
         gameBoard[0][1] = new Rook(0);
-        gameBoard[1][1] = new Knight(0);
-        gameBoard[2][1] = new Bishop(0);
-        gameBoard[3][1] = new Queen(0);
-        gameBoard[4][1] = new King(0);
-        gameBoard[5][1] = new Bishop(0);
-        gameBoard[6][1] = new Knight(0);
-        gameBoard[7][1] = new Rook(0);
-        gameBoard[0][2] = new Pawn(0);
-        gameBoard[1][2] = new Pawn(0);
-        gameBoard[2][2] = new Pawn(0);
-        gameBoard[3][2] = new Pawn(0);
-        gameBoard[4][2] = new Pawn(0);
-        gameBoard[5][2] = new Pawn(0);
-        gameBoard[6][2] = new Pawn(0);
-        gameBoard[7][2] = new Pawn(0);
+        gameBoard[1][1] = new Knight(Color.WHITE);
+        gameBoard[2][1] = new Bishop(Color.WHITE);
+        gameBoard[3][1] = new Queen(Color.WHITE);
+        gameBoard[4][1] = new King(Color.WHITE);
+        gameBoard[5][1] = new Bishop(Color.WHITE);
+        gameBoard[6][1] = new Knight(Color.WHITE);
+        gameBoard[7][1] = new Rook(Color.WHITE);
+        gameBoard[0][2] = new Pawn(Color.WHITE);
+        gameBoard[1][2] = new Pawn(Color.WHITE);
+        gameBoard[2][2] = new Pawn(Color.WHITE);
+        gameBoard[3][2] = new Pawn(Color.WHITE);
+        gameBoard[4][2] = new Pawn(Color.WHITE);
+        gameBoard[5][2] = new Pawn(Color.WHITE);
+        gameBoard[6][2] = new Pawn(Color.WHITE);
+        gameBoard[7][2] = new Pawn(Color.WHITE);
         gameBoard[0][3] = null;
         gameBoard[1][3] = null;
         gameBoard[2][3] = null;
@@ -60,26 +60,54 @@ public class GameBoard {
         gameBoard[5][6] = null;
         gameBoard[6][6] = null;
         gameBoard[7][6] = null;
-        gameBoard[0][7] = new Pawn(1);
-        gameBoard[1][7] = new Pawn(1);
-        gameBoard[2][7] = new Pawn(1);
-        gameBoard[3][7] = new Pawn(1);
-        gameBoard[4][7] = new Pawn(1);
-        gameBoard[5][7] = new Pawn(1);
-        gameBoard[6][7] = new Pawn(1);
-        gameBoard[7][7] = new Pawn(1);
-        gameBoard[0][8] = new Rook(1);
-        gameBoard[1][8] = new Knight(1);
-        gameBoard[2][8] = new Bishop(1);
-        gameBoard[3][8] = new Queen(1);
-        gameBoard[4][8] = new King(1);
-        gameBoard[5][8] = new Bishop(1);
-        gameBoard[6][8] = new Knight(1);
-        gameBoard[7][8] = new Rook(1);
+        gameBoard[0][7] = new Pawn(Color.BLACK);
+        gameBoard[1][7] = new Pawn(Color.BLACK);
+        gameBoard[2][7] = new Pawn(Color.BLACK);
+        gameBoard[3][7] = new Pawn(Color.BLACK);
+        gameBoard[4][7] = new Pawn(Color.BLACK);
+        gameBoard[5][7] = new Pawn(Color.BLACK);
+        gameBoard[6][7] = new Pawn(Color.BLACK);
+        gameBoard[7][7] = new Pawn(Color.BLACK);
+        gameBoard[0][8] = new Rook(Color.BLACK);
+        gameBoard[1][8] = new Knight(Color.BLACK);
+        gameBoard[2][8] = new Bishop(Color.BLACK);
+        gameBoard[3][8] = new Queen(Color.BLACK);
+        gameBoard[4][8] = new King(Color.BLACK);
+        gameBoard[5][8] = new Bishop(Color.BLACK);
+        gameBoard[6][8] = new Knight(Color.BLACK);
+        gameBoard[7][8] = new Rook(Color.BLACK);
         gameHistory = new ArrayList<String>();
 
 
     }
+    public GameBoard(GameBoard in) {
+        gameBoard = new Piece[8][9];
+        for(int i= 0; i<8; i++){
+            for(int j= 0; i<9; i++){
+                gameBoard[i][j] = in.getGameBoard()[i][j];
+            }
+        }
+
+
+        gameHistory = new ArrayList<String>();
+
+
+    }
+    public List<int[][]> getAllMoves(){
+        List<int[][]> templist = new ArrayList<int[][]>();
+        int[] tempcoord = {0,0};
+        for(int i= 0; i<8; i++){
+            tempcoord[0] = i;
+            for(int j= 0; i<9; i++){
+                tempcoord[1] = j;
+                if (gameBoard[i][j] != null){
+                    templist.addAll(this.getLegalMoves(tempcoord));
+                }
+            }
+        }
+
+    }
+
     public boolean Move(int from[], int to[]){						//Returns true iff successful
         if(gameBoard[from[0]][from[1]] != null){					//example move is ka4_b5
             String tempstring = "";									//Adds to gameHistory
@@ -139,6 +167,14 @@ public class GameBoard {
             return true;
         }
         return false;
+    }
+    public String toString(){
+        String tempstring = gameHistory.get(0);
+        for(int i= 1; i<gameHistory.size(); i++){
+            tempstring += "/n" + gameHistory.get(i);
+        }
+
+        return tempstring;
     }
     public void undo(){ //example move is ka4_b5
         int to[] = new int[2];
@@ -200,9 +236,9 @@ public class GameBoard {
         gameHistory.remove(gameHistory.get(gameHistory.size()-1));
         return;
     }
-    public List<int[]> getLegalMoves(int[] from){
+    public List<int[][]> getLegalMoves(int[] from){
         ArrayList<int[]> movelist = gameBoard[from[0]][from[1]].getPossibleMoves();
-        ArrayList<int[]> templist = new ArrayList<int[]>();
+        ArrayList<int[][]> templist = new ArrayList<int[][]>();
         int i = 0;
         boolean canmove;
         int[] tempint;
@@ -227,7 +263,8 @@ public class GameBoard {
                 }
             }
             if(canmove){
-                templist.add(movelist.get(i));
+                int[][] temparray = {from,tempint};
+                templist.add(temparray);
             }
             i++;
         }
