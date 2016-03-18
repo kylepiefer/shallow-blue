@@ -9,33 +9,20 @@ package com.shallowblue.shallowblue;
 
 public class Position {
 
-	private int row;
-	private int column;
-	
+	private final int row;
+	private final int column;
+
 	public Position(int x, int y) {
 		row = x;
 		column = y;
 	}
 
-
-
-
 	public int getRow() {
 		return row;
 	}
-	
-	public void setRow(int newRow) {
-		row = newRow;
-	}
-	
 
 	public int getColumn() {
-		
+
 		return column;
 	}
-	
-	public void setColumn(int newCol) {
-		column = newCol;
-	}
-
 }
