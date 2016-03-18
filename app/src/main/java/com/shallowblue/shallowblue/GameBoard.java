@@ -12,6 +12,7 @@ import java.util.List;
 import java.lang.Math;
 
 public class GameBoard {
+
     private Map<Position, Piece> gameBoard;
     private List<Move> gameHistory;
 
@@ -75,7 +76,6 @@ public class GameBoard {
         gameBoard.remove(m.getTo());
         gameHistory.add(m);
         return true;
-
     }
     public boolean put(Piece p){
         if(gameBoard.get(p.getPosition()) == null){
@@ -100,8 +100,12 @@ public class GameBoard {
 
     public boolean legalMove(Move m) {
         /* TODO I couldn't understand this code
-        canmove = true;
-            while (m.getFrom() != from){
+            canmove = true;
+            tempint = new int[2];
+            Position temppos = movelist.get(i);
+            tempint[0] = temppos.getRow();
+            tempint[1] = temppos.getColumn();
+            while (tempint != from){
                 if(from[0]-tempint[0] != 0) {
                     tempint[0] = (int) (tempint[0] + Math.signum(from[0] - tempint[0]));
                 }
