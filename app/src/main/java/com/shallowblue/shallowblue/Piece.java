@@ -46,7 +46,6 @@ public abstract class Piece {
 	
 	//Getters & Setters
 	public Position getPosition(){return position;};
-	public void setPosition(Position newPosition) {position = newPosition;}
 	public Color getColor() {return color;}
 	
 	/**
