@@ -577,14 +577,16 @@
                         android:id="@+id/undo"
                         android:src="@drawable/sp_undo_move"
                         android:layout_weight="1"
-                        android:layout_gravity="left" />
+                        android:layout_gravity="left"
+                        android:onClick = "undomove"/>
 
                     <ImageView
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/redo"
                         android:src="@drawable/sp_redo_move"
-                        android:layout_weight="1" />
+                        android:layout_weight="1"
+                        android:onClick = "redomove"/>
 
                 </LinearLayout>
 
@@ -593,14 +595,16 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/alternatemove"
                     android:src="@drawable/sp_suggest_alt_move"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:onClick = "altmove"/>
 
                 <ImageView
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/starthelper"
                     android:layout_weight="1"
-                    android:src="@drawable/sp_start_helper" />
+                    android:src="@drawable/sp_start_helper"
+                    android:onClick = "startinghelper"/>
 
             </LinearLayout>
 
@@ -628,7 +632,8 @@
                     android:id="@+id/options"
                     android:src="@drawable/sp_options"
                     android:layout_weight="1"
-                    android:baselineAlignBottom="false" />
+                    android:baselineAlignBottom="false"
+                    android:onClick = "optionsScreen"/>
 
             </LinearLayout>
 
