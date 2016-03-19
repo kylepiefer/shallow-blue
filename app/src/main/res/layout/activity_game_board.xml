@@ -8,7 +8,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".GameBoardActivity"
-    android:background="#c8200a">
+    android:background="@drawable/redwallpaperbackground">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -558,39 +558,49 @@
                 android:layout_width="0dp"
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
-                android:weightSum="3"
+                android:weightSum="5"
                 android:padding="0dp"
-                android:orientation="vertical" >
+                android:orientation="vertical"
+                android:layout_marginRight="5dp">
 
                 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="1"
+                    android:layout_weight="3"
                     android:orientation="horizontal"
                     android:weightSum="2"
                     android:transitionGroup="false">
 
-                    <Button android:layout_width="wrap_content"
+                    <ImageView
+                        android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
+                        android:id="@+id/undo"
+                        android:src="@drawable/sp_undo_move"
                         android:layout_weight="1"
-                        android:text="@string/GameBoardActivity_undo" />
+                        android:layout_gravity="left" />
 
-                    <Button android:layout_width="wrap_content"
+                    <ImageView
+                        android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/GameBoardActivity_redo" />
+                        android:id="@+id/redo"
+                        android:src="@drawable/sp_redo_move"
+                        android:layout_weight="1" />
 
                 </LinearLayout>
 
-                <Button android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:text="@string/GameBoardActivity_suggest_alternate_move" />
+                <ImageView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/alternatemove"
+                    android:src="@drawable/sp_suggest_alt_move"
+                    android:layout_weight="1" />
 
-                <Button android:layout_width="match_parent"
-                    android:layout_height="0dp"
+                <ImageView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/starthelper"
                     android:layout_weight="1"
-                    android:text="@string/GameBoardActivity_start_helper" />
+                    android:src="@drawable/sp_start_helper" />
 
             </LinearLayout>
 
@@ -598,23 +608,27 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:weightSum="3"
+                android:weightSum="6"
                 android:padding="0dp"
-                android:orientation="vertical" >
+                android:orientation="vertical"
+                android:layout_marginLeft="5dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="2"
+                    android:layout_weight="5"
                     android:text="@string/GameBoardActivity_help_text_default"
                     android:padding="5dp"
                     android:textSize="10dp"
                     android:textAlignment="center"/>
 
-                <Button android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:text="@string/GameBoardActivity_options"
-                    android:layout_weight="1" />
+                <ImageView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/options"
+                    android:src="@drawable/sp_options"
+                    android:layout_weight="1"
+                    android:baselineAlignBottom="false" />
 
             </LinearLayout>
 
