@@ -25,4 +25,21 @@ public class Position {
 
 		return column;
 	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (other == null) return false;
+		Position otherPosition = (Position)other;
+		if (this.row != otherPosition.row) return false;
+		if (this.column != otherPosition.column) return false;
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int hashCode = 1;
+		hashCode = 31 * hashCode + this.row;
+		hashCode = 31 * hashCode + this.column;
+		return hashCode;
+	}
 }
