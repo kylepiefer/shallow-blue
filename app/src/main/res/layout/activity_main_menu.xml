@@ -2,18 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#c8200a"
+    android:background="@drawable/redwallpaperbackground"
     tools:context=".MainMenuActivity"
     android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
 
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/linearLayout">
-
-    </LinearLayout>
 
     <LinearLayout
         android:orientation="vertical"
@@ -27,21 +19,26 @@
             android:layout_gravity="center_horizontal"
             android:src="@drawable/chesstemplogo" />
 
-        <Button
-            android:layout_width="200dp"
+        <ImageView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
+            android:id="@+id/multibutton"
+            android:src="@drawable/multiplayer_button_mainmenu"
+            android:onClick="startMultiplayerGame"
             android:layout_gravity="center_horizontal"
-            android:text="Play Multiplayer"
-            android:onClick="startMultiplayerGame"/>
+            android:clickable="true"
+            android:longClickable="true" />
 
-        <Button
-            android:layout_width="200dp"
+        <ImageView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
+            android:id="@+id/singlebutton"
             android:layout_gravity="center_horizontal"
-            android:text="Play Singleplayer"
-            android:onClick="startSingleplayerGame"/>
+            android:src="@drawable/singleplayer_button_mainmenu"
+            android:onClick="startSingleplayerGame"
+            android:layout_marginTop="25dp"
+            android:clickable="true"
+            android:longClickable="true" />
 
     </LinearLayout>
 

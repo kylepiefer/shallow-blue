@@ -20,9 +20,12 @@ public class MainMenuActivity extends AppCompatActivity {
     }
 
     public void startMultiplayerGame(View button) {
+
         Intent startGameIntent = new Intent(getApplicationContext(), MultiplayerSettings.class);
         startActivity(startGameIntent);
     }
+
+
 
     public void startSingleplayerGame(View button) {
         Intent startGameIntent = new Intent(getApplicationContext(), StartGameActivity.class);

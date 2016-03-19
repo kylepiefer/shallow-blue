@@ -16,6 +16,7 @@ public class StartGameActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_start_game);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         // set up the spinners
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.StartGameActivity_ai_array, android.R.layout.simple_spinner_dropdown_item);
