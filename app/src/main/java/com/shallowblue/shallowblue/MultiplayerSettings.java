@@ -16,6 +16,9 @@ public class MultiplayerSettings extends AppCompatActivity {
     }
     public void PVPGameStart(View button) {
         Intent startGameIntent = new Intent(getApplicationContext(), PVPGameBoard.class);
+        Bundle game = new Bundle();
+        game.putInt("game",1);
+        startGameIntent.putExtra("start",game);
         startActivity(startGameIntent);
     }
     public void loadinggame(View button){
