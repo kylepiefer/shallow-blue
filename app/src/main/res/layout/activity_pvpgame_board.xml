@@ -69,7 +69,8 @@
                     android:layout_weight="1"
                     android:id="@+id/helper2"
                     android:src="@drawable/sp_start_helper"
-                    android:layout_gravity="center_horizontal" />
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="3dp" />
 
             </LinearLayout>
 
@@ -93,7 +94,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:id="@+id/suggestalternate2"
-                    android:src="@drawable/sp_suggest_alt_move" />
+                    android:src="@drawable/sp_suggest_alt_move"
+                    android:layout_marginTop="3dp" />
 
             </LinearLayout>
 
@@ -669,7 +671,8 @@
                     android:layout_weight="1"
                     android:id="@+id/helper1"
                     android:src="@drawable/sp_start_helper"
-                    android:layout_gravity="center_horizontal" />
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="3dp" />
             </LinearLayout>
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -692,7 +695,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:id="@+id/suggestalternate1"
-                    android:src="@drawable/sp_suggest_alt_move" />
+                    android:src="@drawable/sp_suggest_alt_move"
+                    android:layout_marginTop="3dp" />
             </LinearLayout>
         </LinearLayout>
 

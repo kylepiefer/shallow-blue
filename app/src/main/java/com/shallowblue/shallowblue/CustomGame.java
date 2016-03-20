@@ -16,7 +16,18 @@ public class CustomGame extends AppCompatActivity {
     }
     public void startCustomGame(View button) {
         Intent startGame = new Intent(getApplicationContext(), GameBoardActivity.class);
-        startActivity(startGame);
+        Intent startPvpGame = new Intent(getApplicationContext(), PVPGameBoard.class);
+        Intent gametype = getIntent();
+        Bundle temp = new Bundle();
+        temp = gametype.getBundleExtra("type");
+        int count = temp.getInt("players");
+        if (count == 1){
+            startActivity(startGame);
+        }
+        if (count == 2){
+            startActivity(startPvpGame);
+        }
+
     }
     public void customOptions(View button){
 

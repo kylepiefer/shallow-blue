@@ -33,6 +33,9 @@ public class StartGameActivity extends AppCompatActivity {
     }
     public void createGame(View button){
         Intent createGameIntent = new Intent(getApplicationContext(), CustomGame.class);
+        Bundle playercount = new Bundle();
+        playercount.putInt("players", 1);
+        createGameIntent.putExtra("type",playercount);
         startActivity(createGameIntent);
     }
     public void loadGame(View button){
