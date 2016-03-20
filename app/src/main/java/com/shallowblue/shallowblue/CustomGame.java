@@ -18,4 +18,7 @@ public class CustomGame extends AppCompatActivity {
         Intent startGame = new Intent(getApplicationContext(), GameBoardActivity.class);
         startActivity(startGame);
     }
+    public void customOptions(View button){
+
+    }
 }

@@ -549,21 +549,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:weightSum="2">
+                android:weightSum="3">
 
                 <GridLayout
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:layout_weight="1"
+                    android:layout_weight="3"
                     android:id="@+id/WhitePieces" />
 
-                <Button
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:text="Start Game"
-                    android:id="@+id/button2"
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/custgamestartgame"
+                    android:onClick="startCustomGame"
+                    android:src="@drawable/cg_start_game_button"
                     android:layout_weight="1"
-                    android:onClick="startCustomGame"/>
+                    android:layout_marginRight="1dp" />
             </LinearLayout>
 
             <LinearLayout
@@ -571,20 +572,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:weightSum="2">
+                android:weightSum="3">
 
                 <GridLayout
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:id="@+id/BlackPieces"
-                    android:layout_weight="1" />
+                    android:layout_weight="3" />
 
-                <Button
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:text="Options"
-                    android:id="@+id/button3"
-                    android:layout_weight="1" />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/custgameoptions"
+                    android:onClick="customOptions"
+                    android:src="@drawable/cg_options_button"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="1dp" />
             </LinearLayout>
 
         </LinearLayout>
