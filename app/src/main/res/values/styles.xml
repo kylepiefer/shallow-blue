@@ -15,5 +15,9 @@
     <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
 
     </style>
+    <style name="AppTheme.customThemePopUp" >
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+    </style>
 
 </resources>

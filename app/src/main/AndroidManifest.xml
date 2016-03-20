@@ -12,8 +12,8 @@
             android:name=".MainMenuActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
-            android:theme="@style/FullscreenTheme"
-            android:screenOrientation = "portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/FullscreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -39,7 +39,10 @@
         </activity>
         <activity android:name=".MultiplayerSettings" />
         <activity android:name=".loadgame" />
-        <activity android:name=".CustomGame"></activity>
+        <activity android:name=".CustomGame" />
+        <activity android:name=".OptionsPopUpWindow"
+            android:theme="@style/AppTheme.customThemePopUp">
+        </activity>
     </application>
 
 </manifest>

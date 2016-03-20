@@ -1,17 +1,14 @@
 package com.shallowblue.shallowblue;
 
-import android.app.ActionBar;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -147,6 +144,7 @@ public class GameBoardActivity extends AppCompatActivity {
     }
 
     public void optionsScreen(View v){
-
+        Intent openOptions = new Intent(getApplicationContext(),OptionsPopUpWindow.class);
+        startActivity(openOptions);
     }
 }
