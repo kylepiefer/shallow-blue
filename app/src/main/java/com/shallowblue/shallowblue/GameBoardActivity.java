@@ -149,6 +149,12 @@ public class GameBoardActivity extends AppCompatActivity {
     }
 
     public void onBackPressed(){
-        finish();
+        Intent check = new Intent(getApplicationContext(),LeaveGameVerify.class);
+        Bundle verify = new Bundle();
+        verify.putString("activity","main");
+        check.putExtra("next",verify);
+        startActivity(check);
     }
+
+
 }

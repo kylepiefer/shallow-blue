@@ -1,5 +1,6 @@
 package com.shallowblue.shallowblue;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -35,15 +36,24 @@ public class OptionsPopUpWindow extends AppCompatActivity {
     }
 
     public void opSaveGame(View v){
-
+        Intent openSaveWindow = new Intent(getApplicationContext(), SaveGame.class);
+        startActivity(openSaveWindow);
     }
 
     public void opLoadGame(View v){
-
+        Intent loadcheck = new Intent(getApplicationContext(),loadgame.class);
+        Bundle nextactivity = new Bundle();
+        nextactivity.putString("activity","load");
+        loadcheck.putExtra("next",nextactivity);
+        startActivity(loadcheck);
     }
 
     public void opEndGame(View v){
-
+        Intent endcheck = new Intent(getApplicationContext(),LeaveGameVerify.class);
+        Bundle nextactivity = new Bundle();
+        nextactivity.putString("activity","end");
+        endcheck.putExtra("next",nextactivity);
+        startActivity(endcheck);
     }
 
     public void opReturn(View v){

@@ -50,7 +50,8 @@
                         android:layout_weight="1"
                         android:id="@+id/undo2"
                         android:src="@drawable/sp_undo_move"
-                        android:layout_gravity="center_horizontal" />
+                        android:layout_gravity="center_horizontal"
+                        android:onClick="pvpundo2" />
 
 
                     <ImageView
@@ -59,7 +60,8 @@
                         android:layout_weight="1"
                         android:id="@+id/redo2"
                         android:src="@drawable/sp_redo_move"
-                        android:layout_gravity="left" />
+                        android:layout_gravity="left"
+                        android:onClick="pvpredo2" />
 
                 </LinearLayout>
 
@@ -70,7 +72,8 @@
                     android:id="@+id/helper2"
                     android:src="@drawable/sp_start_helper"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="3dp" />
+                    android:layout_marginTop="3dp"
+                    android:onClick="pvpstarthelp2" />
 
             </LinearLayout>
 
@@ -87,6 +90,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:id="@+id/options2"
+                    android:onClick = "pvpoptionsScreen2"
                     android:src="@drawable/sp_options" />
 
                 <ImageView
@@ -95,7 +99,8 @@
                     android:layout_weight="1"
                     android:id="@+id/suggestalternate2"
                     android:src="@drawable/sp_suggest_alt_move"
-                    android:layout_marginTop="3dp" />
+                    android:layout_marginTop="3dp"
+                    android:onClick="pvpsuggalt2" />
 
             </LinearLayout>
 
@@ -1122,14 +1127,16 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:id="@+id/undo1"
-                        android:src="@drawable/sp_undo_move" />
+                        android:src="@drawable/sp_undo_move"
+                        android:onClick="pvpundo1" />
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:id="@+id/redo1"
-                        android:src="@drawable/sp_redo_move" />
+                        android:src="@drawable/sp_redo_move"
+                        android:onClick="pvpredo1" />
                 </LinearLayout>
 
                 <ImageView
@@ -1139,7 +1146,8 @@
                     android:id="@+id/helper1"
                     android:src="@drawable/sp_start_helper"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="3dp" />
+                    android:layout_marginTop="3dp"
+                    android:onClick="pvpstarthelp1" />
             </LinearLayout>
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -1155,6 +1163,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:id="@+id/options1"
+                    android:onClick = "pvpoptionsScreen1"
                     android:src="@drawable/sp_options" />
 
                 <ImageView
@@ -1163,7 +1172,9 @@
                     android:layout_weight="1"
                     android:id="@+id/suggestalternate1"
                     android:src="@drawable/sp_suggest_alt_move"
-                    android:layout_marginTop="3dp" />
+                    android:layout_marginTop="3dp"
+                    android:onClick="pvpsuggalt1"
+                    android:nestedScrollingEnabled="false" />
             </LinearLayout>
         </LinearLayout>
 

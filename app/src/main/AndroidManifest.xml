@@ -40,9 +40,14 @@
         <activity android:name=".MultiplayerSettings" />
         <activity android:name=".loadgame" />
         <activity android:name=".CustomGame" />
-        <activity android:name=".OptionsPopUpWindow"
-            android:theme="@style/AppTheme.customThemePopUp">
-        </activity>
+        <activity
+            android:name=".OptionsPopUpWindow"
+            android:theme="@style/AppTheme.customThemePopUp" />
+        <activity
+            android:name=".SaveGame"
+            android:theme="@style/AppTheme.customThemePopUp" />
+        <activity android:name=".LeaveGameVerify"
+            android:theme="@style/AppTheme.customThemePopUp"></activity>
     </application>
 
 </manifest>

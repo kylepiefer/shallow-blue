@@ -40,6 +40,9 @@ public class StartGameActivity extends AppCompatActivity {
     }
     public void loadGame(View button){
         Intent loadGameIntent = new Intent(getApplicationContext(), loadgame.class);
+        Bundle game = new Bundle();
+        game.putInt("game", 4);
+        loadGameIntent.putExtra("start", game);
         startActivity(loadGameIntent);
     }
 

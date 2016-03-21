@@ -34,7 +34,9 @@ public class CustomGame extends AppCompatActivity {
         }
 
     }
-    public void customOptions(View button){
 
+    public void cgoptionsScreen(View v){
+        Intent openOptions = new Intent(getApplicationContext(),OptionsPopUpWindow.class);
+        startActivity(openOptions);
     }
 }

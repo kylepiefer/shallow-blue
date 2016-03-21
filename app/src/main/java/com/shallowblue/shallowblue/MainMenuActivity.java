@@ -17,6 +17,7 @@ public class MainMenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
     }
 
     public void startMultiplayerGame(View button) {

@@ -584,7 +584,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/custgameoptions"
-                    android:onClick="customOptions"
+                    android:onClick="cgoptionsScreen"
                     android:src="@drawable/cg_options_button"
                     android:layout_weight="1"
                     android:layout_marginLeft="1dp" />

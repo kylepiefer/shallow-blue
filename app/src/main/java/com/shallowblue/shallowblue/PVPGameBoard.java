@@ -48,4 +48,54 @@ public class PVPGameBoard extends AppCompatActivity {
     private int getDrawableId(ImageView iv) {
         return (Integer) iv.getTag();
     }
+
+    public void pvpoptionsScreen1(View v){
+        Intent openOptions = new Intent(getApplicationContext(),OptionsPopUpWindow.class);
+        startActivity(openOptions);
+    }
+
+    public void pvpoptionsScreen2(View v){
+        Intent openOptions = new Intent(getApplicationContext(),OptionsPopUpWindow.class);
+        startActivity(openOptions);
+    }
+
+    public void pvpundo1(View v){
+
+    }
+
+    public void pvpundo2(View v){
+
+    }
+
+    public void pvpredo1(View v){
+
+    }
+
+    public void pvpredo2(View v){
+
+    }
+
+    public void pvpsuggalt1(View v){
+
+    }
+
+    public void pvpsuggalt2(View v){
+
+    }
+
+    public void pvpstarthelp1(View v){
+
+    }
+
+    public void pvpstarthelp2(View v){
+
+    }
+
+    public void onBackPressed(){
+        Intent check = new Intent(getApplicationContext(),LeaveGameVerify.class);
+        Bundle verify = new Bundle();
+        verify.putString("activity","main");
+        check.putExtra("next",verify);
+        startActivity(check);
+    }
 }

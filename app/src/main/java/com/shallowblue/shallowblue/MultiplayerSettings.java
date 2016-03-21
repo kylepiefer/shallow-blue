@@ -23,6 +23,9 @@ public class MultiplayerSettings extends AppCompatActivity {
     }
     public void loadinggame(View button){
         Intent loadgameIntent = new Intent(getApplicationContext(),loadgame.class);
+        Bundle game = new Bundle();
+        game.putInt("game", 3);
+        loadgameIntent.putExtra("start", game);
         startActivity(loadgameIntent);
     }
     public void creatinggame(View button){
