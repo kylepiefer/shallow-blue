@@ -43,4 +43,8 @@ public class StartGameActivity extends AppCompatActivity {
         startActivity(loadGameIntent);
     }
 
+    public void onBackPressed(){
+        finish();
+    }
+
 }

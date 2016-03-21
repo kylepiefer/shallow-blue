@@ -47,6 +47,9 @@ public class OptionsPopUpWindow extends AppCompatActivity {
     }
 
     public void opReturn(View v){
-
+        finish();
+    }
+    public void onBackPressed(){
+        finish();
     }
 }

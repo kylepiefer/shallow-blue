@@ -18,4 +18,8 @@ public class loadgame extends AppCompatActivity {
         Intent loadGameIntent = new Intent(getApplicationContext(), GameBoardActivity.class);
         startActivity(loadGameIntent);
     }
+
+    public void onBackPressed(){
+        finish();
+    }
 }

@@ -49,7 +49,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
                 // Get a handle to the gameboard root.
                 ViewGroup gameBoardRoot =
-                        (ViewGroup)gameBoardActivity.findViewById(R.id.game_board_root);
+                        (ViewGroup) gameBoardActivity.findViewById(R.id.game_board_root);
 
                 // Find each square by getting each child of the gameboard root.
                 for (int i = 0; i < gameBoardRoot.getChildCount(); i++) {
@@ -146,5 +146,9 @@ public class GameBoardActivity extends AppCompatActivity {
     public void optionsScreen(View v){
         Intent openOptions = new Intent(getApplicationContext(),OptionsPopUpWindow.class);
         startActivity(openOptions);
+    }
+
+    public void onBackPressed(){
+        finish();
     }
 }
