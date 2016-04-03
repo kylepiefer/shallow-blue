@@ -643,7 +643,7 @@
                 android:id="@+id/pieceHolder">
 
                 <ImageView
-                    android:id="@+id/imageView130"
+                    android:id="@+id/pvpgame00"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="0"
@@ -651,7 +651,7 @@
                     android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView131"
+                    android:id="@+id/pvpgame01"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="0"
@@ -659,438 +659,501 @@
                     android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView132"
+                    android:id="@+id/pvpgame02"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="0"
-                    android:layout_column="2" />
+                    android:layout_column="2"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView133"
+                    android:id="@+id/pvpgame03"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="0"
-                    android:layout_column="3" />
+                    android:layout_column="3"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView134"
+                    android:id="@+id/pvpgame04"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="0"
-                    android:layout_column="4" />
+                    android:layout_column="4"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView135"
+                    android:id="@+id/pvpgame05"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="0"
-                    android:layout_column="5" />
+                    android:layout_column="5"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView136"
+                    android:id="@+id/pvpgame06"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="0"
-                    android:layout_column="6" />
+                    android:layout_column="6"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView137"
+                    android:id="@+id/pvpgame07"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="0"
-                    android:layout_column="7" />
+                    android:layout_column="7"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView138"
+                    android:id="@+id/pvpgame10"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="1"
-                    android:layout_column="0" />
+                    android:layout_column="0"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView139"
+                    android:id="@+id/pvpgame11"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="1"
-                    android:layout_column="1" />
+                    android:layout_column="1"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView140"
+                    android:id="@+id/pvpgame12"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="1"
-                    android:layout_column="2" />
+                    android:layout_column="2"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView141"
+                    android:id="@+id/pvpgame13"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="1"
-                    android:layout_column="3" />
+                    android:layout_column="3"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView142"
+                    android:id="@+id/pvpgame14"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="1"
-                    android:layout_column="4" />
+                    android:layout_column="4"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView143"
+                    android:id="@+id/pvpgame15"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="1"
-                    android:layout_column="5" />
+                    android:layout_column="5"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView144"
+                    android:id="@+id/pvpgame16"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="1"
-                    android:layout_column="6" />
+                    android:layout_column="6"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView145"
+                    android:id="@+id/pvpgame17"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="1"
-                    android:layout_column="7" />
+                    android:layout_column="7"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView146"
+                    android:id="@+id/pvpgame20"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="2"
-                    android:layout_column="0" />
+                    android:layout_column="0"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView147"
+                    android:id="@+id/pvpgame21"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="2"
-                    android:layout_column="1" />
+                    android:layout_column="1"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView148"
+                    android:id="@+id/pvpgame22"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="2"
-                    android:layout_column="2" />
+                    android:layout_column="2"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView149"
+                    android:id="@+id/pvpgame23"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="2"
-                    android:layout_column="3" />
+                    android:layout_column="3"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView150"
+                    android:id="@+id/pvpgame24"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="2"
-                    android:layout_column="4" />
+                    android:layout_column="4"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView151"
+                    android:id="@+id/pvpgame25"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="2"
-                    android:layout_column="5" />
+                    android:layout_column="5"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView152"
+                    android:id="@+id/pvpgame26"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="2"
-                    android:layout_column="6" />
+                    android:layout_column="6"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView153"
+                    android:id="@+id/pvpgame27"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="2"
-                    android:layout_column="7" />
+                    android:layout_column="7"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView154"
+                    android:id="@+id/pvpgame30"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="3"
-                    android:layout_column="0" />
+                    android:layout_column="0"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView155"
+                    android:id="@+id/pvpgame31"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="3"
-                    android:layout_column="1" />
+                    android:layout_column="1"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView156"
+                    android:id="@+id/pvpgame32"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="3"
-                    android:layout_column="2" />
+                    android:layout_column="2"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView157"
+                    android:id="@+id/pvpgame33"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="3"
-                    android:layout_column="3" />
+                    android:layout_column="3"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView158"
+                    android:id="@+id/pvpgame34"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="3"
-                    android:layout_column="4" />
+                    android:layout_column="4"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView159"
+                    android:id="@+id/pvpgame35"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="3"
-                    android:layout_column="5" />
+                    android:layout_column="5"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView160"
+                    android:id="@+id/pvpgame36"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="3"
-                    android:layout_column="6" />
+                    android:layout_column="6"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView161"
+                    android:id="@+id/pvpgame37"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="3"
-                    android:layout_column="7" />
+                    android:layout_column="7"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView162"
+                    android:id="@+id/pvpgame40"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="4"
-                    android:layout_column="0" />
+                    android:layout_column="0"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView163"
+                    android:id="@+id/pvpgame41"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="4"
-                    android:layout_column="1" />
+                    android:layout_column="1"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView164"
+                    android:id="@+id/pvpgame42"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="4"
-                    android:layout_column="2" />
+                    android:layout_column="2"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView165"
+                    android:id="@+id/pvpgame43"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="4"
-                    android:layout_column="3" />
+                    android:layout_column="3"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView166"
+                    android:id="@+id/pvpgame44"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="4"
-                    android:layout_column="4" />
+                    android:layout_column="4"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView167"
+                    android:id="@+id/pvpgame45"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="4"
-                    android:layout_column="5" />
+                    android:layout_column="5"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView168"
+                    android:id="@+id/pvpgame46"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="4"
-                    android:layout_column="6" />
+                    android:layout_column="6"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView169"
+                    android:id="@+id/pvpgame47"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="4"
-                    android:layout_column="7" />
+                    android:layout_column="7"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView170"
+                    android:id="@+id/pvpgame50"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="5"
-                    android:layout_column="0" />
+                    android:layout_column="0"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView171"
+                    android:id="@+id/pvpgame51"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="5"
-                    android:layout_column="1" />
+                    android:layout_column="1"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView172"
+                    android:id="@+id/pvpgame52"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="5"
-                    android:layout_column="2" />
+                    android:layout_column="2"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView173"
+                    android:id="@+id/pvpgame53"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="5"
-                    android:layout_column="3" />
+                    android:layout_column="3"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView174"
+                    android:id="@+id/pvpgame54"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="5"
-                    android:layout_column="4" />
+                    android:layout_column="4"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView175"
+                    android:id="@+id/pvpgame55"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="5"
-                    android:layout_column="5" />
+                    android:layout_column="5"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView176"
+                    android:id="@+id/pvpgame56"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="5"
-                    android:layout_column="6" />
+                    android:layout_column="6"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView177"
+                    android:id="@+id/pvpgame57"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="5"
-                    android:layout_column="7" />
+                    android:layout_column="7"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView178"
+                    android:id="@+id/pvpgame60"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="6"
-                    android:layout_column="0" />
+                    android:layout_column="0"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView179"
+                    android:id="@+id/pvpgame61"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="6"
-                    android:layout_column="1" />
+                    android:layout_column="1"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView180"
+                    android:id="@+id/pvpgame62"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="6"
-                    android:layout_column="2" />
+                    android:layout_column="2"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView181"
+                    android:id="@+id/pvpgame63"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="6"
-                    android:layout_column="3" />
+                    android:layout_column="3"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView182"
+                    android:id="@+id/pvpgame64"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="6"
-                    android:layout_column="4" />
+                    android:layout_column="4"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView183"
+                    android:id="@+id/pvpgame65"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="6"
-                    android:layout_column="5" />
+                    android:layout_column="5"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView184"
+                    android:id="@+id/pvpgame66"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="6"
-                    android:layout_column="6" />
+                    android:layout_column="6"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView185"
+                    android:id="@+id/pvpgame67"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="6"
-                    android:layout_column="7" />
+                    android:layout_column="7"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView186"
+                    android:id="@+id/pvpgame70"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="7"
-                    android:layout_column="0" />
+                    android:layout_column="0"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView187"
+                    android:id="@+id/pvpgame71"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="7"
-                    android:layout_column="1" />
+                    android:layout_column="1"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView188"
+                    android:id="@+id/pvpgame72"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="7"
-                    android:layout_column="2" />
+                    android:layout_column="2"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView189"
+                    android:id="@+id/pvpgame73"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="7"
-                    android:layout_column="3" />
+                    android:layout_column="3"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView190"
+                    android:id="@+id/pvpgame74"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="7"
-                    android:layout_column="4" />
+                    android:layout_column="4"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView191"
+                    android:id="@+id/pvpgame75"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="7"
-                    android:layout_column="5" />
+                    android:layout_column="5"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView192"
+                    android:id="@+id/pvpgame76"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="7"
-                    android:layout_column="6" />
+                    android:layout_column="6"
+                    android:onClick="movePiece" />
 
                 <ImageView
-                    android:id="@+id/imageView193"
+                    android:id="@+id/pvpgame77"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_row="7"
-                    android:layout_column="7" />
+                    android:layout_column="7"
+                    android:nestedScrollingEnabled="false"
+                    android:onClick="movePiece" />
             </GridLayout>
 
         </FrameLayout>

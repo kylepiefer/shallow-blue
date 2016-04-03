@@ -19,6 +19,7 @@ public class CustomGame extends AppCompatActivity {
     private ImageView wkingimage;
     private ImageView bkingimage;
     private ImageView currSelected;
+    private int[][] boardResources;
     List<ImageView> initialPieces;
     int whitekingid;
     int blackkingid;
@@ -89,6 +90,14 @@ public class CustomGame extends AppCompatActivity {
         Intent startPvpGame = new Intent(getApplicationContext(), PVPGameBoard.class);
         Bundle game = new Bundle();
         game.putInt("game",2);
+
+        ImageView[][] gameboard = new ImageView[8][8];
+        boardResources = new int[8][8];
+
+        gameboard = boardPositions(gameboard);
+
+        PVPGameBoard.customGameBoard = gameboard;
+        PVPGameBoard.customBoardResources = boardResources;
 
         Intent gametype = getIntent();
         Bundle temp = new Bundle();
@@ -235,7 +244,95 @@ public class CustomGame extends AppCompatActivity {
 
     }
 
-    private int getDrawableId(ImageView iv) {
+    private int getDrawableId(ImageView iv){
         return (Integer) iv.getTag();
+    }
+
+    private ImageView[][] boardPositions(ImageView[][] setup) throws NullPointerException{
+
+        setup[0][0] = (ImageView) findViewById(R.id.custom00);
+        setup[0][1] = (ImageView) findViewById(R.id.custom01);
+        setup[0][2] = (ImageView) findViewById(R.id.custom02);
+        setup[0][3] = (ImageView) findViewById(R.id.custom03);
+        setup[0][4] = (ImageView) findViewById(R.id.custom04);
+        setup[0][5] = (ImageView) findViewById(R.id.custom05);
+        setup[0][6] = (ImageView) findViewById(R.id.custom06);
+        setup[0][7] = (ImageView) findViewById(R.id.custom07);
+
+        setup[1][0] = (ImageView) findViewById(R.id.custom10);
+        setup[1][1] = (ImageView) findViewById(R.id.custom11);
+        setup[1][2] = (ImageView) findViewById(R.id.custom12);
+        setup[1][3] = (ImageView) findViewById(R.id.custom13);
+        setup[1][4] = (ImageView) findViewById(R.id.custom14);
+        setup[1][5] = (ImageView) findViewById(R.id.custom15);
+        setup[1][6] = (ImageView) findViewById(R.id.custom16);
+        setup[1][7] = (ImageView) findViewById(R.id.custom17);
+
+        setup[2][0] = (ImageView) findViewById(R.id.custom20);
+        setup[2][1] = (ImageView) findViewById(R.id.custom21);
+        setup[2][2] = (ImageView) findViewById(R.id.custom22);
+        setup[2][3] = (ImageView) findViewById(R.id.custom23);
+        setup[2][4] = (ImageView) findViewById(R.id.custom24);
+        setup[2][5] = (ImageView) findViewById(R.id.custom25);
+        setup[2][6] = (ImageView) findViewById(R.id.custom26);
+        setup[2][7] = (ImageView) findViewById(R.id.custom27);
+
+        setup[3][0] = (ImageView) findViewById(R.id.custom30);
+        setup[3][1] = (ImageView) findViewById(R.id.custom31);
+        setup[3][2] = (ImageView) findViewById(R.id.custom32);
+        setup[3][3] = (ImageView) findViewById(R.id.custom33);
+        setup[3][4] = (ImageView) findViewById(R.id.custom34);
+        setup[3][5] = (ImageView) findViewById(R.id.custom35);
+        setup[3][6] = (ImageView) findViewById(R.id.custom36);
+        setup[3][7] = (ImageView) findViewById(R.id.custom37);
+
+        setup[4][0] = (ImageView) findViewById(R.id.custom40);
+        setup[4][1] = (ImageView) findViewById(R.id.custom41);
+        setup[4][2] = (ImageView) findViewById(R.id.custom42);
+        setup[4][3] = (ImageView) findViewById(R.id.custom43);
+        setup[4][4] = (ImageView) findViewById(R.id.custom44);
+        setup[4][5] = (ImageView) findViewById(R.id.custom45);
+        setup[4][6] = (ImageView) findViewById(R.id.custom46);
+        setup[4][7] = (ImageView) findViewById(R.id.custom47);
+
+        setup[5][0] = (ImageView) findViewById(R.id.custom50);
+        setup[5][1] = (ImageView) findViewById(R.id.custom51);
+        setup[5][2] = (ImageView) findViewById(R.id.custom52);
+        setup[5][3] = (ImageView) findViewById(R.id.custom53);
+        setup[5][4] = (ImageView) findViewById(R.id.custom54);
+        setup[5][5] = (ImageView) findViewById(R.id.custom55);
+        setup[5][6] = (ImageView) findViewById(R.id.custom56);
+        setup[5][7] = (ImageView) findViewById(R.id.custom57);
+
+        setup[6][0] = (ImageView) findViewById(R.id.custom60);
+        setup[6][1] = (ImageView) findViewById(R.id.custom61);
+        setup[6][2] = (ImageView) findViewById(R.id.custom62);
+        setup[6][3] = (ImageView) findViewById(R.id.custom63);
+        setup[6][4] = (ImageView) findViewById(R.id.custom64);
+        setup[6][5] = (ImageView) findViewById(R.id.custom65);
+        setup[6][6] = (ImageView) findViewById(R.id.custom66);
+        setup[6][7] = (ImageView) findViewById(R.id.custom67);
+
+        setup[7][0] = (ImageView) findViewById(R.id.custom70);
+        setup[7][1] = (ImageView) findViewById(R.id.custom71);
+        setup[7][2] = (ImageView) findViewById(R.id.custom72);
+        setup[7][3] = (ImageView) findViewById(R.id.custom73);
+        setup[7][4] = (ImageView) findViewById(R.id.custom74);
+        setup[7][5] = (ImageView) findViewById(R.id.custom75);
+        setup[7][6] = (ImageView) findViewById(R.id.custom76);
+        setup[7][7] = (ImageView) findViewById(R.id.custom77);
+
+        Integer drawable;
+        int dummy;
+        for (int x = 0; x < 8; x++){
+            for (int y = 0; y < 8; y++){
+                if (setup[x][y].getDrawable() != null){
+                    drawable = getDrawableId(setup[x][y]);
+                    boardResources[x][y] = drawable;
+                }
+            }
+        }
+
+        return setup;
     }
 }

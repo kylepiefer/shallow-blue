@@ -1072,9 +1072,9 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="87.88"
+            android:layout_weight="20"
             android:layout_gravity="center_horizontal"
-            android:gravity="center_horizontal">
+            android:gravity="fill_horizontal|top|center_horizontal">
 
             <TextView
                 android:layout_width="177dp"
@@ -1082,7 +1082,8 @@
                 android:text="Tap pieces below and place them in the board by tapping the spot. Both sides must have a king."
                 android:id="@+id/textView2"
                 android:paddingRight="3dp"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:textSize="10sp" />
 
             <ImageView
                 android:layout_width="40dp"
@@ -1097,15 +1098,17 @@
                 android:text="Current piece that is selected is displayed in the box to the right"
                 android:id="@+id/textView3"
                 android:paddingLeft="3dp"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:textSize="10sp" />
         </LinearLayout>
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="142dp"
+            android:layout_height="wrap_content"
             android:weightSum="2"
-            android:layout_weight="15">
+            android:layout_weight="20"
+            android:layout_gravity="bottom">
 
             <LinearLayout
                 android:orientation="vertical"
