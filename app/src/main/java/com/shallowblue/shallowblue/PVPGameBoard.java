@@ -23,12 +23,16 @@ public class PVPGameBoard extends AppCompatActivity {
         Bundle temp = new Bundle();
         temp = gather.getBundleExtra("start");
         int count = temp.getInt("game");
+
         pvpGameboard = new ImageView[8][8];
+
+        initializeBoard();
+
         if (count == 1){
-            //startNewPvpGame();
+            startNewPvpGame();
         }
         if (count == 2){
-            initializeBoard();
+            addCustomSetup();
         }
 
 
@@ -36,9 +40,56 @@ public class PVPGameBoard extends AppCompatActivity {
     }
 
     public void startNewPvpGame(){
-        ImageView temp = (ImageView) findViewById(R.id.pvpgame00);
-        temp.setImageResource(R.drawable.black_rook_flipped);
-        temp.setTag(R.drawable.black_rook_flipped);
+        for (int y = 0; y < 8; y++){
+            pvpGameboard[1][y].setImageResource(R.drawable.black_pawn_flipped);
+            pvpGameboard[1][y].setTag(R.drawable.black_pawn_flipped);
+            pvpGameboard[6][y].setImageResource(R.drawable.white_pawn);
+            pvpGameboard[6][y].setTag(R.drawable.white_pawn);
+        }
+
+        pvpGameboard[0][0].setImageResource(R.drawable.black_rook_flipped);
+        pvpGameboard[0][7].setImageResource(R.drawable.black_rook_flipped);
+        pvpGameboard[7][0].setImageResource(R.drawable.white_rook);
+        pvpGameboard[7][7].setImageResource(R.drawable.white_rook);
+
+        pvpGameboard[0][1].setImageResource(R.drawable.black_knight_flipped);
+        pvpGameboard[0][6].setImageResource(R.drawable.black_knight_flipped);
+        pvpGameboard[7][1].setImageResource(R.drawable.white_knight);
+        pvpGameboard[7][6].setImageResource(R.drawable.white_knight);
+
+        pvpGameboard[0][2].setImageResource(R.drawable.black_bishop_flipped);
+        pvpGameboard[0][5].setImageResource(R.drawable.black_bishop_flipped);
+        pvpGameboard[7][2].setImageResource(R.drawable.white_bishop);
+        pvpGameboard[7][5].setImageResource(R.drawable.white_bishop);
+
+        pvpGameboard[0][3].setImageResource(R.drawable.black_queen_flipped);
+        pvpGameboard[7][3].setImageResource(R.drawable.white_queen);
+
+        pvpGameboard[0][4].setImageResource(R.drawable.black_king_flipped);
+        pvpGameboard[7][4].setImageResource(R.drawable.white_king);
+
+
+
+        pvpGameboard[0][0].setTag(R.drawable.black_rook_flipped);
+        pvpGameboard[0][7].setTag(R.drawable.black_rook_flipped);
+        pvpGameboard[7][0].setTag(R.drawable.white_rook);
+        pvpGameboard[7][7].setTag(R.drawable.white_rook);
+
+        pvpGameboard[0][1].setTag(R.drawable.black_knight_flipped);
+        pvpGameboard[0][6].setTag(R.drawable.black_knight_flipped);
+        pvpGameboard[7][1].setTag(R.drawable.white_knight);
+        pvpGameboard[7][6].setTag(R.drawable.white_knight);
+
+        pvpGameboard[0][2].setTag(R.drawable.black_bishop_flipped);
+        pvpGameboard[0][5].setTag(R.drawable.black_bishop_flipped);
+        pvpGameboard[7][2].setTag(R.drawable.white_bishop);
+        pvpGameboard[7][5].setTag(R.drawable.white_bishop);
+
+        pvpGameboard[0][3].setTag(R.drawable.black_queen_flipped);
+        pvpGameboard[7][3].setTag(R.drawable.white_queen);
+
+        pvpGameboard[0][4].setTag(R.drawable.black_king_flipped);
+        pvpGameboard[7][4].setTag(R.drawable.white_king);
     }
 
     public void movePiece(View v){
@@ -180,7 +231,9 @@ public class PVPGameBoard extends AppCompatActivity {
         pvpGameboard[7][5] = (ImageView) findViewById(R.id.pvpgame75);
         pvpGameboard[7][6] = (ImageView) findViewById(R.id.pvpgame76);
         pvpGameboard[7][7] = (ImageView) findViewById(R.id.pvpgame77);
+    }
 
+    public void addCustomSetup(){
         for (int x = 0; x < 8; x++){
             for (int y = 0; y < 8; y++){
                 pvpGameboard[x][y].setImageResource(customBoardResources[x][y]);
