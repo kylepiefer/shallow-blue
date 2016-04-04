@@ -65,6 +65,10 @@ public abstract class Piece {
 	 * Rook   = "r"
 	 */
 	public abstract String toString();
+
+	public void setPosition(Position p){
+		position = p;
+	}
 	
 	
 }
