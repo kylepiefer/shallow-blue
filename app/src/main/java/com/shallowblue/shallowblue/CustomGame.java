@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,10 +24,13 @@ public class CustomGame extends AppCompatActivity {
     private ImageView currSelected;
     private int[][] boardResources;
     List<ImageView> initialPieces;
+    Map<ImageView, Position> imagePositions;
     int whitekingid;
     int blackkingid;
     List<Piece> pieces;
     Map<Piece, String> pieceType;
+    Map<Position, Piece> boardSetup;
+    Position[][] availPos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +41,14 @@ public class CustomGame extends AppCompatActivity {
         initialPieces = new ArrayList<ImageView>();
         pieces = new ArrayList<>();
         pieceType = new HashMap<Piece, String>();
+        imagePositions = new HashMap<ImageView, Position>();
+        ImageView[][] boardImages = new ImageView[8][8];
+        boardImages = setupImageViewArray(boardImages);
+        boardSetup = new HashMap<Position, Piece>();
+        availPos = new Position[8][8];
 
         customInitialize();
-
+        imagePositionsInitialize(boardImages);
 
 
         wkingimage = (ImageView) findViewById(R.id.wking);
@@ -52,6 +61,16 @@ public class CustomGame extends AppCompatActivity {
         whitekingid = R.drawable.white_king;
         blackkingid = R.drawable.black_king;
 
+    }
+
+    private void imagePositionsInitialize(ImageView[][] setup) {
+        for (int x = 0; x < 8; x++){
+            for (int y = 0; y < 8; y++){
+                Position building = new Position(x,y);
+                imagePositions.put(setup[x][y], building);
+                availPos[x][y] = building;
+            }
+        }
     }
 
     public void customInitialize(){
@@ -141,6 +160,12 @@ public class CustomGame extends AppCompatActivity {
     }
 
     public void startCustomGame(View button) {
+        if (wking == false || bking == false){
+            Toast.makeText(CustomGame.this,"You must have both Kings placed to start a new game.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         Intent startGame = new Intent(getApplicationContext(), GameBoardActivity.class);
         Intent startPvpGame = new Intent(getApplicationContext(), PVPGameBoard.class);
         Bundle game = new Bundle();
@@ -149,7 +174,8 @@ public class CustomGame extends AppCompatActivity {
         ImageView[][] gameboard = new ImageView[8][8];
         boardResources = new int[8][8];
 
-        gameboard = boardPositions(gameboard);
+        ImageView[][] settingUp = setupImageViewArray(gameboard);
+        gameboard = boardPositions(settingUp);
 
         PVPGameBoard.customGameBoard = gameboard;
         PVPGameBoard.customBoardResources = boardResources;
@@ -181,12 +207,54 @@ public class CustomGame extends AppCompatActivity {
 
     public void placePiece(View v){
         ImageView temp = (ImageView) v;
+        Position newPosition = imagePositions.get(temp);
+        Piece newPiece;
         int selindex;
         int tempindex;
         int selid;
         int tempid;
 
+
+
         if (selected == null && temp.getDrawable() == null){
+            return;
+        }
+        if (initialPieces.contains(temp) && selected != null){
+            currSelected.setImageResource(0);
+
+            selindex = pieces.indexOf(selected.getTag());
+            selid = pieces.get(selindex).getDrawableId();
+            tempindex = pieces.indexOf(temp.getTag());
+            tempid = pieces.get(tempindex).getDrawableId();
+
+            if (selid == whitekingid){
+                wkingimage.setImageResource(whitekingid);
+                if (!initialPieces.contains(selected)){
+                    Position selPos = imagePositions.get(selected);
+                    boardSetup.remove(selPos);
+                    selected.setImageResource(0);
+                }
+                selected = null;
+                wking = false;
+                return;
+            }
+            if (selid == blackkingid){
+                bkingimage.setImageResource(blackkingid);
+                if (!initialPieces.contains(selected)){
+                    Position selPos = imagePositions.get(selected);
+                    boardSetup.remove(selPos);
+                    selected.setImageResource(0);
+                }
+                selected = null;
+                bking = false;
+                return;
+            }
+            if (initialPieces.contains(selected)){
+                selected = null;
+                return;
+            }
+            selected.setImageResource(0);
+            selected = null;
             return;
         }
         if (selected != null && temp.getDrawable() != null){
@@ -208,33 +276,50 @@ public class CustomGame extends AppCompatActivity {
                 wkingimage.setImageResource(whitekingid);
                 bkingimage.setImageResource(0);
                 temp.setImageResource(selid);
-                temp.setTag(pieces.get(selindex));
+                newPiece = makePiece(pieces.get(selindex));
+                newPiece.setPosition(newPosition);
+                temp.setTag(newPiece);
+                boardSetup.put(newPosition, newPiece);
                 if (!initialPieces.contains(selected)){
+                    Position selPos = imagePositions.get(selected);
+                    boardSetup.remove(selPos);
                     selected.setImageResource(0);
                 }
                 selected = null;
                 currSelected.setImageResource(0);
                 wking = false;
+                bking = true;
                 return;
             }
             if (selid == whitekingid && tempid == blackkingid && initialPieces.contains(selected)){
                 bkingimage.setImageResource(blackkingid);
                 wkingimage.setImageResource(0);
                 temp.setImageResource(selid);
-                temp.setTag(pieces.get(selindex));
+                newPiece = makePiece(pieces.get(selindex));
+                newPiece.setPosition(newPosition);
+                temp.setTag(newPiece);
+                boardSetup.put(newPosition, newPiece);
                 if (!initialPieces.contains(selected)){
+                    Position selPos = imagePositions.get(selected);
+                    boardSetup.remove(selPos);
                     selected.setImageResource(0);
                 }
                 currSelected.setImageResource(0);
                 selected = null;
                 bking = false;
+                wking = true;
                 return;
             }
             if (tempid == whitekingid){
                 wkingimage.setImageResource(whitekingid);
                 temp.setImageResource(selid);
-                temp.setTag(pieces.get(selindex));
+                newPiece = makePiece(pieces.get(selindex));
+                newPiece.setPosition(newPosition);
+                temp.setTag(newPiece);
+                boardSetup.put(newPosition, newPiece);
                 if (!initialPieces.contains(selected)){
+                    Position selPos = imagePositions.get(selected);
+                    boardSetup.remove(selPos);
                     selected.setImageResource(0);
                 }
                 selected = null;
@@ -245,8 +330,13 @@ public class CustomGame extends AppCompatActivity {
             if (tempid == blackkingid){
                 bkingimage.setImageResource(blackkingid);
                 temp.setImageResource(selid);
-                temp.setTag(pieces.get(selindex));
+                newPiece = makePiece(pieces.get(selindex));
+                newPiece.setPosition(newPosition);
+                temp.setTag(newPiece);
+                boardSetup.put(newPosition, newPiece);
                 if (!initialPieces.contains(selected)){
+                    Position selPos = imagePositions.get(selected);
+                    boardSetup.remove(selPos);
                     selected.setImageResource(0);
                 }
                 currSelected.setImageResource(0);
@@ -260,40 +350,7 @@ public class CustomGame extends AppCompatActivity {
             currSelected.setImageResource(0);
             return;
         }
-        if (initialPieces.contains(temp) && selected != null){
-            currSelected.setImageResource(0);
 
-            selindex = pieces.indexOf(selected.getTag());
-            selid = pieces.get(selindex).getDrawableId();
-            tempindex = pieces.indexOf(temp.getTag());
-            tempid = pieces.get(tempindex).getDrawableId();
-
-            if (selid == whitekingid){
-                wkingimage.setImageResource(whitekingid);
-                if (!initialPieces.contains(selected)){
-                    selected.setImageResource(0);
-                }
-                selected = null;
-                wking = false;
-                return;
-            }
-            if (selid == blackkingid){
-                bkingimage.setImageResource(blackkingid);
-                if (!initialPieces.contains(selected)){
-                    selected.setImageResource(0);
-                }
-                selected = null;
-                bking = false;
-                return;
-            }
-            if (initialPieces.contains(selected)){
-                selected = null;
-                return;
-            }
-            selected.setImageResource(0);
-            selected = null;
-            return;
-        }
         if (selected == null){
             selected = temp;
             tempindex = pieces.indexOf(temp.getTag());
@@ -307,7 +364,10 @@ public class CustomGame extends AppCompatActivity {
             selindex = pieces.indexOf(selected.getTag());
             selid = pieces.get(selindex).getDrawableId();
             temp.setImageResource(selid);
-            temp.setTag(selected.getTag());
+            newPiece = makePiece(pieces.get(selindex));
+            newPiece.setPosition(newPosition);
+            temp.setTag(newPiece);
+            boardSetup.put(newPosition, newPiece);
             selected.setImageResource(0);
             selected = null;
             wkingimage.setImageResource(0);
@@ -319,7 +379,10 @@ public class CustomGame extends AppCompatActivity {
             selindex = pieces.indexOf(selected.getTag());
             selid = pieces.get(selindex).getDrawableId();
             temp.setImageResource(selid);
-            temp.setTag(selected.getTag());
+            newPiece = makePiece(pieces.get(selindex));
+            newPiece.setPosition(newPosition);
+            temp.setTag(newPiece);
+            boardSetup.put(newPosition, newPiece);
             selected.setImageResource(0);
             selected = null;
             bkingimage.setImageResource(0);
@@ -330,11 +393,16 @@ public class CustomGame extends AppCompatActivity {
         selindex = pieces.indexOf(selected.getTag());
         selid = pieces.get(selindex).getDrawableId();
         temp.setImageResource(selid);
-        temp.setTag(selected.getTag());
+        newPiece = makePiece(pieces.get(selindex));
+        newPiece.setPosition(newPosition);
+        temp.setTag(newPiece);
+        boardSetup.put(newPosition, newPiece);
         if (initialPieces.contains(selected)){
             selected = null;
         }
         else{
+            Position selPos = imagePositions.get(selected);
+            boardSetup.remove(selPos);
             selected.setImageResource(0);
             selected = null;
         }
@@ -343,7 +411,7 @@ public class CustomGame extends AppCompatActivity {
 
     }
 
-    private ImageView[][] boardPositions(ImageView[][] setup) throws NullPointerException{
+    private ImageView[][] setupImageViewArray(ImageView[][] setup){
 
         setup[0][0] = (ImageView) findViewById(R.id.custom00);
         setup[0][1] = (ImageView) findViewById(R.id.custom01);
@@ -416,6 +484,10 @@ public class CustomGame extends AppCompatActivity {
         setup[7][5] = (ImageView) findViewById(R.id.custom75);
         setup[7][6] = (ImageView) findViewById(R.id.custom76);
         setup[7][7] = (ImageView) findViewById(R.id.custom77);
+        return setup;
+    }
+
+    private ImageView[][] boardPositions(ImageView[][] setup){
 
         Integer drawable;
         int dummy;
@@ -438,50 +510,62 @@ public class CustomGame extends AppCompatActivity {
 
             case "wpawn":
                 save = new Pawn(new Position(-1,-1), Color.WHITE);
+                pieces.add(save);
                 pieceType.put(save,"wpawn");
                 return save;
             case "wbishop":
                 save = new Bishop(new Position(-1,-1), Color.WHITE);
+                pieces.add(save);
                 pieceType.put(save,"wbishop");
                 return save;
             case "wknight":
                 save = new Knight(new Position(-1,-1), Color.WHITE);
+                pieces.add(save);
                 pieceType.put(save,"wknight");
                 return save;
             case "wrook":
                 save = new Rook(new Position(-1,-1), Color.WHITE);
+                pieces.add(save);
                 pieceType.put(save,"wrook");
                 return save;
             case "wqueen":
                 save = new Queen(new Position(-1,-1), Color.WHITE);
+                pieces.add(save);
                 pieceType.put(save,"wqueen");
                 return save;
             case "wking":
                 save = new King(new Position(-1,-1), Color.WHITE);
+                pieces.add(save);
                 pieceType.put(save,"wking");
                 return save;
             case "bpawn":
                 save = new Pawn(new Position(-1,-1), Color.BLACK);
+                pieces.add(save);
                 pieceType.put(save,"bpawn");
                 return save;
             case "bbishop":
                 save = new Bishop(new Position(-1,-1), Color.BLACK);
+                pieces.add(save);
                 pieceType.put(save,"bbishop");
                 return save;
             case "bknight":
                 save = new Knight(new Position(-1,-1), Color.BLACK);
+                pieces.add(save);
                 pieceType.put(save,"bknight");
                 return save;
             case "brook":
                 save = new Rook(new Position(-1,-1), Color.BLACK);
+                pieces.add(save);
                 pieceType.put(save,"brook");
                 return save;
             case "bqueen":
                 save = new Queen(new Position(-1,-1), Color.BLACK);
+                pieces.add(save);
                 pieceType.put(save,"bqueen");
                 return save;
             case "bking":
                 save = new King(new Position(-1,-1), Color.BLACK);
+                pieces.add(save);
                 pieceType.put(save,"bking");
                 return save;
             default:
