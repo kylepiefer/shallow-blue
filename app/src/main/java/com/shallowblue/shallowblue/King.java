@@ -8,7 +8,7 @@ public class King extends Piece {
 	private Position initialPosition;
 	
 	public King(Position argPosition, Color color) {
-		super(argPosition, color);
+		super(argPosition, color, color == Color.WHITE ? R.drawable.white_king : R.drawable.black_king);
 		initialPosition = argPosition;
 		
 	}

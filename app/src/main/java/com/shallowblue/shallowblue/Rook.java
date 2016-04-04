@@ -8,7 +8,8 @@ public class Rook extends Piece {
 	private Position initialPosition;
 	
 	public Rook(Position argPosition, Color color) {
-		super(argPosition, color);
+		super(argPosition, color, color == Color.WHITE ? R.drawable.white_rook : R.drawable.black_rook);
+		initialPosition = argPosition;
 		
 	}
 

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class Bishop extends Piece {
 
 	public Bishop(Position argPosition, Color color) {
-		super(argPosition, color);
+		super(argPosition, color, color == Color.WHITE ? R.drawable.white_bishop : R.drawable.black_bishop);
 		
 	}
 
