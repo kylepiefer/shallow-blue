@@ -34,8 +34,8 @@ public class King extends Piece {
 		
 		for (int i = pieceRow-1; i <= pieceRow+1; i++)
 			for (int j = pieceCol-1; j <= pieceCol+1; j++) 
-				if (i >= 1 && i <= 8) //row isn't out of bounds
-					if (j >= 1 && j <= 8) //column isn't out of bounds
+				if (i >= 0 && i <= 7) //row isn't out of bounds
+					if (j >= 0 && j <= 7) //column isn't out of bounds
 						if (i != pieceRow && j != pieceCol) //we're not adding the current position
 						result.add(new Position(i,j));
 		

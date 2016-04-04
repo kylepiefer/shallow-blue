@@ -43,6 +43,7 @@ public class PVPGameBoard extends AppCompatActivity {
         for (int y = 0; y < 8; y++){
             pvpGameboard[1][y].setImageResource(R.drawable.black_pawn_flipped);
             pvpGameboard[1][y].setTag(R.drawable.black_pawn_flipped);
+
             pvpGameboard[6][y].setImageResource(R.drawable.white_pawn);
             pvpGameboard[6][y].setTag(R.drawable.white_pawn);
         }
