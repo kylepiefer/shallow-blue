@@ -32,7 +32,7 @@ public class Pawn extends Piece {
 		
 		//if the pawn is white, a new possible position is generated
 		//by adding +1 to its row. If it's black, add -1 instead.
-		int direction = (getColor() == Color.WHITE) ? 1 : -1;
+		int direction = (getColor() == Color.WHITE) ? -1 : 1;
 		result.add(new Position(getPosition().getRow()+direction, getPosition().getColumn()));
 		
 		//canJump refers to the 2 tiles a pawn can jump, which is a special

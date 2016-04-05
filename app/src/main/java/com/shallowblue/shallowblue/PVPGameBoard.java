@@ -76,7 +76,7 @@ public class PVPGameBoard extends AppCompatActivity {
 
             Pawn begin = new Pawn(availPos[6][y], Color.WHITE);
             pvpGameboard[6][y].setImageResource(begin.getDrawableId());
-            boardSetup.put(availPos[6][y], start);
+            boardSetup.put(availPos[6][y], begin);
         }
 
         Rook setup = new Rook(availPos[0][0], Color.BLACK);
