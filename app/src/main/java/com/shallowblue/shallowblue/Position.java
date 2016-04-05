@@ -12,18 +12,18 @@ public class Position {
 	private final int row;
 	private final int column;
 
-	public Position(int x, int y) {
-		row = x;
-		column = y;
+	public Position(int row, int column) {
+		this.row = row;
+		this.column = column;
 	}
 
 	public int getRow() {
-		return row;
+		return this.row;
 	}
 
 	public int getColumn() {
 
-		return column;
+		return this.column;
 	}
 
 	@Override
@@ -41,5 +41,10 @@ public class Position {
 		hashCode = 31 * hashCode + this.row;
 		hashCode = 31 * hashCode + this.column;
 		return hashCode;
+	}
+
+	@Override
+	public String toString() {
+		return "(" + this.row + "," + this.column + ")";
 	}
 }
