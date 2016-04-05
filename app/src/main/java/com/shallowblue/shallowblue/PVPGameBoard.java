@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,6 +40,7 @@ public class PVPGameBoard extends AppCompatActivity {
         temp = gather.getBundleExtra("start");
         int count = temp.getInt("game");
         imagePositions = new HashMap<ImageView, Position>();
+        boardSetup = new HashMap<Position, Piece>();
         pvpGameboard = new ImageView[8][8];
         selMoves = new ArrayList<>();
         turn = Color.WHITE;
@@ -70,11 +72,11 @@ public class PVPGameBoard extends AppCompatActivity {
             Pawn start = new Pawn(availPos[1][y], Color.BLACK);
             flipBlackPieces(start);
             pvpGameboard[1][y].setImageResource(start.getDrawableId());
-            pvpGameboard[1][y].setTag(start);
+            boardSetup.put(availPos[1][y], start);
 
             Pawn begin = new Pawn(availPos[6][y], Color.WHITE);
             pvpGameboard[6][y].setImageResource(begin.getDrawableId());
-            pvpGameboard[6][y].setTag(begin);
+            boardSetup.put(availPos[6][y], start);
         }
 
         Rook setup = new Rook(availPos[0][0], Color.BLACK);
@@ -88,10 +90,10 @@ public class PVPGameBoard extends AppCompatActivity {
         Rook setup3 = new Rook(availPos[7][7], Color.WHITE);
         pvpGameboard[7][7].setImageResource(setup3.getDrawableId());
 
-        pvpGameboard[0][0].setTag(setup);
-        pvpGameboard[0][7].setTag(setup1);
-        pvpGameboard[7][0].setTag(setup2);
-        pvpGameboard[7][7].setTag(setup3);
+        boardSetup.put(availPos[0][0], setup);
+        boardSetup.put(availPos[0][7], setup1);
+        boardSetup.put(availPos[7][0], setup2);
+        boardSetup.put(availPos[7][7], setup3);
 
         Knight setup4 = new Knight(availPos[0][1], Color.BLACK);
         flipBlackPieces(setup4);
@@ -104,10 +106,10 @@ public class PVPGameBoard extends AppCompatActivity {
         Knight setup7 = new Knight(availPos[7][6], Color.WHITE);
         pvpGameboard[7][6].setImageResource(setup7.getDrawableId());
 
-        pvpGameboard[0][1].setTag(setup4);
-        pvpGameboard[0][6].setTag(setup5);
-        pvpGameboard[7][1].setTag(setup6);
-        pvpGameboard[7][6].setTag(setup7);
+        boardSetup.put(availPos[0][1], setup4);
+        boardSetup.put(availPos[0][6], setup5);
+        boardSetup.put(availPos[7][1], setup6);
+        boardSetup.put(availPos[7][6], setup7);
 
         Bishop setup8 = new Bishop(availPos[0][2], Color.BLACK);
         flipBlackPieces(setup8);
@@ -120,10 +122,10 @@ public class PVPGameBoard extends AppCompatActivity {
         Bishop setup11 = new Bishop(availPos[7][5], Color.WHITE);
         pvpGameboard[7][5].setImageResource(setup11.getDrawableId());
 
-        pvpGameboard[0][2].setTag(setup8);
-        pvpGameboard[0][5].setTag(setup9);
-        pvpGameboard[7][2].setTag(setup10);
-        pvpGameboard[7][5].setTag(setup11);
+        boardSetup.put(availPos[0][2], setup8);
+        boardSetup.put(availPos[0][5], setup9);
+        boardSetup.put(availPos[7][2], setup10);
+        boardSetup.put(availPos[7][5], setup11);
 
         Queen setup12 = new Queen(availPos[0][3], Color.BLACK);
         flipBlackPieces(setup12);
@@ -131,8 +133,8 @@ public class PVPGameBoard extends AppCompatActivity {
         Queen setup13 = new Queen(availPos[7][3], Color.WHITE);
         pvpGameboard[7][3].setImageResource(setup13.getDrawableId());
 
-        pvpGameboard[0][3].setTag(setup12);
-        pvpGameboard[7][3].setTag(setup13);
+        boardSetup.put(availPos[0][3], setup12);
+        boardSetup.put(availPos[7][3], setup13);
 
         King setup14 = new King(availPos[0][4], Color.BLACK);
         flipBlackPieces(setup14);
@@ -140,41 +142,65 @@ public class PVPGameBoard extends AppCompatActivity {
         King setup15 = new King(availPos[7][4], Color.WHITE);
         pvpGameboard[7][4].setImageResource(setup15.getDrawableId());
 
-        pvpGameboard[0][4].setTag(setup14);
-        pvpGameboard[7][4].setTag(setup15);
+        boardSetup.put(availPos[0][4], setup14);
+        boardSetup.put(availPos[7][4], setup15);
+
+        //This is to set all other positions to null for their Piece value so that they can be
+        // called without a NullPointerException
+        for (int x = 2; x < 6; x++ ){
+            for (int y = 0; y < 8; y++){
+                boardSetup.put(availPos[x][y], null);
+            }
+        }
     }
 
     public void movePiece(View v){
         ImageView temp = (ImageView) v;
-        Position save = imagePositions.get(temp);
-        if(selImage == null){
-            if (temp.getDrawable() == null){
+        Position tempPos = imagePositions.get(temp);
+        Piece tempPiece = boardSetup.get(tempPos);
+        boolean foundMatch = false;
+        if (selImage == temp){
+            selImage = null;
+            return;
+        }
+        if (selImage == null){
+            if (tempPiece == null){
                 return;
             } else {
+                if (tempPiece.possibleMoves().isEmpty()){
+                    Toast.makeText(PVPGameBoard.this, "There are not any moves available for " +
+                            "this piece.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 selImage = temp;
-                selPiece = boardSetup.get(save);
+                selPiece = tempPiece;
+                selPosition = tempPos;
                 selMoves = selPiece.possibleMoves();
-                selPosition = save;
+                return;
+            }
+        } else {
+            int tempX = tempPos.getRow();
+            int tempY = tempPos.getColumn();
+            for (int x = 0; x < selMoves.size(); x++){
+                int selX = selMoves.get(x).getRow();
+                int selY = selMoves.get(x).getColumn();
+                if (selX == tempX && selY == tempY){
+                    foundMatch = true;
+                    break;
+                }
+            }
+            if (!foundMatch){
+                selImage = null;
                 return;
             }
         }
-        if (selMoves.contains(save)){
-            temp.setImageResource(selPiece.getDrawableId());
-            selImage.setImageResource(0);
-            boardSetup.put(save, selPiece);
-            boardSetup.remove(selPosition);
-            selImage = null;
-            selPiece = null;
-            selMoves = null;
-            selPosition = null;
-            return;
-        } else {
-            selImage = null;
-            selPiece = null;
-            selMoves = null;
-            selPosition = null;
-            return;
-        }
+        selPiece.setPosition(tempPos);
+        boardSetup.put(tempPos, selPiece);
+        boardSetup.put(selPosition, null);
+        temp.setImageResource(selPiece.getDrawableId());
+        selImage.setImageResource(0);
+        selImage = null;
+        return;
 
     }
 
