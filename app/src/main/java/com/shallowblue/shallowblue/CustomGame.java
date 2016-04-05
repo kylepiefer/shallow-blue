@@ -30,6 +30,8 @@ public class CustomGame extends AppCompatActivity {
     List<Piece> pieces;
     Map<Piece, String> pieceType;
     Map<Position, Piece> boardSetup;
+    List<Piece> blackPieces;
+    List<Piece> whitePieces;
     Position[][] availPos;
 
     @Override
@@ -38,6 +40,8 @@ public class CustomGame extends AppCompatActivity {
         setContentView(R.layout.activity_custom_game);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         currSelected = (ImageView) findViewById(R.id.currentlyselected);
+        blackPieces = new ArrayList<Piece>();
+        whitePieces = new ArrayList<Piece>();
         initialPieces = new ArrayList<ImageView>();
         pieces = new ArrayList<>();
         pieceType = new HashMap<Piece, String>();
@@ -176,6 +180,7 @@ public class CustomGame extends AppCompatActivity {
 
         ImageView[][] settingUp = setupImageViewArray(gameboard);
         gameboard = boardPositions(settingUp);
+        flipBlackPieces();
 
         PVPGameBoard.customGameBoard = gameboard;
         PVPGameBoard.customBoardResources = boardResources;
@@ -575,5 +580,41 @@ public class CustomGame extends AppCompatActivity {
                 break;
         }
         return piece;
+    }
+
+    public void flipBlackPieces(){
+        for (int x = 0; x < 8; x++){
+            for (int y = 0; y < 8; y++){
+                Position checkPosition = availPos[x][y];
+                if (boardSetup.containsKey(checkPosition)) {
+                    Piece checkPiece = boardSetup.get(checkPosition);
+                    if (checkPiece.getColor() == Color.BLACK) {
+                        String pieceType = checkPiece.toString();
+                        switch (pieceType) {
+                            case "p":
+                                checkPiece.setDrawableId(R.drawable.black_pawn_flipped);
+                                break;
+                            case "b":
+                                checkPiece.setDrawableId(R.drawable.black_bishop_flipped);
+                                break;
+                            case "n":
+                                checkPiece.setDrawableId(R.drawable.black_knight_flipped);
+                                break;
+                            case "r":
+                                checkPiece.setDrawableId(R.drawable.black_rook_flipped);
+                                break;
+                            case "q":
+                                checkPiece.setDrawableId(R.drawable.black_queen_flipped);
+                                break;
+                            case "k":
+                                checkPiece.setDrawableId(R.drawable.black_king_flipped);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+            }
+        }
     }
 }
