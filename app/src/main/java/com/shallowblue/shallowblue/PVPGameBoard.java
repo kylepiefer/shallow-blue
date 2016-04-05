@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,11 @@ public class PVPGameBoard extends AppCompatActivity {
     public Map<ImageView, Position> imagePositions;
     public static List<Piece> blackPieces;
     public static List<Piece> whitePieces;
+    public ImageView selImage;
+    public Piece selPiece;
+    public Color turn;
+    public Position selPosition;
+    public List<Position> selMoves;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +40,8 @@ public class PVPGameBoard extends AppCompatActivity {
         int count = temp.getInt("game");
         imagePositions = new HashMap<ImageView, Position>();
         pvpGameboard = new ImageView[8][8];
+        selMoves = new ArrayList<>();
+        turn = Color.WHITE;
 
         if (count == 1){
             availPos = new Position[8][8];
@@ -137,7 +145,36 @@ public class PVPGameBoard extends AppCompatActivity {
     }
 
     public void movePiece(View v){
-        
+        ImageView temp = (ImageView) v;
+        Position save = imagePositions.get(temp);
+        if(selImage == null){
+            if (temp.getDrawable() == null){
+                return;
+            } else {
+                selImage = temp;
+                selPiece = boardSetup.get(save);
+                selMoves = selPiece.possibleMoves();
+                selPosition = save;
+                return;
+            }
+        }
+        if (selMoves.contains(save)){
+            temp.setImageResource(selPiece.getDrawableId());
+            selImage.setImageResource(0);
+            boardSetup.put(save, selPiece);
+            boardSetup.remove(selPosition);
+            selImage = null;
+            selPiece = null;
+            selMoves = null;
+            selPosition = null;
+            return;
+        } else {
+            selImage = null;
+            selPiece = null;
+            selMoves = null;
+            selPosition = null;
+            return;
+        }
 
     }
 

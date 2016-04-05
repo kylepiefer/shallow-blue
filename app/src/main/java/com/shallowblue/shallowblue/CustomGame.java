@@ -197,6 +197,13 @@ public class CustomGame extends AppCompatActivity {
             startActivity(startGame);
         }
         if (count == 2){
+            flipBlackPieces();
+
+            PVPGameBoard.customGameBoard = gameboard;
+            PVPGameBoard.customBoardResources = boardResources;
+
+            PVPGameBoard.boardSetup = boardSetup;
+            PVPGameBoard.availPos = availPos;
             startPvpGame.putExtra("start",game);
             startActivity(startPvpGame);
         }
