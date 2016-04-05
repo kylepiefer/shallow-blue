@@ -39,15 +39,19 @@
             android:orientation="horizontal" >
 
             <RadioGroup
+                android:id="@+id/radio_group_choose_color"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_gravity="center">
+                android:layout_gravity="center"
+                android:checkedButton="@+id/button_white">
                 <RadioButton
+                    android:id="@+id/button_white"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/StartGameActivity_play_as_white"/>
                 <RadioButton
+                    android:id="@+id/button_black"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/StartGameActivity_play_as_black"/>
