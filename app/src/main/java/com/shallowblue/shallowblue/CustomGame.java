@@ -180,6 +180,9 @@ public class CustomGame extends AppCompatActivity {
         PVPGameBoard.customGameBoard = gameboard;
         PVPGameBoard.customBoardResources = boardResources;
 
+        PVPGameBoard.boardSetup = boardSetup;
+        PVPGameBoard.availPos = availPos;
+
         Intent gametype = getIntent();
         Bundle temp = new Bundle();
         temp = gametype.getBundleExtra("type");
