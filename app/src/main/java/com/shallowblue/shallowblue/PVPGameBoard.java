@@ -6,6 +6,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class PVPGameBoard extends AppCompatActivity {
 
@@ -13,6 +19,16 @@ public class PVPGameBoard extends AppCompatActivity {
     public static ImageView[][] customGameBoard;
     public static int[][] customBoardResources;
     public ImageView[][] pvpGameboard;
+    public static Map<Position,Piece> boardSetup;
+    public static Position[][] availPos;
+    public Map<ImageView, Position> imagePositions;
+    public static List<Piece> blackPieces;
+    public static List<Piece> whitePieces;
+    public ImageView selImage;
+    public Piece selPiece;
+    public Color turn;
+    public Position selPosition;
+    public List<Position> selMoves;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,91 +39,169 @@ public class PVPGameBoard extends AppCompatActivity {
         Bundle temp = new Bundle();
         temp = gather.getBundleExtra("start");
         int count = temp.getInt("game");
-
+        imagePositions = new HashMap<ImageView, Position>();
+        boardSetup = new HashMap<Position, Piece>();
         pvpGameboard = new ImageView[8][8];
-
-        initializeBoard();
+        selMoves = new ArrayList<>();
+        turn = Color.WHITE;
 
         if (count == 1){
+            availPos = new Position[8][8];
+            createPositionArray();
+            initializeBoard();
             startNewPvpGame();
         }
+
         if (count == 2){
+            initializeBoard();
             addCustomSetup();
         }
 
+    }
 
-
+    private void createPositionArray() {
+        for (int x = 0; x < 8; x++){
+            for (int y = 0; y < 8; y++){
+                availPos[x][y] = new Position(x, y);
+            }
+        }
     }
 
     public void startNewPvpGame(){
         for (int y = 0; y < 8; y++){
-            pvpGameboard[1][y].setImageResource(R.drawable.black_pawn_flipped);
-            pvpGameboard[1][y].setTag(R.drawable.black_pawn_flipped);
+            Pawn start = new Pawn(availPos[1][y], Color.BLACK);
+            flipBlackPieces(start);
+            pvpGameboard[1][y].setImageResource(start.getDrawableId());
+            boardSetup.put(availPos[1][y], start);
 
-            pvpGameboard[6][y].setImageResource(R.drawable.white_pawn);
-            pvpGameboard[6][y].setTag(R.drawable.white_pawn);
+            Pawn begin = new Pawn(availPos[6][y], Color.WHITE);
+            pvpGameboard[6][y].setImageResource(begin.getDrawableId());
+            boardSetup.put(availPos[6][y], start);
         }
 
-        pvpGameboard[0][0].setImageResource(R.drawable.black_rook_flipped);
-        pvpGameboard[0][7].setImageResource(R.drawable.black_rook_flipped);
-        pvpGameboard[7][0].setImageResource(R.drawable.white_rook);
-        pvpGameboard[7][7].setImageResource(R.drawable.white_rook);
+        Rook setup = new Rook(availPos[0][0], Color.BLACK);
+        flipBlackPieces(setup);
+        pvpGameboard[0][0].setImageResource(setup.getDrawableId());
+        Rook setup1 = new Rook(availPos[0][7], Color.BLACK);
+        flipBlackPieces(setup1);
+        pvpGameboard[0][7].setImageResource(setup1.getDrawableId());
+        Rook setup2 = new Rook(availPos[7][0], Color.WHITE);
+        pvpGameboard[7][0].setImageResource(setup2.getDrawableId());
+        Rook setup3 = new Rook(availPos[7][7], Color.WHITE);
+        pvpGameboard[7][7].setImageResource(setup3.getDrawableId());
 
-        pvpGameboard[0][1].setImageResource(R.drawable.black_knight_flipped);
-        pvpGameboard[0][6].setImageResource(R.drawable.black_knight_flipped);
-        pvpGameboard[7][1].setImageResource(R.drawable.white_knight);
-        pvpGameboard[7][6].setImageResource(R.drawable.white_knight);
+        boardSetup.put(availPos[0][0], setup);
+        boardSetup.put(availPos[0][7], setup1);
+        boardSetup.put(availPos[7][0], setup2);
+        boardSetup.put(availPos[7][7], setup3);
 
-        pvpGameboard[0][2].setImageResource(R.drawable.black_bishop_flipped);
-        pvpGameboard[0][5].setImageResource(R.drawable.black_bishop_flipped);
-        pvpGameboard[7][2].setImageResource(R.drawable.white_bishop);
-        pvpGameboard[7][5].setImageResource(R.drawable.white_bishop);
+        Knight setup4 = new Knight(availPos[0][1], Color.BLACK);
+        flipBlackPieces(setup4);
+        pvpGameboard[0][1].setImageResource(setup4.getDrawableId());
+        Knight setup5 = new Knight(availPos[0][6], Color.BLACK);
+        flipBlackPieces(setup5);
+        pvpGameboard[0][6].setImageResource(setup5.getDrawableId());
+        Knight setup6 = new Knight(availPos[7][1], Color.WHITE);
+        pvpGameboard[7][1].setImageResource(setup6.getDrawableId());
+        Knight setup7 = new Knight(availPos[7][6], Color.WHITE);
+        pvpGameboard[7][6].setImageResource(setup7.getDrawableId());
 
-        pvpGameboard[0][3].setImageResource(R.drawable.black_queen_flipped);
-        pvpGameboard[7][3].setImageResource(R.drawable.white_queen);
+        boardSetup.put(availPos[0][1], setup4);
+        boardSetup.put(availPos[0][6], setup5);
+        boardSetup.put(availPos[7][1], setup6);
+        boardSetup.put(availPos[7][6], setup7);
 
-        pvpGameboard[0][4].setImageResource(R.drawable.black_king_flipped);
-        pvpGameboard[7][4].setImageResource(R.drawable.white_king);
+        Bishop setup8 = new Bishop(availPos[0][2], Color.BLACK);
+        flipBlackPieces(setup8);
+        pvpGameboard[0][2].setImageResource(setup8.getDrawableId());
+        Bishop setup9 = new Bishop(availPos[0][5], Color.BLACK);
+        flipBlackPieces(setup9);
+        pvpGameboard[0][5].setImageResource(setup9.getDrawableId());
+        Bishop setup10 = new Bishop(availPos[7][2], Color.WHITE);
+        pvpGameboard[7][2].setImageResource(setup10.getDrawableId());
+        Bishop setup11 = new Bishop(availPos[7][5], Color.WHITE);
+        pvpGameboard[7][5].setImageResource(setup11.getDrawableId());
 
+        boardSetup.put(availPos[0][2], setup8);
+        boardSetup.put(availPos[0][5], setup9);
+        boardSetup.put(availPos[7][2], setup10);
+        boardSetup.put(availPos[7][5], setup11);
 
+        Queen setup12 = new Queen(availPos[0][3], Color.BLACK);
+        flipBlackPieces(setup12);
+        pvpGameboard[0][3].setImageResource(setup12.getDrawableId());
+        Queen setup13 = new Queen(availPos[7][3], Color.WHITE);
+        pvpGameboard[7][3].setImageResource(setup13.getDrawableId());
 
-        pvpGameboard[0][0].setTag(R.drawable.black_rook_flipped);
-        pvpGameboard[0][7].setTag(R.drawable.black_rook_flipped);
-        pvpGameboard[7][0].setTag(R.drawable.white_rook);
-        pvpGameboard[7][7].setTag(R.drawable.white_rook);
+        boardSetup.put(availPos[0][3], setup12);
+        boardSetup.put(availPos[7][3], setup13);
 
-        pvpGameboard[0][1].setTag(R.drawable.black_knight_flipped);
-        pvpGameboard[0][6].setTag(R.drawable.black_knight_flipped);
-        pvpGameboard[7][1].setTag(R.drawable.white_knight);
-        pvpGameboard[7][6].setTag(R.drawable.white_knight);
+        King setup14 = new King(availPos[0][4], Color.BLACK);
+        flipBlackPieces(setup14);
+        pvpGameboard[0][4].setImageResource(setup14.getDrawableId());
+        King setup15 = new King(availPos[7][4], Color.WHITE);
+        pvpGameboard[7][4].setImageResource(setup15.getDrawableId());
 
-        pvpGameboard[0][2].setTag(R.drawable.black_bishop_flipped);
-        pvpGameboard[0][5].setTag(R.drawable.black_bishop_flipped);
-        pvpGameboard[7][2].setTag(R.drawable.white_bishop);
-        pvpGameboard[7][5].setTag(R.drawable.white_bishop);
+        boardSetup.put(availPos[0][4], setup14);
+        boardSetup.put(availPos[7][4], setup15);
 
-        pvpGameboard[0][3].setTag(R.drawable.black_queen_flipped);
-        pvpGameboard[7][3].setTag(R.drawable.white_queen);
-
-        pvpGameboard[0][4].setTag(R.drawable.black_king_flipped);
-        pvpGameboard[7][4].setTag(R.drawable.white_king);
+        //This is to set all other positions to null for their Piece value so that they can be
+        // called without a NullPointerException
+        for (int x = 2; x < 6; x++ ){
+            for (int y = 0; y < 8; y++){
+                boardSetup.put(availPos[x][y], null);
+            }
+        }
     }
 
     public void movePiece(View v){
         ImageView temp = (ImageView) v;
-        if (pieceSelected == null){
-            pieceSelected = temp;
+        Position tempPos = imagePositions.get(temp);
+        Piece tempPiece = boardSetup.get(tempPos);
+        boolean foundMatch = false;
+        if (selImage == temp){
+            selImage = null;
             return;
         }
-        int idsave = getDrawableId(pieceSelected);
-        temp.setImageResource(idsave);
-        temp.setTag(idsave);
-        pieceSelected.setImageResource(0);
-        pieceSelected = null;
-    }
+        if (selImage == null){
+            if (tempPiece == null){
+                return;
+            } else {
+                if (tempPiece.possibleMoves().isEmpty()){
+                    Toast.makeText(PVPGameBoard.this, "There are not any moves available for " +
+                            "this piece.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                selImage = temp;
+                selPiece = tempPiece;
+                selPosition = tempPos;
+                selMoves = selPiece.possibleMoves();
+                return;
+            }
+        } else {
+            int tempX = tempPos.getRow();
+            int tempY = tempPos.getColumn();
+            for (int x = 0; x < selMoves.size(); x++){
+                int selX = selMoves.get(x).getRow();
+                int selY = selMoves.get(x).getColumn();
+                if (selX == tempX && selY == tempY){
+                    foundMatch = true;
+                    break;
+                }
+            }
+            if (!foundMatch){
+                selImage = null;
+                return;
+            }
+        }
+        selPiece.setPosition(tempPos);
+        boardSetup.put(tempPos, selPiece);
+        boardSetup.put(selPosition, null);
+        temp.setImageResource(selPiece.getDrawableId());
+        selImage.setImageResource(0);
+        selImage = null;
+        return;
 
-    private int getDrawableId(ImageView iv) {
-        return (Integer) iv.getTag();
     }
 
     public void pvpoptionsScreen1(View v){
@@ -232,14 +326,53 @@ public class PVPGameBoard extends AppCompatActivity {
         pvpGameboard[7][5] = (ImageView) findViewById(R.id.pvpgame75);
         pvpGameboard[7][6] = (ImageView) findViewById(R.id.pvpgame76);
         pvpGameboard[7][7] = (ImageView) findViewById(R.id.pvpgame77);
+
+        for (int x = 0; x < 8; x++){
+            for (int y = 0; y < 8; y++){
+                imagePositions.put(pvpGameboard[x][y], availPos[x][y]);
+
+            }
+        }
     }
 
     public void addCustomSetup(){
         for (int x = 0; x < 8; x++){
             for (int y = 0; y < 8; y++){
                 pvpGameboard[x][y].setImageResource(customBoardResources[x][y]);
-                pvpGameboard[x][y].setTag(customBoardResources[x][y]);
+                Position saving = imagePositions.get(pvpGameboard[x][y]);
+                if (boardSetup.containsKey(saving)){
+                    Piece pieceSave = boardSetup.get(saving);
+                    pvpGameboard[x][y].setImageResource(pieceSave.getDrawableId());
+                    pvpGameboard[x][y].setTag(pieceSave);
+                }
             }
+        }
+    }
+
+    public void flipBlackPieces(Piece checkPiece) {
+
+        String pieceType = checkPiece.toString();
+        switch (pieceType) {
+            case "p":
+                checkPiece.setDrawableId(R.drawable.black_pawn_flipped);
+                break;
+            case "b":
+                checkPiece.setDrawableId(R.drawable.black_bishop_flipped);
+                break;
+            case "n":
+                checkPiece.setDrawableId(R.drawable.black_knight_flipped);
+                break;
+            case "r":
+                checkPiece.setDrawableId(R.drawable.black_rook_flipped);
+                break;
+            case "q":
+                checkPiece.setDrawableId(R.drawable.black_queen_flipped);
+                break;
+            case "k":
+                checkPiece.setDrawableId(R.drawable.black_king_flipped);
+                break;
+            default:
+                break;
         }
     }
 }

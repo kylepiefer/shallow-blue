@@ -39,8 +39,8 @@ public class Pawn extends Piece {
 		//move that can be made only if the pawn hasn't moved yet.
 		//2 and 7 comparisons denote the original starting positions for
 		//white and black pawns, respectively.//TODO replace 1 and 6 with named constants
-		boolean canJump = ( getColor() == Color.WHITE && getPosition().getRow() == 1 ||
-							getColor() == Color.BLACK && getPosition().getRow() == 6)? true: false;
+		boolean canJump = ( getColor() == Color.WHITE && getPosition().getRow() == 6 ||
+							getColor() == Color.BLACK && getPosition().getRow() == 1)? true: false;
 		
 		if (canJump)
 			result.add(new Position(getPosition().getRow()+(direction*2), getPosition().getColumn()));
