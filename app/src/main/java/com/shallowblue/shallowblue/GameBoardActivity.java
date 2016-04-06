@@ -39,6 +39,9 @@ public class GameBoardActivity extends AppCompatActivity {
             this.color = Color.BLACK;
 
         // this is needed to handle the game logic
+        String gameType = getIntent().getStringExtra("Type");
+        if (gameType != null && gameType.equalsIgnoreCase("Custom"));
+            GameBoard.gameBoard = null;
         this.gameBoard = new GameBoard();
 
         // this is needed to map logical squares to images on the screen
@@ -93,8 +96,8 @@ public class GameBoardActivity extends AppCompatActivity {
                     screenColumn = imageWidth * c;
 
                 } else {
-                    screenRow = imageWidth * r;
-                    screenColumn = imageWidth * c;
+                    screenRow = 7 * imageWidth - imageWidth * r;
+                    screenColumn = 7 * imageWidth - imageWidth * c;
                 }
                 gbas.setScreenPosition(new Position(screenRow, screenColumn));
                 image.setTag(gbas);
@@ -219,7 +222,7 @@ public class GameBoardActivity extends AppCompatActivity {
         // handle captures after animation
         final Piece takenPiece = to.getOccupyingPiece();
         final ImageView takenPieceImage = to.getPieceImage();
-        final FrameLayout container = (FrameLayout)this.findViewById(R.id.board_container);
+        final RelativeLayout container = (RelativeLayout)this.findViewById(R.id.piece_container);
 
         // swap pieces
         to.setOccupyingPiece(piece);
@@ -238,6 +241,7 @@ public class GameBoardActivity extends AppCompatActivity {
                         Animation.ABSOLUTE, (float)deltaY);
         animation.setDuration(distance);
         animation.setZAdjustment(Animation.ZORDER_TOP);
+        pieceImage.bringToFront();
         animation.setFillAfter(true);
         animation.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -250,6 +254,7 @@ public class GameBoardActivity extends AppCompatActivity {
                         (RelativeLayout.LayoutParams)pieceImage.getLayoutParams();
                 layoutParams.topMargin = layoutParams.topMargin + deltaY;
                 layoutParams.leftMargin = layoutParams.leftMargin + deltaX;
+                pieceImage.clearAnimation();
                 pieceImage.setLayoutParams(layoutParams);
 
                 if (takenPieceImage != null) container.removeView(takenPieceImage);
