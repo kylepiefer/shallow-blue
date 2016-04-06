@@ -3,8 +3,10 @@ package com.shallowblue.shallowblue;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -29,6 +31,9 @@ public class PVPGameBoard extends AppCompatActivity {
     public Color turn;
     public Position selPosition;
     public List<Position> selMoves;
+    public final int greenHighlight = R.drawable.board_square_highlight_possible;
+    public final int yellowBoardSelection = R.drawable.board_square_outline;
+    ImageView temp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,12 +45,13 @@ public class PVPGameBoard extends AppCompatActivity {
         temp = gather.getBundleExtra("start");
         int count = temp.getInt("game");
         imagePositions = new HashMap<ImageView, Position>();
-        boardSetup = new HashMap<Position, Piece>();
+
         pvpGameboard = new ImageView[8][8];
         selMoves = new ArrayList<>();
         turn = Color.WHITE;
 
         if (count == 1){
+            boardSetup = new HashMap<Position, Piece>();
             availPos = new Position[8][8];
             createPositionArray();
             initializeBoard();
@@ -56,7 +62,7 @@ public class PVPGameBoard extends AppCompatActivity {
             initializeBoard();
             addCustomSetup();
         }
-
+        GameBoard.gameBoard = boardSetup;
     }
 
     private void createPositionArray() {
@@ -155,11 +161,17 @@ public class PVPGameBoard extends AppCompatActivity {
     }
 
     public void movePiece(View v){
-        ImageView temp = (ImageView) v;
+        temp = (ImageView) v;
         Position tempPos = imagePositions.get(temp);
         Piece tempPiece = boardSetup.get(tempPos);
         boolean foundMatch = false;
         if (selImage == temp){
+            selImage.setBackgroundResource(0);
+            for (int i = 0; i < selMoves.size(); i++) {
+                int selMoveX = selMoves.get(i).getRow();
+                int selMoveY = selMoves.get(i).getColumn();
+                pvpGameboard[selMoveX][selMoveY].setBackgroundResource(0);
+            }
             selImage = null;
             return;
         }
@@ -173,9 +185,15 @@ public class PVPGameBoard extends AppCompatActivity {
                     return;
                 }
                 selImage = temp;
+                selImage.setBackgroundResource(yellowBoardSelection);
                 selPiece = tempPiece;
                 selPosition = tempPos;
                 selMoves = selPiece.possibleMoves();
+                for (int i = 0; i < selMoves.size(); i++) {
+                    int selMoveX = selMoves.get(i).getRow();
+                    int selMoveY = selMoves.get(i).getColumn();
+                    pvpGameboard[selMoveX][selMoveY].setBackgroundResource(greenHighlight);
+                }
                 return;
             }
         } else {
@@ -190,6 +208,12 @@ public class PVPGameBoard extends AppCompatActivity {
                 }
             }
             if (!foundMatch){
+                selImage.setBackgroundResource(0);
+                for (int i = 0; i < selMoves.size(); i++) {
+                    int selMoveX = selMoves.get(i).getRow();
+                    int selMoveY = selMoves.get(i).getColumn();
+                    pvpGameboard[selMoveX][selMoveY].setBackgroundResource(0);
+                }
                 selImage = null;
                 return;
             }
@@ -197,9 +221,31 @@ public class PVPGameBoard extends AppCompatActivity {
         selPiece.setPosition(tempPos);
         boardSetup.put(tempPos, selPiece);
         boardSetup.put(selPosition, null);
-        temp.setImageResource(selPiece.getDrawableId());
-        selImage.setImageResource(0);
-        selImage = null;
+
+        int moveY = tempPos.getRow() - selPosition.getRow();
+        int moveX = tempPos.getColumn() - selPosition.getColumn();
+
+        TranslateAnimation mAnimation = new TranslateAnimation(0, moveX * 80, 0, moveY * 80);
+        mAnimation.setDuration(1000);
+        mAnimation.setFillAfter(false);
+        selImage.setAnimation(mAnimation);
+        selImage.setBackgroundResource(0);
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                selImage.setImageResource(0);
+                temp.setImageResource(selPiece.getDrawableId());
+                selImage = null;
+            }
+        }, 1000);
+
+        for (int i = 0; i < selMoves.size(); i++) {
+            int selMoveX = selMoves.get(i).getRow();
+            int selMoveY = selMoves.get(i).getColumn();
+            pvpGameboard[selMoveX][selMoveY].setBackgroundResource(0);
+        }
+
         return;
 
     }
