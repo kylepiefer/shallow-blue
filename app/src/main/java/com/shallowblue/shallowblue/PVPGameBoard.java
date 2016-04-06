@@ -35,6 +35,7 @@ public class PVPGameBoard extends AppCompatActivity {
     public final int yellowBoardSelection = R.drawable.board_square_outline;
     ImageView temp;
     boolean doneWithPrev;
+    private List<Move> redoMoves;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +48,8 @@ public class PVPGameBoard extends AppCompatActivity {
         int count = temp.getInt("game");
         imagePositions = new HashMap<ImageView, Position>();
         doneWithPrev = true;
+        redoMoves = new ArrayList<>();
+        GameBoard.gameHistory = new ArrayList<Move>();
 
         pvpGameboard = new ImageView[8][8];
         selMoves = new ArrayList<>();
@@ -230,6 +233,7 @@ public class PVPGameBoard extends AppCompatActivity {
             turn = Color.WHITE;
         } else { turn = Color.BLACK; }
 
+        redoMoves = new ArrayList<>();
         doneWithPrev = false;
         selPiece.setPosition(tempPos);
         boardSetup.put(tempPos, selPiece);
@@ -243,6 +247,10 @@ public class PVPGameBoard extends AppCompatActivity {
         mAnimation.setFillAfter(false);
         selImage.setAnimation(mAnimation);
         selImage.setBackgroundResource(0);
+
+        Move move = new Move(selPiece, selPosition, tempPos );
+        move.setPieceCaptured(tempPiece);
+        GameBoard.addMove(move);
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -274,11 +282,44 @@ public class PVPGameBoard extends AppCompatActivity {
     }
 
     public void pvpundo1(View v){
-
+        List<Move> history = GameBoard.getGameHistory();
+        int last = history.size() - 1;
+        Move prev = history.get(last);
+        if (prev.getPieceMoved().getColor() == Color.WHITE){
+            Position fromPos = prev.getFrom();
+            Position toPos = prev.getTo();
+            ImageView from = pvpGameboard[fromPos.getRow()][fromPos.getColumn()];
+            ImageView to = pvpGameboard[toPos.getRow()][toPos.getColumn()];
+            Piece moved = prev.getPieceMoved();
+            Piece taken = prev.getPieceCaptured();
+            from.setImageResource(moved.getDrawableId());
+            if (taken != null) {
+                to.setImageResource(taken.getDrawableId());
+            }
+            else {
+                to.setImageResource(0);
+            }
+            turn = Color.WHITE;
+            redoMoves.add(prev);
+            history.remove(last);
+        }
+        else {
+            Toast.makeText(PVPGameBoard.this, "You can't undo your opponents last move.",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void pvpundo2(View v){
-
+        List<Move> history = GameBoard.getGameHistory();
+        int last = history.size() - 1;
+        Move prev = history.get(last);
+        if (prev.getPieceMoved().getColor() == Color.BLACK){
+            history.remove(last);
+        }
+        else {
+            Toast.makeText(PVPGameBoard.this, "You can't undo your opponents last move.",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void pvpredo1(View v){

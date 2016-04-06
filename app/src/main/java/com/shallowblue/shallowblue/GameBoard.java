@@ -13,7 +13,7 @@ import java.util.Map;
 public class GameBoard {
 
     public static Map<Position, Piece> gameBoard;
-    private List<Move> gameHistory;
+    public static List<Move> gameHistory;
 
     public GameBoard() {
         if (this.gameBoard == null) {
@@ -86,7 +86,7 @@ public class GameBoard {
         return true;
     }
 
-    public void addMove(Move m){
+    public static void addMove(Move m){
         gameHistory.add(m);
     }
 
@@ -163,7 +163,7 @@ public class GameBoard {
         return gameBoard;
     }
 
-    public List<Move> getGameHistory() { return gameHistory; }
+    public static List<Move> getGameHistory() { return gameHistory; }
 }
 
 
