@@ -14,6 +14,7 @@ public class GameBoard {
 
     public static Map<Position, Piece> gameBoard;
     public static List<Move> gameHistory;
+    public static Color playerToMove;
 
     public GameBoard() {
         if (this.gameBoard == null) {
@@ -53,7 +54,7 @@ public class GameBoard {
             gameBoard.put((p = new Position(7, 6)), new Knight(p, Color.BLACK));
             gameBoard.put((p = new Position(7, 7)), new Rook(p, Color.BLACK));
         }
-
+        playerToMove = Color.WHITE;
         gameHistory = new ArrayList<Move>();
     }
     public GameBoard(GameBoard in) {
@@ -63,8 +64,9 @@ public class GameBoard {
 
     public List<Move> getAllMoves(){
         List<Move> ret = new ArrayList<Move>();
-        for(Position p : gameBoard.keySet())
-            ret.addAll(getLegalMoves(p));
+        for(Map.Entry<Position,Piece> e : gameBoard.entrySet())
+            if(e.getValue().getColor() == playerToMove)
+                ret.addAll(getLegalMoves(e.getKey()));
         return ret;
     }
 
@@ -83,6 +85,7 @@ public class GameBoard {
         m.getPieceMoved().setPosition(m.getTo());
 
         gameHistory.add(m);
+        playerToMove = playerToMove == Color.WHITE ? Color.BLACK : Color.WHITE;
         return true;
     }
 
@@ -164,6 +167,19 @@ public class GameBoard {
     }
 
     public static List<Move> getGameHistory() { return gameHistory; }
+
+    public Color playerToMove() {
+        return playerToMove;
+    }
+
+    public double sbe() {
+        return 0;
+    }
+
+    //TODO Detects when a player has won.
+    public boolean gameOver() {
+        return false;
+    }
 }
 
 
