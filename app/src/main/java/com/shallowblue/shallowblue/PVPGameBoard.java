@@ -34,6 +34,7 @@ public class PVPGameBoard extends AppCompatActivity {
     public final int greenHighlight = R.drawable.board_square_highlight_possible;
     public final int yellowBoardSelection = R.drawable.board_square_outline;
     ImageView temp;
+    boolean doneWithPrev;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +46,7 @@ public class PVPGameBoard extends AppCompatActivity {
         temp = gather.getBundleExtra("start");
         int count = temp.getInt("game");
         imagePositions = new HashMap<ImageView, Position>();
+        doneWithPrev = true;
 
         pvpGameboard = new ImageView[8][8];
         selMoves = new ArrayList<>();
@@ -161,6 +163,9 @@ public class PVPGameBoard extends AppCompatActivity {
     }
 
     public void movePiece(View v){
+        if (!doneWithPrev){
+            return;
+        }
         temp = (ImageView) v;
         Position tempPos = imagePositions.get(temp);
         Piece tempPiece = boardSetup.get(tempPos);
@@ -218,6 +223,7 @@ public class PVPGameBoard extends AppCompatActivity {
                 return;
             }
         }
+        doneWithPrev = false;
         selPiece.setPosition(tempPos);
         boardSetup.put(tempPos, selPiece);
         boardSetup.put(selPosition, null);
@@ -237,6 +243,8 @@ public class PVPGameBoard extends AppCompatActivity {
                 selImage.setImageResource(0);
                 temp.setImageResource(selPiece.getDrawableId());
                 selImage = null;
+                doneWithPrev = true;
+                return;
             }
         }, 1000);
 
@@ -245,8 +253,6 @@ public class PVPGameBoard extends AppCompatActivity {
             int selMoveY = selMoves.get(i).getColumn();
             pvpGameboard[selMoveX][selMoveY].setBackgroundResource(0);
         }
-
-        return;
 
     }
 
