@@ -1963,6 +1963,9 @@
     </configuration>
   </component>
   <component name="ShelveChangesManager" show_recycled="false" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="3f0ea665-fd1f-47d7-8084-aeafe59441ef" name="Default" comment="" />
@@ -1982,7 +1985,13 @@
       <option name="project" value="LOCAL" />
       <updated>1459981948771</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="add apache connection function to single player mode">
+      <created>1459982119391</created>
+      <option name="number" value="00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1459982119391</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="ToolWindowManager">
