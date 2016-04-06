@@ -283,6 +283,11 @@ public class PVPGameBoard extends AppCompatActivity {
 
     public void pvpundo1(View v){
         List<Move> history = GameBoard.getGameHistory();
+        if (history.isEmpty()){
+            Toast.makeText(PVPGameBoard.this, "Sorry, you can't undo a move when one doesn't" +
+                            " exist.", Toast.LENGTH_SHORT).show();
+            return;
+        }
         int last = history.size() - 1;
         Move prev = history.get(last);
         if (prev.getPieceMoved().getColor() == Color.WHITE){
@@ -306,28 +311,109 @@ public class PVPGameBoard extends AppCompatActivity {
         else {
             Toast.makeText(PVPGameBoard.this, "You can't undo your opponents last move.",
                     Toast.LENGTH_SHORT).show();
+            return;
         }
     }
 
     public void pvpundo2(View v){
         List<Move> history = GameBoard.getGameHistory();
+        if (history.isEmpty()){
+            Toast.makeText(PVPGameBoard.this, "Sorry, you can't undo a move when one doesn't" +
+                    " exist.", Toast.LENGTH_SHORT).show();
+            return;
+        }
         int last = history.size() - 1;
         Move prev = history.get(last);
         if (prev.getPieceMoved().getColor() == Color.BLACK){
+            Position fromPos = prev.getFrom();
+            Position toPos = prev.getTo();
+            ImageView from = pvpGameboard[fromPos.getRow()][fromPos.getColumn()];
+            ImageView to = pvpGameboard[toPos.getRow()][toPos.getColumn()];
+            Piece moved = prev.getPieceMoved();
+            Piece taken = prev.getPieceCaptured();
+            from.setImageResource(moved.getDrawableId());
+            if (taken != null) {
+                to.setImageResource(taken.getDrawableId());
+            }
+            else {
+                to.setImageResource(0);
+            }
+            turn = Color.BLACK;
+            redoMoves.add(prev);
             history.remove(last);
         }
         else {
             Toast.makeText(PVPGameBoard.this, "You can't undo your opponents last move.",
                     Toast.LENGTH_SHORT).show();
+            return;
         }
     }
 
     public void pvpredo1(View v){
 
+        if (redoMoves.isEmpty()){
+            Toast.makeText(PVPGameBoard.this, "Sorry, you can't redo a move when one doesn't" +
+                    " exist.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        int last = redoMoves.size() - 1;
+        Move prev = redoMoves.get(last);
+        if (prev.getPieceMoved().getColor() == Color.WHITE){
+            Position fromPos = prev.getFrom();
+            Position toPos = prev.getTo();
+            ImageView to = pvpGameboard[fromPos.getRow()][fromPos.getColumn()];
+            ImageView from = pvpGameboard[toPos.getRow()][toPos.getColumn()];
+            Piece moved = prev.getPieceMoved();
+            Piece taken = prev.getPieceCaptured();
+            from.setImageResource(moved.getDrawableId());
+            if (taken != null) {
+                to.setImageResource(taken.getDrawableId());
+            }
+            else {
+                to.setImageResource(0);
+            }
+            turn = Color.BLACK;
+            GameBoard.addMove(prev);
+            redoMoves.remove(last);
+        }
+        else {
+            Toast.makeText(PVPGameBoard.this, "You can't redo your opponents last move.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+    }
     }
 
     public void pvpredo2(View v){
-
+        if (redoMoves.isEmpty()){
+            Toast.makeText(PVPGameBoard.this, "Sorry, you can't redo a move when one doesn't" +
+                    " exist.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        int last = redoMoves.size() - 1;
+        Move prev = redoMoves.get(last);
+        if (prev.getPieceMoved().getColor() == Color.BLACK){
+            Position fromPos = prev.getFrom();
+            Position toPos = prev.getTo();
+            ImageView to = pvpGameboard[fromPos.getRow()][fromPos.getColumn()];
+            ImageView from = pvpGameboard[toPos.getRow()][toPos.getColumn()];
+            Piece moved = prev.getPieceMoved();
+            Piece taken = prev.getPieceCaptured();
+            from.setImageResource(moved.getDrawableId());
+            if (taken != null) {
+                to.setImageResource(taken.getDrawableId());
+            }
+            else {
+                to.setImageResource(0);
+            }
+            turn = Color.WHITE;
+            GameBoard.addMove(prev);
+            redoMoves.remove(last);
+        }
+        else {
+            Toast.makeText(PVPGameBoard.this, "You can't redo your opponents last move.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
     }
 
     public void pvpsuggalt1(View v){
