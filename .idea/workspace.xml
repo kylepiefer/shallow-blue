@@ -10,6 +10,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3f0ea665-fd1f-47d7-8084-aeafe59441ef" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/shallowblue/shallowblue/ApacheClient.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/shallowblue/shallowblue/GameBoardActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/shallowblue/shallowblue/GameBoardActivity.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="shallow-blue.iws" />
@@ -38,11 +40,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="CustomGame.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="CustomGame.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/shallowblue/shallowblue/CustomGame.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.4864865">
-              <caret line="23" column="35" selection-start-line="23" selection-start-column="35" selection-end-line="23" selection-end-column="35" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="27" column="20" selection-start-line="27" selection-start-column="20" selection-end-line="27" selection-end-column="20" />
               <folding />
             </state>
           </provider>
@@ -81,18 +83,40 @@
       <file leaf-file-name="GameBoardActivity.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/shallowblue/shallowblue/GameBoardActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-159.77777">
-              <caret line="324" column="21" selection-start-line="324" selection-start-column="21" selection-end-line="324" selection-end-column="21" />
+            <state vertical-scroll-proportion="-1.1111112">
+              <caret line="307" column="0" selection-start-line="307" selection-start-column="0" selection-end-line="307" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#2799#2879#0" expanded="true" />
-                <element signature="e#5773#5853#0" expanded="true" />
-                <element signature="e#8137#8217#0" expanded="true" />
-                <element signature="e#15042#15057#0" expanded="true" />
-                <element signature="e#16064#16065#0" expanded="true" />
-                <element signature="e#16119#16120#0" expanded="true" />
-                <element signature="e#17193#17194#0" expanded="true" />
-                <element signature="e#17242#17243#0" expanded="true" />
+                <element signature="e#2287#2367#0" expanded="true" />
+                <element signature="e#5261#5341#0" expanded="true" />
+                <element signature="e#7625#7705#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AIMove.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/shallowblue/shallowblue/AIMove.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="12" column="21" selection-start-line="12" selection-start-column="21" selection-end-line="12" selection-end-column="21" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ApacheClient.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/shallowblue/shallowblue/ApacheClient.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.6891892">
+              <caret line="30" column="74" selection-start-line="30" selection-start-column="74" selection-end-line="30" selection-end-column="74" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#998#1013#0" expanded="true" />
+                <element signature="e#2008#2009#0" expanded="true" />
+                <element signature="e#2063#2064#0" expanded="true" />
+                <element signature="e#3137#3138#0" expanded="true" />
+                <element signature="e#3186#3187#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -134,33 +158,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="activity_custom_game.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_custom_game.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="49" column="45" selection-start-line="49" selection-start-column="45" selection-end-line="49" selection-end-column="45" />
-              <folding />
-            </state>
-          </provider>
-          <provider editor-type-id="android-designer">
-            <state />
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="activity_game_board.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_game_board.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="19" column="8" selection-start-line="19" selection-start-column="8" selection-end-line="24" selection-end-column="21" />
-              <folding />
-            </state>
-          </provider>
-          <provider editor-type-id="android-designer">
-            <state />
-          </provider>
-        </entry>
-      </file>
     </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="UPDATE_TYPE" value="MERGE" />
@@ -1684,6 +1689,7 @@
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_custom_game.xml" />
         <option value="$PROJECT_DIR$/app/build.gradle" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/shallowblue/shallowblue/GameBoardActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/shallowblue/shallowblue/ApacheClient.java" />
       </list>
     </option>
   </component>
@@ -1754,6 +1760,10 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="java" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="shallowblue" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -1991,7 +2001,13 @@
       <option name="project" value="LOCAL" />
       <updated>1459982119391</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="add apache connection function to single player mode">
+      <created>1459982133695</created>
+      <option name="number" value="00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1459982133695</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -2056,14 +2072,9 @@
           <caret line="12" column="32" selection-start-line="12" selection-start-column="32" selection-end-line="12" selection-end-column="32" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#2799#2879#0" expanded="true" />
-            <element signature="e#5773#5853#0" expanded="true" />
-            <element signature="e#8137#8217#0" expanded="true" />
-            <element signature="e#15042#15057#0" expanded="true" />
-            <element signature="e#16064#16065#0" expanded="true" />
-            <element signature="e#16119#16120#0" expanded="true" />
-            <element signature="e#17193#17194#0" expanded="true" />
-            <element signature="e#17242#17243#0" expanded="true" />
+            <element signature="e#2287#2367#0" expanded="true" />
+            <element signature="e#5261#5341#0" expanded="true" />
+            <element signature="e#7625#7705#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2248,21 +2259,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/shallowblue/shallowblue/GameBoardActivity.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/shallowblue/shallowblue/CustomGame.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-159.77777">
-          <caret line="324" column="21" selection-start-line="324" selection-start-column="21" selection-end-line="324" selection-end-column="21" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#2799#2879#0" expanded="true" />
-            <element signature="e#5773#5853#0" expanded="true" />
-            <element signature="e#8137#8217#0" expanded="true" />
-            <element signature="e#15042#15057#0" expanded="true" />
-            <element signature="e#16064#16065#0" expanded="true" />
-            <element signature="e#16119#16120#0" expanded="true" />
-            <element signature="e#17193#17194#0" expanded="true" />
-            <element signature="e#17242#17243#0" expanded="true" />
-          </folding>
+        <state vertical-scroll-proportion="0.0">
+          <caret line="27" column="20" selection-start-line="27" selection-start-column="20" selection-end-line="27" selection-end-column="20" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -2282,6 +2283,14 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/shallowblue/shallowblue/AIMove.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="12" column="21" selection-start-line="12" selection-start-column="21" selection-end-line="12" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/shallowblue/shallowblue/MainMenuActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -2290,11 +2299,31 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/shallowblue/shallowblue/CustomGame.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/shallowblue/shallowblue/GameBoardActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4864865">
-          <caret line="23" column="35" selection-start-line="23" selection-start-column="35" selection-end-line="23" selection-end-column="35" />
-          <folding />
+        <state vertical-scroll-proportion="-1.1111112">
+          <caret line="307" column="0" selection-start-line="307" selection-start-column="0" selection-end-line="307" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#2287#2367#0" expanded="true" />
+            <element signature="e#5261#5341#0" expanded="true" />
+            <element signature="e#7625#7705#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/shallowblue/shallowblue/ApacheClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6891892">
+          <caret line="30" column="74" selection-start-line="30" selection-start-column="74" selection-end-line="30" selection-end-column="74" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#998#1013#0" expanded="true" />
+            <element signature="e#2008#2009#0" expanded="true" />
+            <element signature="e#2063#2064#0" expanded="true" />
+            <element signature="e#3137#3138#0" expanded="true" />
+            <element signature="e#3186#3187#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
