@@ -85,6 +85,11 @@ public class GameBoard {
         gameHistory.add(m);
         return true;
     }
+
+    public void addMove(Move m){
+        gameHistory.add(m);
+    }
+
     public boolean put(Piece p){
         if(gameBoard.get(p.getPosition()) == null){
             gameBoard.put(p.getPosition(),p);
