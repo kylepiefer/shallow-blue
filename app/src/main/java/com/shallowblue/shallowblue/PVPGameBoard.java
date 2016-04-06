@@ -298,11 +298,16 @@ public class PVPGameBoard extends AppCompatActivity {
             Piece moved = prev.getPieceMoved();
             Piece taken = prev.getPieceCaptured();
             from.setImageResource(moved.getDrawableId());
+            moved.setPosition(fromPos);
+            boardSetup.put(fromPos,moved);
             if (taken != null) {
                 to.setImageResource(taken.getDrawableId());
+                taken.setPosition(toPos);
+                boardSetup.put(toPos, taken);
             }
             else {
                 to.setImageResource(0);
+                boardSetup.put(toPos,null);
             }
             turn = Color.WHITE;
             redoMoves.add(prev);
@@ -332,11 +337,16 @@ public class PVPGameBoard extends AppCompatActivity {
             Piece moved = prev.getPieceMoved();
             Piece taken = prev.getPieceCaptured();
             from.setImageResource(moved.getDrawableId());
+            moved.setPosition(fromPos);
+            boardSetup.put(fromPos, moved);
             if (taken != null) {
                 to.setImageResource(taken.getDrawableId());
+                taken.setPosition(toPos);
+                boardSetup.put(toPos, taken);
             }
             else {
                 to.setImageResource(0);
+                boardSetup.put(toPos, null);
             }
             turn = Color.BLACK;
             redoMoves.add(prev);
@@ -366,11 +376,16 @@ public class PVPGameBoard extends AppCompatActivity {
             Piece moved = prev.getPieceMoved();
             Piece taken = prev.getPieceCaptured();
             from.setImageResource(moved.getDrawableId());
+            moved.setPosition(toPos);
+            boardSetup.put(toPos,moved);
             if (taken != null) {
                 to.setImageResource(taken.getDrawableId());
+                taken.setPosition(fromPos);
+                boardSetup.put(fromPos, taken);
             }
             else {
                 to.setImageResource(0);
+                boardSetup.put(fromPos, null);
             }
             turn = Color.BLACK;
             GameBoard.addMove(prev);
@@ -399,11 +414,16 @@ public class PVPGameBoard extends AppCompatActivity {
             Piece moved = prev.getPieceMoved();
             Piece taken = prev.getPieceCaptured();
             from.setImageResource(moved.getDrawableId());
+            moved.setPosition(toPos);
+            boardSetup.put(toPos, moved);
             if (taken != null) {
                 to.setImageResource(taken.getDrawableId());
+                taken.setPosition(fromPos);
+                boardSetup.put(fromPos, taken);
             }
             else {
                 to.setImageResource(0);
+                boardSetup.put(fromPos, null);
             }
             turn = Color.WHITE;
             GameBoard.addMove(prev);
