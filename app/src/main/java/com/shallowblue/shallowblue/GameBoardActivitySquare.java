@@ -11,16 +11,18 @@ import android.widget.ImageView;
 public class GameBoardActivitySquare {
     private Position boardPosition;
     private Position screenPosition;
-    private ImageView image;
+    private ImageView squareImage;
     private ImageView outline;
     private Piece occupyingPiece;
+    private ImageView pieceImage;
 
-    public GameBoardActivitySquare(Position position, ImageView image) {
+    public GameBoardActivitySquare(Position position, ImageView squareImage) {
         this.boardPosition = position;
-        this.image = image;
+        this.squareImage = squareImage;
         this.outline = null;
         this.screenPosition = null;
         this.occupyingPiece = null;
+        this.pieceImage = null;
     }
 
     public Position getBoardPosition() { return this.boardPosition; }
@@ -29,8 +31,8 @@ public class GameBoardActivitySquare {
     public Position getScreenPosition() { return this.screenPosition; }
     public void setScreenPosition(Position position) { this.screenPosition = position; }
 
-    public ImageView getImage() { return this.image; }
-    public void setImage(ImageView image) { this.image = image; }
+    public ImageView getSquareImage() { return this.squareImage; }
+    public void setSquareImage(ImageView squareImage) { this.squareImage = squareImage; }
 
     public ImageView getOutline() { return this.outline; }
     public void setOutline(ImageView outline) { this.outline = outline; }
@@ -38,5 +40,9 @@ public class GameBoardActivitySquare {
 
     public Piece getOccupyingPiece() { return this.occupyingPiece; }
     public void setOccupyingPiece(Piece piece) { this.occupyingPiece = piece; }
-    public void clearOccupyingPiece() { this.setOccupyingPiece(null); }
+    public void clearOccupyingPiece() { this.occupyingPiece = null; }
+
+    public ImageView getPieceImage() { return this.pieceImage; }
+    public void setPieceImage(ImageView pieceImage) { this.pieceImage = pieceImage; }
+    public void clearPieceImage() { this.pieceImage = null; }
 }

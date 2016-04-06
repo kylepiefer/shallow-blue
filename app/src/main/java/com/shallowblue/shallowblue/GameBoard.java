@@ -73,9 +73,15 @@ public class GameBoard {
         if(gameBoard.get(m.getFrom()) == null)
             return false;
 
-        m.setPieceCaptured(gameBoard.get(m.getTo()));
+        if (gameBoard.get(m.getTo()) != null) {
+            m.setPieceCaptured(gameBoard.get(m.getTo()));
+            gameBoard.get(m.getTo()).setPosition(null);
+        }
+
         gameBoard.put(m.getTo(), gameBoard.get(m.getFrom()));
-        gameBoard.remove(m.getTo());
+        gameBoard.remove(m.getFrom());
+        m.getPieceMoved().setPosition(m.getTo());
+
         gameHistory.add(m);
         return true;
     }

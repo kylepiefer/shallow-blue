@@ -6,16 +6,14 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 public class GameBoardActivity extends AppCompatActivity {
@@ -91,11 +89,12 @@ public class GameBoardActivity extends AppCompatActivity {
                 int screenRow = 0;
                 int screenColumn = 0;
                 if (color == Color.WHITE) {
-                    screenRow = imageWidth * 7 - imageWidth * r;
+                    screenRow = imageWidth * r;
                     screenColumn = imageWidth * c;
+
                 } else {
                     screenRow = imageWidth * r;
-                    screenColumn = imageWidth * 7 - imageWidth * c;
+                    screenColumn = imageWidth * c;
                 }
                 gbas.setScreenPosition(new Position(screenRow, screenColumn));
                 image.setTag(gbas);
@@ -113,7 +112,6 @@ public class GameBoardActivity extends AppCompatActivity {
             GameBoardActivitySquare gbas =
                     this.gameBoardActivitySquares[position.getRow()][position.getColumn()];
             Piece piece = gameBoardMap.get(position);
-            gbas.setOccupyingPiece(piece);
             this.placePieceInSquare(piece, gbas.getBoardPosition());
         }
     }
@@ -160,7 +158,8 @@ public class GameBoardActivity extends AppCompatActivity {
         }
 
         container.addView(pieceImage);
-        this.gameBoardActivitySquares[square.getRow()][square.getColumn()].setImage(pieceImage);
+        gbas.setOccupyingPiece(piece);
+        gbas.setPieceImage(pieceImage);
     }
 
     public void drawBoardSquareOutline(GameBoardActivitySquare gbas) {
@@ -197,37 +196,106 @@ public class GameBoardActivity extends AppCompatActivity {
         }
     }
 
+    public void updateGameboard(Move move) {
+        // find which gbas has the squares
+        GameBoardActivitySquare from = null;
+        GameBoardActivitySquare to = null;
+        for (int r = 0; r < 8; r++) {
+            for (int c = 0; c < 8; c++) {
+                GameBoardActivitySquare gbas = this.gameBoardActivitySquares[r][c];
+                if (gbas.getBoardPosition() == move.getFrom()) from = gbas;
+                else if (gbas.getBoardPosition() == move.getTo()) to = gbas;
+
+                if (from != null && to != null) break;
+            }
+            if (from != null && to != null) break;
+        }
+
+        // make sure the move is valid
+        Piece piece = from.getOccupyingPiece();
+        final ImageView pieceImage = from.getPieceImage();
+        if (piece == null || pieceImage == null) return;
+
+        // handle captures after animation
+        final Piece takenPiece = to.getOccupyingPiece();
+        final ImageView takenPieceImage = to.getPieceImage();
+        final FrameLayout container = (FrameLayout)this.findViewById(R.id.board_container);
+
+        // swap pieces
+        to.setOccupyingPiece(piece);
+        from.clearOccupyingPiece();
+        to.setPieceImage(pieceImage);
+        from.clearPieceImage();
+
+        final int deltaX = to.getScreenPosition().getColumn() - from.getScreenPosition().getColumn();
+        final int deltaY = to.getScreenPosition().getRow() - from.getScreenPosition().getRow();
+        long distance = (long)Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+        TranslateAnimation animation =
+                new TranslateAnimation(Animation.ABSOLUTE, (float)0,
+                        Animation.ABSOLUTE, (float)deltaX,
+                        Animation.ABSOLUTE, (float)0,
+                        Animation.ABSOLUTE, (float)deltaY);
+        animation.setDuration(distance);
+        animation.setZAdjustment(Animation.ZORDER_TOP);
+        animation.setFillAfter(true);
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {}
+            @Override
+            public void onAnimationRepeat(Animation animation) {}
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                RelativeLayout.LayoutParams layoutParams =
+                        (RelativeLayout.LayoutParams)pieceImage.getLayoutParams();
+                layoutParams.topMargin = layoutParams.topMargin + deltaY;
+                layoutParams.leftMargin = layoutParams.leftMargin + deltaX;
+                pieceImage.setLayoutParams(layoutParams);
+
+                if (takenPieceImage != null) container.removeView(takenPieceImage);
+            }
+
+        });
+        pieceImage.startAnimation(animation);
+    }
+
     public void onBoardTouched(View squareImage) {
         GameBoardActivitySquare gbas = (GameBoardActivitySquare)squareImage.getTag();
 
         if (this.selectedSquare == gbas) {
-            for (int i = this.outlinedSquares.size() - 1; i >= 0; i--)
+            for (int i = this.outlinedSquares.size() - 1; i >= 0; i--) {
                 removeBoardSquareOutline(this.outlinedSquares.get(i));
+            }
             this.selectedSquare = null;
+        } else if (this.outlinedSquares.contains(gbas)){
+            Move move = new Move(this.selectedSquare.getOccupyingPiece(),
+                                this.selectedSquare.getBoardPosition(),
+                                gbas.getBoardPosition());
+            if (this.gameBoard.move(move)) {
+                this.updateGameboard(move);
+
+                for (int i = this.outlinedSquares.size() - 1; i >= 0; i--) {
+                    removeBoardSquareOutline(this.outlinedSquares.get(i));
+                }
+                this.selectedSquare = null;
+            }
+            else Log.d("ShallowBlue", "Move Failed.");
         } else {
-            for (int i = this.outlinedSquares.size() - 1; i >= 0; i--)
+            for (int i = this.outlinedSquares.size() - 1; i >= 0; i--) {
                 removeBoardSquareOutline(this.outlinedSquares.get(i));
+            }
             drawBoardSquareOutline(gbas);
             this.selectedSquare = gbas;
-        }
 
-        if (gbas.getOccupyingPiece() != null) {
-            Piece piece = gbas.getOccupyingPiece();
-            String pieceString = "";
-            if (piece instanceof Rook) pieceString = "Rook";
-            if (piece instanceof Knight) pieceString = "Knight";
-            if (piece instanceof Bishop) pieceString = "Bishop";
-            if (piece instanceof King) pieceString = "King";
-            if (piece instanceof Queen) pieceString = "Queen";
-            if (piece instanceof Pawn) pieceString = "Pawn";
-            Log.d("ShallowBlue", "Occupying piece is " + pieceString);
+            if (gbas.getOccupyingPiece() != null) {
+                Piece piece = gbas.getOccupyingPiece();
 
-            ArrayList<Position> possibleMoves = piece.possibleMoves();
-            Log.d("ShallowBlue", possibleMoves.toString());
-            for (Position p : possibleMoves) {
-                GameBoardActivitySquare possibleSquare =
-                        this.gameBoardActivitySquares[p.getRow()][p.getColumn()];
-                drawBoardSquareOutline(possibleSquare);
+                ArrayList<Position> possibleMoves = piece.possibleMoves();
+                for (Position p : possibleMoves) {
+                    GameBoardActivitySquare possibleSquare =
+                            this.gameBoardActivitySquares[p.getRow()][p.getColumn()];
+                    drawBoardSquareOutline(possibleSquare);
+                }
             }
         }
     }
