@@ -7,51 +7,54 @@ import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
-import java.lang.Math;
+import java.util.Map;
 
 public class GameBoard {
 
-    private Map<Position, Piece> gameBoard;
-    private List<Move> gameHistory;
+    public static Map<Position, Piece> gameBoard;
+    public static List<Move> gameHistory;
+    public static Color playerToMove;
 
     public GameBoard() {
-        gameBoard = new HashMap<Position,Piece>();
-        Position p;
-        gameBoard.put((p=new Position(1,1)), new Rook(p, Color.WHITE));
-        gameBoard.put((p=new Position(2,1)), new Knight(p, Color.WHITE));
-        gameBoard.put((p=new Position(3,1)), new Bishop(p, Color.WHITE));
-        gameBoard.put((p=new Position(4,1)), new Queen(p, Color.WHITE));
-        gameBoard.put((p=new Position(5,1)), new King(p, Color.WHITE));
-        gameBoard.put((p=new Position(6,1)), new Bishop(p, Color.WHITE));
-        gameBoard.put((p=new Position(7,1)), new Knight(p, Color.WHITE));
-        gameBoard.put((p=new Position(8,1)), new Rook(p, Color.WHITE));
-        gameBoard.put((p=new Position(1,2)), new Pawn(p, Color.WHITE));
-        gameBoard.put((p=new Position(2,2)), new Pawn(p, Color.WHITE));
-        gameBoard.put((p=new Position(3,2)), new Pawn(p, Color.WHITE));
-        gameBoard.put((p=new Position(4,2)), new Pawn(p, Color.WHITE));
-        gameBoard.put((p=new Position(5,2)), new Pawn(p, Color.WHITE));
-        gameBoard.put((p=new Position(6,2)), new Pawn(p, Color.WHITE));
-        gameBoard.put((p=new Position(7,2)), new Pawn(p, Color.WHITE));
-        gameBoard.put((p=new Position(8,2)), new Pawn(p, Color.WHITE));
+        if (this.gameBoard == null) {
+            gameBoard = new HashMap<Position, Piece>();
+            Position p;
+            gameBoard.put((p = new Position(0, 0)), new Rook(p, Color.WHITE));
+            gameBoard.put((p = new Position(0, 1)), new Knight(p, Color.WHITE));
+            gameBoard.put((p = new Position(0, 2)), new Bishop(p, Color.WHITE));
+            gameBoard.put((p = new Position(0, 3)), new Queen(p, Color.WHITE));
+            gameBoard.put((p = new Position(0, 4)), new King(p, Color.WHITE));
+            gameBoard.put((p = new Position(0, 5)), new Bishop(p, Color.WHITE));
+            gameBoard.put((p = new Position(0, 6)), new Knight(p, Color.WHITE));
+            gameBoard.put((p = new Position(0, 7)), new Rook(p, Color.WHITE));
+            gameBoard.put((p = new Position(1, 0)), new Pawn(p, Color.WHITE));
+            gameBoard.put((p = new Position(1, 1)), new Pawn(p, Color.WHITE));
+            gameBoard.put((p = new Position(1, 2)), new Pawn(p, Color.WHITE));
+            gameBoard.put((p = new Position(1, 3)), new Pawn(p, Color.WHITE));
+            gameBoard.put((p = new Position(1, 4)), new Pawn(p, Color.WHITE));
+            gameBoard.put((p = new Position(1, 5)), new Pawn(p, Color.WHITE));
+            gameBoard.put((p = new Position(1, 6)), new Pawn(p, Color.WHITE));
+            gameBoard.put((p = new Position(1, 7)), new Pawn(p, Color.WHITE));
 
-        gameBoard.put((p=new Position(1,7)), new Pawn(p, Color.BLACK));
-        gameBoard.put((p=new Position(2,7)), new Pawn(p, Color.BLACK));
-        gameBoard.put((p=new Position(3,7)), new Pawn(p, Color.BLACK));
-        gameBoard.put((p=new Position(4,7)), new Pawn(p, Color.BLACK));
-        gameBoard.put((p=new Position(5,7)), new Pawn(p, Color.BLACK));
-        gameBoard.put((p=new Position(6,7)), new Pawn(p, Color.BLACK));
-        gameBoard.put((p=new Position(7,7)), new Pawn(p, Color.BLACK));
-        gameBoard.put((p=new Position(8,7)), new Pawn(p, Color.BLACK));
-        gameBoard.put((p=new Position(1,8)), new Rook(p, Color.BLACK));
-        gameBoard.put((p=new Position(2,8)), new Knight(p, Color.BLACK));
-        gameBoard.put((p=new Position(3,8)), new Bishop(p, Color.BLACK));
-        gameBoard.put((p=new Position(4,8)), new Queen(p, Color.BLACK));
-        gameBoard.put((p=new Position(5,8)), new King(p, Color.BLACK));
-        gameBoard.put((p=new Position(6,8)), new Bishop(p, Color.BLACK));
-        gameBoard.put((p=new Position(7,8)), new Knight(p, Color.BLACK));
-        gameBoard.put((p=new Position(8,8)), new Rook(p, Color.BLACK));
+            gameBoard.put((p = new Position(6, 0)), new Pawn(p, Color.BLACK));
+            gameBoard.put((p = new Position(6, 1)), new Pawn(p, Color.BLACK));
+            gameBoard.put((p = new Position(6, 2)), new Pawn(p, Color.BLACK));
+            gameBoard.put((p = new Position(6, 3)), new Pawn(p, Color.BLACK));
+            gameBoard.put((p = new Position(6, 4)), new Pawn(p, Color.BLACK));
+            gameBoard.put((p = new Position(6, 5)), new Pawn(p, Color.BLACK));
+            gameBoard.put((p = new Position(6, 6)), new Pawn(p, Color.BLACK));
+            gameBoard.put((p = new Position(6, 7)), new Pawn(p, Color.BLACK));
+            gameBoard.put((p = new Position(7, 0)), new Rook(p, Color.BLACK));
+            gameBoard.put((p = new Position(7, 1)), new Knight(p, Color.BLACK));
+            gameBoard.put((p = new Position(7, 2)), new Bishop(p, Color.BLACK));
+            gameBoard.put((p = new Position(7, 3)), new Queen(p, Color.BLACK));
+            gameBoard.put((p = new Position(7, 4)), new King(p, Color.BLACK));
+            gameBoard.put((p = new Position(7, 5)), new Bishop(p, Color.BLACK));
+            gameBoard.put((p = new Position(7, 6)), new Knight(p, Color.BLACK));
+            gameBoard.put((p = new Position(7, 7)), new Rook(p, Color.BLACK));
+        }
+        playerToMove = Color.WHITE;
         gameHistory = new ArrayList<Move>();
     }
     public GameBoard(GameBoard in) {
@@ -61,8 +64,9 @@ public class GameBoard {
 
     public List<Move> getAllMoves(){
         List<Move> ret = new ArrayList<Move>();
-        for(Position p : gameBoard.keySet())
-            ret.addAll(getLegalMoves(p));
+        for(Map.Entry<Position,Piece> e : gameBoard.entrySet())
+            if(e.getValue().getColor() == playerToMove)
+                ret.addAll(getLegalMoves(e.getKey()));
         return ret;
     }
 
@@ -71,12 +75,24 @@ public class GameBoard {
         if(gameBoard.get(m.getFrom()) == null)
             return false;
 
-        m.setPieceCaptured(gameBoard.get(m.getTo()));
+        if (gameBoard.get(m.getTo()) != null) {
+            m.setPieceCaptured(gameBoard.get(m.getTo()));
+            gameBoard.get(m.getTo()).setPosition(null);
+        }
+
         gameBoard.put(m.getTo(), gameBoard.get(m.getFrom()));
-        gameBoard.remove(m.getTo());
+        gameBoard.remove(m.getFrom());
+        m.getPieceMoved().setPosition(m.getTo());
+
         gameHistory.add(m);
+        playerToMove = playerToMove == Color.WHITE ? Color.BLACK : Color.WHITE;
         return true;
     }
+
+    public static void addMove(Move m){
+        gameHistory.add(m);
+    }
+
     public boolean put(Piece p){
         if(gameBoard.get(p.getPosition()) == null){
             gameBoard.put(p.getPosition(),p);
@@ -150,7 +166,20 @@ public class GameBoard {
         return gameBoard;
     }
 
-    public List<Move> getGameHistory() { return gameHistory; }
+    public static List<Move> getGameHistory() { return gameHistory; }
+
+    public Color playerToMove() {
+        return playerToMove;
+    }
+
+    public double sbe() {
+        return 0;
+    }
+
+    //TODO Detects when a player has won.
+    public boolean gameOver() {
+        return false;
+    }
 }
 
 

@@ -8,7 +8,7 @@ public class Pawn extends Piece {
 	private Position initialPosition;
 	
 	public Pawn(Position argPosition, Color color) {
-		super(argPosition, color);
+		super(argPosition, color, color == Color.WHITE ? R.drawable.white_pawn : R.drawable.black_pawn);
 		initialPosition = argPosition;
 	}
 
@@ -32,15 +32,18 @@ public class Pawn extends Piece {
 		
 		//if the pawn is white, a new possible position is generated
 		//by adding +1 to its row. If it's black, add -1 instead.
-		int direction = (getColor() == Color.WHITE) ? 1 : -1;
+		int direction = (initialPosition.getRow() == 1) ? 1 : -1;
 		result.add(new Position(getPosition().getRow()+direction, getPosition().getColumn()));
+		if (getPosition().getColumn() > 0)
+			result.add(new Position(getPosition().getRow() + direction, getPosition().getColumn() - 1));
+		if (getPosition().getColumn() < 7)
+			result.add(new Position(getPosition().getRow() + direction, getPosition().getColumn() + 1));
 		
 		//canJump refers to the 2 tiles a pawn can jump, which is a special
 		//move that can be made only if the pawn hasn't moved yet.
 		//2 and 7 comparisons denote the original starting positions for
-		//white and black pawns, respectively.
-		boolean canJump = ( getColor() == Color.WHITE && getPosition().getRow() == 2 || 
-							getColor() == Color.BLACK && getPosition().getRow() == 7)? true: false;
+		//white and black pawns, respectively.//TODO replace 1 and 6 with named constants
+		boolean canJump = (  getPosition().getRow() == initialPosition.getRow())? true: false;
 		
 		if (canJump)
 			result.add(new Position(getPosition().getRow()+(direction*2), getPosition().getColumn()));

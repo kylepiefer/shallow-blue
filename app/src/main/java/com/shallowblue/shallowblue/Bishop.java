@@ -3,10 +3,11 @@ package com.shallowblue.shallowblue;
 import java.util.ArrayList;
 
 
+
 public class Bishop extends Piece {
 
 	public Bishop(Position argPosition, Color color) {
-		super(argPosition, color);
+		super(argPosition, color, color == Color.WHITE ? R.drawable.white_bishop : R.drawable.black_bishop);
 		
 	}
 
@@ -30,23 +31,23 @@ public class Bishop extends Piece {
 		int y = getPosition().getColumn();
 		
 		//top left diagonal range
-		for (int i = x, j = y; i <= 8 && j >= 1; i++, j--) {
+		for (int i = x, j = y; i <= 7 && j >= 0; i++, j--) {
 			if (i != x && j != y) result.add(new Position(i,j));
 		}
 			
 				
 		//top right 
-		for (int i = x, j = y; i <= 8 && j <= 8; i++, j++) {
+		for (int i = x, j = y; i <= 7 && j <= 7; i++, j++) {
 			if (i != x && j != y) result.add(new Position(i,j));
 		}
 		
 		//bottom left
-		for (int i = x, j = y; i >= 1 && j >= 1; i--, j--) {
+		for (int i = x, j = y; i >= 0 && j >= 0; i--, j--) {
 			if (i != x && j != y) result.add(new Position(i,j));
 		}
 		
 		//bottom right
-		for (int i = x, j = y; i >= 1 && j <= 8; i--, j++) {
+		for (int i = x, j = y; i >= 0 && j <= 7; i--, j++) {
 			if (i != x && j != y) result.add(new Position(i,j));
 		}
 		

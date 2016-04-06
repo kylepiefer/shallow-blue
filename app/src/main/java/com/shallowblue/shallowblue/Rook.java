@@ -8,7 +8,8 @@ public class Rook extends Piece {
 	private Position initialPosition;
 	
 	public Rook(Position argPosition, Color color) {
-		super(argPosition, color);
+		super(argPosition, color, color == Color.WHITE ? R.drawable.white_rook : R.drawable.black_rook);
+		initialPosition = argPosition;
 		
 	}
 
@@ -30,9 +31,9 @@ public class Rook extends Piece {
 		ArrayList<Position> result = new ArrayList<Position>();
 		
 		//Left & right movements
-		for (int i = 1; i <= 8; i++) if (i != getPosition().getColumn()) result.add(new Position(getPosition().getRow(), i));
+		for (int i = 0; i <= 7; i++) if (i != getPosition().getColumn()) result.add(new Position(getPosition().getRow(), i));
 		//Up & down
-		for (int i = 1; i <= 8; i++) if (i != getPosition().getRow()) result.add(new Position(i, getPosition().getColumn()));
+		for (int i = 0; i <= 7; i++) if (i != getPosition().getRow()) result.add(new Position(i, getPosition().getColumn()));
 		
 		
 		return result;

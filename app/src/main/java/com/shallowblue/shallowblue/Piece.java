@@ -13,10 +13,20 @@ public abstract class Piece {
 
 	private Position position; //See Position.java
 	private Color color; //See Color.java
-	
-	public Piece(Position argPosition, Color color) {
+	private int drawableId;
+
+	public Piece(Position argPosition, Color color, int drawableId) {
 		this.position = argPosition;
 		this.color = color;
+		this.drawableId = drawableId;
+	}
+
+	public int getDrawableId(){
+		return drawableId;
+	}
+
+	public void setDrawableId(int id){
+		drawableId = id;
 	}
 	
 	/**
@@ -59,6 +69,10 @@ public abstract class Piece {
 	 * Rook   = "r"
 	 */
 	public abstract String toString();
+
+	public void setPosition(Position p){
+		position = p;
+	}
 	
 	
 }

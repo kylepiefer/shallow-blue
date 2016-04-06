@@ -12,17 +12,39 @@ public class Position {
 	private final int row;
 	private final int column;
 
-	public Position(int x, int y) {
-		row = x;
-		column = y;
+	public Position(int row, int column) {
+		this.row = row;
+		this.column = column;
 	}
 
 	public int getRow() {
-		return row;
+		return this.row;
 	}
 
 	public int getColumn() {
 
-		return column;
+		return this.column;
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (other == null) return false;
+		Position otherPosition = (Position)other;
+		if (this.row != otherPosition.row) return false;
+		if (this.column != otherPosition.column) return false;
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int hashCode = 1;
+		hashCode = 31 * hashCode + this.row;
+		hashCode = 31 * hashCode + this.column;
+		return hashCode;
+	}
+
+	@Override
+	public String toString() {
+		return "(" + this.row + "," + this.column + ")";
 	}
 }
