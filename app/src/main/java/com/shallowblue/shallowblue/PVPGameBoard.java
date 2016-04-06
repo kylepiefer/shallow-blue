@@ -170,6 +170,9 @@ public class PVPGameBoard extends AppCompatActivity {
         Position tempPos = imagePositions.get(temp);
         Piece tempPiece = boardSetup.get(tempPos);
         boolean foundMatch = false;
+        if (selImage == null && tempPiece != null && tempPiece.getColor() != turn){
+            return;
+        }
         if (selImage == temp){
             selImage.setBackgroundResource(0);
             for (int i = 0; i < selMoves.size(); i++) {
@@ -223,6 +226,10 @@ public class PVPGameBoard extends AppCompatActivity {
                 return;
             }
         }
+        if (turn == Color.BLACK){
+            turn = Color.WHITE;
+        } else { turn = Color.BLACK; }
+
         doneWithPrev = false;
         selPiece.setPosition(tempPos);
         boardSetup.put(tempPos, selPiece);
