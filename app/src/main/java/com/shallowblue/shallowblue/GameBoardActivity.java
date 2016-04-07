@@ -12,7 +12,6 @@ import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -342,3 +341,4 @@ public class GameBoardActivity extends AppCompatActivity {
         startActivity(check);
     }
 }
+
