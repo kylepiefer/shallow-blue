@@ -133,6 +133,9 @@ public class GameBoard {
     }
 
     public boolean legalMove(Move m) {
+        if(gameBoard.get(m.getTo()).getColor() == gameBoard.get(m.getFrom()).getColor()){
+            return false;
+        }
         if(m.getPieceMoved().toString().equals("p")){
             if(m.getTo().getColumn() == m.getFrom().getColumn() && m.getPieceMoved().possibleMoves().contains(m.getTo()) && !gameBoard.containsKey(m.getTo())){ //nothing is blocking the pawn
                 return true;
