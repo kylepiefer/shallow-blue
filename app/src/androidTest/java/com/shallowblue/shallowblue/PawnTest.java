@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 
 /**
+ * Created by Mohammad on 4/6/2016
  * This class is used to utilize junit testing on Pawn.java
  */
 public class PawnTest {
@@ -50,13 +51,13 @@ public class PawnTest {
     /**
      * This method tests a Pawn's possible moves
      * 'possible' = list of moves a piece can make if it were the only piece in the board
-     * Since wPawn has an initial Position, its list should be of size 2 (1 move & 2 moves)
+     * Since wPawn has an initial Position, its list size is 4 (1&2 steps forward, 2 diagonals)
      * Since bPawn has an illegal Position, its list should be empty
      * Since pPawn is in the final rank, its list should also be empty
      */
     @Test
     public void testPossibleMoves() {
-        assertTrue(wPawn.possibleMoves().size() == 2);
+        assertTrue(wPawn.possibleMoves().size() == 4);
         assertTrue(bPawn.possibleMoves().size() == 0);
         assertTrue(pPawn.possibleMoves().size() == 0);
     }
