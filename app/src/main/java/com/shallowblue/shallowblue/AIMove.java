@@ -26,6 +26,7 @@ public class AIMove {
             };
 
     public List<Move> move(GameBoard current, int depth) {
+        current = new GameBoard(current);
         if(current.playerToMove() == Color.WHITE)
             return maxAction(current, depth);
         return minAction(current, depth);

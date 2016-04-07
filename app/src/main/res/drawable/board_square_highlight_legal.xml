@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/board_square_highlight_legal">
+    <stroke android:width="2dp" android:color="@color/legal_move_outline" />
+    <solid android:color="@color/legal_move_highlight"/>
+    <size android:width="40dp" android:height="40dp" />
+</shape>

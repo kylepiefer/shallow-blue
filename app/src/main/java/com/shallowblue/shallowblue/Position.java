@@ -28,7 +28,7 @@ public class Position {
 
 	@Override
 	public boolean equals(Object other) {
-		if (other == null) return false;
+		if (!(other instanceof Position)) return false;
 		Position otherPosition = (Position)other;
 		if (this.row != otherPosition.row) return false;
 		if (this.column != otherPosition.column) return false;

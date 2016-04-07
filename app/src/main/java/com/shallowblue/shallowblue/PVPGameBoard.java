@@ -49,7 +49,7 @@ public class PVPGameBoard extends AppCompatActivity {
         imagePositions = new HashMap<ImageView, Position>();
         doneWithPrev = true;
         redoMoves = new ArrayList<>();
-        GameBoard.gameHistory = new ArrayList<Move>();
+        GameBoard.activeGameBoard.gameHistory = new ArrayList<Move>();
 
         pvpGameboard = new ImageView[8][8];
         selMoves = new ArrayList<>();
@@ -67,7 +67,7 @@ public class PVPGameBoard extends AppCompatActivity {
             initializeBoard();
             addCustomSetup();
         }
-        GameBoard.gameBoard = boardSetup;
+        GameBoard.activeGameBoard.gameBoard = boardSetup;
     }
 
     private void createPositionArray() {
@@ -250,7 +250,7 @@ public class PVPGameBoard extends AppCompatActivity {
 
         Move move = new Move(selPiece, selPosition, tempPos );
         move.setPieceCaptured(tempPiece);
-        GameBoard.addMove(move);
+        GameBoard.activeGameBoard.addMove(move);
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -282,7 +282,7 @@ public class PVPGameBoard extends AppCompatActivity {
     }
 
     public void pvpundo1(View v){
-        List<Move> history = GameBoard.getGameHistory();
+        List<Move> history = GameBoard.activeGameBoard.getGameHistory();
         if (history.isEmpty()){
             Toast.makeText(PVPGameBoard.this, "Sorry, you can't undo a move when one doesn't" +
                             " exist.", Toast.LENGTH_SHORT).show();
@@ -321,7 +321,7 @@ public class PVPGameBoard extends AppCompatActivity {
     }
 
     public void pvpundo2(View v){
-        List<Move> history = GameBoard.getGameHistory();
+        List<Move> history = GameBoard.activeGameBoard.getGameHistory();
         if (history.isEmpty()){
             Toast.makeText(PVPGameBoard.this, "Sorry, you can't undo a move when one doesn't" +
                     " exist.", Toast.LENGTH_SHORT).show();
@@ -388,7 +388,7 @@ public class PVPGameBoard extends AppCompatActivity {
                 boardSetup.put(fromPos, null);
             }
             turn = Color.BLACK;
-            GameBoard.addMove(prev);
+            GameBoard.activeGameBoard.addMove(prev);
             redoMoves.remove(last);
         }
         else {
@@ -426,7 +426,7 @@ public class PVPGameBoard extends AppCompatActivity {
                 boardSetup.put(fromPos, null);
             }
             turn = Color.WHITE;
-            GameBoard.addMove(prev);
+            GameBoard.activeGameBoard.addMove(prev);
             redoMoves.remove(last);
         }
         else {

@@ -1,10 +1,13 @@
 package com.shallowblue.shallowblue;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
@@ -12,8 +15,12 @@ import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class GameBoardActivity extends AppCompatActivity {
 
@@ -22,12 +29,16 @@ public class GameBoardActivity extends AppCompatActivity {
     private GameBoardActivitySquare selectedSquare;
     private ArrayList<GameBoardActivitySquare> highlightedSquares;
     private Color playerColor;
+    private Toast toast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_board);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        // initialize toast
+        this.toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
 
         // use intent extras
         String colorString = getIntent().getStringExtra("Color");
@@ -39,7 +50,7 @@ public class GameBoardActivity extends AppCompatActivity {
         // this is needed to handle the game logic
         String gameType = getIntent().getStringExtra("Type");
         if (gameType != null && gameType.equalsIgnoreCase("Custom"));
-            GameBoard.gameBoard = null;
+            GameBoard.activeGameBoard.gameBoard = null;
         this.gameBoard = new GameBoard();
 
         // this is needed to map logical squares to images on the screen
@@ -49,6 +60,8 @@ public class GameBoardActivity extends AppCompatActivity {
 
         Map<Position, Piece> gameBoardPiecePositions = this.gameBoard.getGameBoard();
         placePiecesOnBoard(gameBoardPiecePositions);
+
+        if (this.playerColor == Color.BLACK) mockAIMove();
     }
 
     private void createGameBoardActivitySquareArray(Color playerColor) {
@@ -174,10 +187,9 @@ public class GameBoardActivity extends AppCompatActivity {
         gbas.placePiece(piece, pieceImage);
     }
 
-    private void drawBoardSquareHighlight(GameBoardActivitySquare gbas) {
+    private void drawBoardSquareHighlight(GameBoardActivitySquare gbas, int highlight) {
         if (gbas == null) return;
 
-        // make the image
         ImageView highlightImage = new ImageView(getApplicationContext());
 
         int imageWidth = this.getResources().getDimensionPixelSize(R.dimen.game_board_activity_square_width);
@@ -185,7 +197,8 @@ public class GameBoardActivity extends AppCompatActivity {
 
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(imageWidth, imageHeight);
         highlightImage.setLayoutParams(layoutParams);
-        highlightImage.setImageResource(R.drawable.board_square_outline);
+        highlightImage.setImageResource(highlight);
+        highlightImage.setTag(new Integer(highlight));
         gbas.addHighlight(highlightImage);
 
         synchronized(this.highlightedSquares) {
@@ -205,9 +218,14 @@ public class GameBoardActivity extends AppCompatActivity {
         for (int i = this.highlightedSquares.size() - 1; i >= 0; i--) {
             removeBoardSquareOutline(this.highlightedSquares.get(i));
         }
+        this.selectedSquare = null;
     }
 
     private void animateMove(final GameBoardActivitySquare from, final GameBoardActivitySquare to) {
+        // cache values for handler
+        final GameBoard gameBoard = this.gameBoard;
+        final Color playerColor = this.playerColor;
+
         // make sure the move is valid
         final Piece piece = from.getOccupyingPiece();
         final ImageView pieceImage = from.getPieceImage();
@@ -252,25 +270,26 @@ public class GameBoardActivity extends AppCompatActivity {
                 pieceImage.setVisibility(View.VISIBLE);
                 imageCopy.clearAnimation();
                 animationLayer.removeView(imageCopy);
+
+                // TODO: Make this work like it's supposed to
+                if (gameBoard.playerToMove() != playerColor) mockAIMove();
             }
         });
         imageCopy.startAnimation(animation);
     }
 
-    private void updateGameboard(Move move) {
-        // find which gbas has the squares
-        GameBoardActivitySquare from = null;
-        GameBoardActivitySquare to = null;
-        for (int r = 0; r < 8; r++) {
-            for (int c = 0; c < 8; c++) {
-                GameBoardActivitySquare gbas = this.gameBoardActivitySquares[r][c];
-                if (gbas.getBoardPosition() == move.getFrom()) from = gbas;
-                else if (gbas.getBoardPosition() == move.getTo()) to = gbas;
+    private void mockAIMove() {
+        List<Move> legalAIMoves = this.gameBoard.getAllMoves();
+        Random numberGenerator = new Random();
+        int moveNumber = (int)Math.floor(numberGenerator.nextDouble() * legalAIMoves.size());
+        Move move = legalAIMoves.get(moveNumber);
+        this.gameBoard.move(move);
+        updateGameboard(move);
+    }
 
-                if (from != null && to != null) break;
-            }
-            if (from != null && to != null) break;
-        }
+    private void updateGameboard(Move move) {
+        GameBoardActivitySquare from = getGBASForPosition(move.getFrom());
+        GameBoardActivitySquare to = getGBASForPosition(move.getTo());
 
         animateMove(from, to);
     }
@@ -280,52 +299,95 @@ public class GameBoardActivity extends AppCompatActivity {
 
         if (this.selectedSquare == gbas) {
             removeAllSquareHighlights();
-            this.selectedSquare = null;
         }
 
         else if (this.highlightedSquares.contains(gbas)){
+            if ((int)gbas.getHighlightImage().getTag() == R.drawable.board_square_highlight_possible) {
+                showToast("This possible move is not currently legal.");
+                return;
+            }
+
             Move move = new Move(this.selectedSquare.getOccupyingPiece(),
-                                this.selectedSquare.getBoardPosition(),
-                                gbas.getBoardPosition());
+                                 this.selectedSquare.getBoardPosition(),
+                                 gbas.getBoardPosition());
+
             if (this.gameBoard.move(move)) {
                 this.updateGameboard(move);
                 removeAllSquareHighlights();
-                this.selectedSquare = null;
             }
             else Log.d("ShallowBlue", "Move Failed.");
         }
 
         else {
             removeAllSquareHighlights();
-            drawBoardSquareHighlight(gbas);
             this.selectedSquare = gbas;
+            drawBoardSquareHighlight(this.selectedSquare, R.drawable.board_square_outline);
 
-            if (gbas.getOccupyingPiece() != null) {
+            if (gbas.getOccupyingPiece() != null && this.gameBoard.playerToMove() == this.playerColor) {
                 Piece piece = gbas.getOccupyingPiece();
 
-                ArrayList<Position> possibleMoves = piece.possibleMoves();
+                List<Position> possibleMoves = piece.possibleMoves();
+                List<Position> legalMoves = new ArrayList<Position>();
+                for (int p = possibleMoves.size() - 1; p >= 0; p--) {
+                    Position curr = possibleMoves.get(p);
+                    Move possible = new Move(piece, piece.getPosition(), curr);
+                    if (this.gameBoard.legalMove(possible)) {
+                        possibleMoves.remove(p);
+                        legalMoves.add(curr);
+                    }
+                }
+
                 for (Position p : possibleMoves) {
                     GameBoardActivitySquare possibleSquare = getGBASForPosition(p);
-                    drawBoardSquareHighlight(possibleSquare);
+                    drawBoardSquareHighlight(possibleSquare, R.drawable.board_square_highlight_possible);
+                }
+
+                for (Position p : legalMoves) {
+                    GameBoardActivitySquare legalSquare = getGBASForPosition(p);
+                    drawBoardSquareHighlight(legalSquare, R.drawable.board_square_highlight_legal);
                 }
             }
         }
     }
 
-    public void startingHelper(View v){
-
+    private void showToast(String message) {
+        CharSequence text = (CharSequence)message;
+        this.toast.setText(text);
+        this.toast.setGravity(Gravity.BOTTOM, 0, 0);
+        this.toast.setDuration(Toast.LENGTH_SHORT);
+        toast.show();
     }
 
-    public void altMove(View v){
+    public void startingHelper(View v) {
+        showToast("The Helper is not currently available."); // TODO
+    }
 
+    public void altMove(View v ) {
+        showToast("An alternate move is not currently available."); // TODO
     }
 
     public void undoMove(View v){
-
+        List<Move> gameHistory = this.gameBoard.getGameHistory();
+        Move lastMove = null;
+        if (!gameHistory.isEmpty()) lastMove = gameHistory.get(gameHistory.size() - 1);
+        if (this.gameBoard.undo()) {
+            removeAllSquareHighlights();
+            Move reversedMove = new Move(lastMove.getPieceMoved(), lastMove.getTo(), lastMove.getFrom());
+            this.updateGameboard(reversedMove);
+        } else {
+            showToast("There is no move to undo.");
+        }
     }
 
-    public void redoMove(View v){
-
+    public void redoMove(View v) {
+        if (this.gameBoard.redo()) {
+            removeAllSquareHighlights();
+            List<Move> gameHistory = this.gameBoard.getGameHistory();
+            Move nextMove = gameHistory.get(gameHistory.size() - 1);
+            this.updateGameboard(nextMove);
+        } else {
+            showToast("There is no move to redo.");
+        }
     }
 
     public void optionsScreen(View v){

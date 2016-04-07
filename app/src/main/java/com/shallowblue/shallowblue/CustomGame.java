@@ -193,7 +193,7 @@ public class CustomGame extends AppCompatActivity {
         temp = gametype.getBundleExtra("type");
         int count = temp.getInt("players");
         if (count == 1){
-            GameBoard.gameBoard = boardSetup;
+            GameBoard.activeGameBoard.gameBoard = boardSetup;
             startGame.putExtra("Type", "Custom");
             startGame.putExtra("Color", "White");
             startActivity(startGame);

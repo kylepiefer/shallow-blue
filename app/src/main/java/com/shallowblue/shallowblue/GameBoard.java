@@ -14,9 +14,10 @@ import java.util.Queue;
 
 public class GameBoard {
 
-    public static Map<Position, Piece> gameBoard;
-    public static List<Move> gameHistory;
-    public static Color playerToMove;
+    public static GameBoard activeGameBoard;
+    public Map<Position, Piece> gameBoard;
+    public List<Move> gameHistory;
+    private Color playerToMove;
     private Queue<Move> redoQueue;
 
     public GameBoard() {
@@ -66,6 +67,10 @@ public class GameBoard {
         gameHistory = new ArrayList<Move>(in.getGameHistory());
     }
 
+    private void switchPlayerToMove() {
+        this.playerToMove = (playerToMove == Color.WHITE) ? Color.BLACK : Color.WHITE;
+    }
+
     public List<Move> getAllMoves(){
         List<Move> ret = new ArrayList<Move>();
         for(Map.Entry<Position,Piece> e : gameBoard.entrySet())
@@ -89,11 +94,11 @@ public class GameBoard {
         m.getPieceMoved().setPosition(m.getTo());
 
         gameHistory.add(m);
-    playerToMove = playerToMove == Color.WHITE ? Color.BLACK : Color.WHITE;
+        switchPlayerToMove();
         return true;
     }
 
-    public static void addMove(Move m){
+    public void addMove(Move m){
         gameHistory.add(m);
     }
 
@@ -116,6 +121,7 @@ public class GameBoard {
 
         gameHistory.remove(gameHistory.size() - 1);
         redoQueue.add(m);
+        switchPlayerToMove();
         return true;
     }
     public boolean redo(){
@@ -128,6 +134,9 @@ public class GameBoard {
     }
 
     public boolean legalMove(Move m) {
+        if(gameBoard.get(m.getTo()).getColor() == gameBoard.get(m.getFrom()).getColor()){
+            return false;
+        }
         if(m.getPieceMoved().toString().equals("p")){
             if(m.getTo().getColumn() == m.getFrom().getColumn() && m.getPieceMoved().possibleMoves().contains(m.getTo()) && !gameBoard.containsKey(m.getTo())){ //nothing is blocking the pawn
                 return true;
@@ -139,7 +148,9 @@ public class GameBoard {
         }
         boolean canmove = true;
         Position tempPos = m.getTo();
-        if(m.getPieceMoved().toString().equals("r")&&gameBoard.get(m.getTo()).toString().equals("k")&&!m.getPieceMoved().hasMoved()&&!gameBoard.get(m.getTo()).hasMoved()){ //castle
+        if (m.getPieceMoved() instanceof Rook &&
+                gameBoard.get(m.getTo()) instanceof King &&
+                !m.getPieceMoved().hasMoved()&&!gameBoard.get(m.getTo()).hasMoved()) { //castle
             canmove = true;
             tempPos = m.getTo();
             while (m.getFrom().getColumn() != tempPos.getColumn()){ //checks if anything is between the castling pieces
@@ -183,10 +194,12 @@ public class GameBoard {
 
         }
         if(false){ //skewer
-            return false;
-        }
-        if(false){ //fork
-            return false;
+            move(m);
+            if(false){ //king is threatned
+               return false;
+            }
+            this.undo();
+            redoQueue.remove();
         }
 
         return canmove;
@@ -232,7 +245,7 @@ public class GameBoard {
         return gameBoard;
     }
 
-    public static List<Move> getGameHistory() { return gameHistory; }
+    public List<Move> getGameHistory() { return gameHistory; }
 
     public Color playerToMove() {
         return playerToMove;
@@ -240,6 +253,19 @@ public class GameBoard {
 
     public double sbe() {
         return 0;
+    }
+    public List<Move> isThreatened(Piece p) {
+        List<Move> ret = new ArrayList<Move>();
+        for (Map.Entry<Position, Piece> e : gameBoard.entrySet()){
+            if (!(e.getValue().getColor() == playerToMove))
+                ret.addAll(getLegalMoves(e.getKey()));
+        }
+        for (Move e : ret){
+            if(e.getTo()!=p.getPosition()){
+                ret.remove(e);
+            }
+        }
+        return ret;
     }
 
     //TODO Detects when a player has won.
