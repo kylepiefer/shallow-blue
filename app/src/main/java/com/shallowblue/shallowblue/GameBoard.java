@@ -9,12 +9,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 public class GameBoard {
 
     public static Map<Position, Piece> gameBoard;
     public static List<Move> gameHistory;
     public static Color playerToMove;
+    private Queue<Move> redoQueue;
 
     public GameBoard() {
         if (gameBoard == null) {
@@ -71,7 +73,7 @@ public class GameBoard {
     }
 
     public boolean move(Move m){						//Returns true iff successful
-
+        redoQueue.clear();
         if(gameBoard.get(m.getFrom()) == null)
             return false;
 
@@ -103,14 +105,24 @@ public class GameBoard {
     public String toString(){
         return TextUtils.join("\n", gameHistory);
     }
-    public void undo(){ //example move is ka4_b5
+    public boolean undo(){ //example move is ka4_b5
         Move m = gameHistory.get(gameHistory.size()-1);
         if(m == null)
-            return;
+            return false;
         gameBoard.put(m.getFrom(), m.getPieceMoved());
         gameBoard.put(m.getTo(), m.getPieceCaptured());
 
-        gameHistory.remove(gameHistory.size()-1);
+        gameHistory.remove(gameHistory.size() - 1);
+        redoQueue.add(m);
+        return true;
+    }
+    public boolean redo(){
+        if (redoQueue.isEmpty()){
+            return false;
+        }
+        Move m = redoQueue.remove();
+        this.move(m);
+        return true;
     }
 
     public boolean legalMove(Move m) {
