@@ -73,10 +73,13 @@ public class GameBoardActivitySquare {
         }
     }
 
+    public ImageView getHighlightImage() { return this.highlightImage; }
+
     public void addHighlight(ImageView highlight) {
         if (this.highlightImage != null) removeHighlight();
         this.highlightImage = highlight;
         this.layoutFrame.addView(this.highlightImage);
+        if (this.pieceImage != null) this.pieceImage.bringToFront();
     }
 
     public void removeHighlight() {

@@ -66,6 +66,10 @@ public class GameBoard {
         gameHistory = new ArrayList<Move>(in.getGameHistory());
     }
 
+    private void switchPlayerToMove() {
+        this.playerToMove = (playerToMove == Color.WHITE) ? Color.BLACK : Color.WHITE;
+    }
+
     public List<Move> getAllMoves(){
         List<Move> ret = new ArrayList<Move>();
         for(Map.Entry<Position,Piece> e : gameBoard.entrySet())
@@ -89,7 +93,7 @@ public class GameBoard {
         m.getPieceMoved().setPosition(m.getTo());
 
         gameHistory.add(m);
-    playerToMove = playerToMove == Color.WHITE ? Color.BLACK : Color.WHITE;
+        switchPlayerToMove();
         return true;
     }
 
@@ -116,6 +120,7 @@ public class GameBoard {
 
         gameHistory.remove(gameHistory.size() - 1);
         redoQueue.add(m);
+        switchPlayerToMove();
         return true;
     }
     public boolean redo(){
@@ -139,7 +144,9 @@ public class GameBoard {
         }
         boolean canmove = true;
         Position tempPos = m.getTo();
-        if(m.getPieceMoved().toString().equals("r")&&gameBoard.get(m.getTo()).toString().equals("k")&&!m.getPieceMoved().hasMoved()&&!gameBoard.get(m.getTo()).hasMoved()){ //castle
+        if (m.getPieceMoved() instanceof Rook &&
+                gameBoard.get(m.getTo()) instanceof King &&
+                !m.getPieceMoved().hasMoved()&&!gameBoard.get(m.getTo()).hasMoved()) { //castle
             canmove = true;
             tempPos = m.getTo();
             while (m.getFrom().getColumn() != tempPos.getColumn()){ //checks if anything is between the castling pieces
