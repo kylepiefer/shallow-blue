@@ -7,6 +7,7 @@ import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -58,6 +59,7 @@ public class GameBoard {
         }
         playerToMove = Color.WHITE;
         gameHistory = new ArrayList<Move>();
+        redoQueue = new LinkedList<Move>();
     }
     public GameBoard(GameBoard in) {
         gameBoard = new HashMap<Position,Piece>(in.getGameBoard());
@@ -106,9 +108,9 @@ public class GameBoard {
         return TextUtils.join("\n", gameHistory);
     }
     public boolean undo(){ //example move is ka4_b5
+        if (gameHistory.isEmpty()) return false;
+
         Move m = gameHistory.get(gameHistory.size()-1);
-        if(m == null)
-            return false;
         gameBoard.put(m.getFrom(), m.getPieceMoved());
         gameBoard.put(m.getTo(), m.getPieceCaptured());
 
