@@ -7,4 +7,9 @@
     <color name="black_overlay">#66000000</color>
 
     <color name="colorPrimaryRed">#c8200a</color>
+
+    <color name="legal_move_highlight">#8038F916</color>
+    <color name="legal_move_outline">#38F916</color>
+    <color name="possible_move_highlight">#80FF1C14</color>
+    <color name="possible_move_outline">#FF1C14</color>
 </resources>
