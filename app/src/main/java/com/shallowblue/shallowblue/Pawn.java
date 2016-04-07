@@ -33,8 +33,7 @@ public class Pawn extends Piece {
 		//if the pawn is white, a new possible position is generated
 		//by adding +1 to its row. If it's black, add -1 instead.
 		int direction = (initialPosition.getRow() == 1) ? 1 : -1;
-
-
+		
 		//Change made on 04/06/2016 by Mohammad: No "forward" move should
 		//be added to the Pawn's moves list if it's in the final rank.
 		boolean canAdvance = true;
@@ -49,7 +48,7 @@ public class Pawn extends Piece {
 		
 		//canJump refers to the 2 tiles a pawn can jump, which is a special
 		//move that can be made only if the pawn hasn't moved yet.
-		//1 and 6 comparisons denote the original starting positions for
+		//2 and 7 comparisons denote the original starting positions for
 		//white and black pawns, respectively.//TODO replace 1 and 6 with named constants
 		boolean canJump = (  getPosition().getRow() == initialPosition.getRow())? true: false;
 		
