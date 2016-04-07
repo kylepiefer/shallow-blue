@@ -49,7 +49,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
         // this is needed to handle the game logic
         String gameType = getIntent().getStringExtra("Type");
-        if (gameType != null && gameType.equalsIgnoreCase("Custom"));
+        if (gameType != null && gameType.equalsIgnoreCase("Custom"))
             GameBoard.activeGameBoard.gameBoard = null;
         this.gameBoard = new GameBoard();
 
@@ -323,7 +323,7 @@ public class GameBoardActivity extends AppCompatActivity {
             this.selectedSquare = gbas;
             drawBoardSquareHighlight(this.selectedSquare, R.drawable.board_square_outline);
 
-            if (gbas.getOccupyingPiece() != null && this.gameBoard.playerToMove() == this.playerColor) {
+            if (gbas.getOccupyingPiece() != null) {
                 Piece piece = gbas.getOccupyingPiece();
 
                 List<Position> possibleMoves = piece.possibleMoves();
@@ -344,7 +344,11 @@ public class GameBoardActivity extends AppCompatActivity {
 
                 for (Position p : legalMoves) {
                     GameBoardActivitySquare legalSquare = getGBASForPosition(p);
-                    drawBoardSquareHighlight(legalSquare, R.drawable.board_square_highlight_legal);
+                    if (gbas.getOccupyingPiece().getColor() == this.playerColor) {
+                        drawBoardSquareHighlight(legalSquare, R.drawable.board_square_highlight_legal);
+                    } else {
+                        drawBoardSquareHighlight(legalSquare, R.drawable.board_square_highlight_possible);
+                    }
                 }
             }
         }

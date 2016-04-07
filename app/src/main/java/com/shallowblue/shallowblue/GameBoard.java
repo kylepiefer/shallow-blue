@@ -134,7 +134,8 @@ public class GameBoard {
     }
 
     public boolean legalMove(Move m) {
-        if(gameBoard.get(m.getTo()).getColor() == gameBoard.get(m.getFrom()).getColor()){
+        if(gameBoard.get(m.getTo()) != null &&
+                gameBoard.get(m.getTo()).getColor() == gameBoard.get(m.getFrom()).getColor()){
             return false;
         }
         if(m.getPieceMoved().toString().equals("p")){
