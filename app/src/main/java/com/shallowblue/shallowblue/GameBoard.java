@@ -7,17 +7,20 @@ import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 public class GameBoard {
 
     public static Map<Position, Piece> gameBoard;
     public static List<Move> gameHistory;
     public static Color playerToMove;
+    private Queue<Move> redoQueue;
 
     public GameBoard() {
-        if (this.gameBoard == null) {
+        if (gameBoard == null) {
             gameBoard = new HashMap<Position, Piece>();
             Position p;
             gameBoard.put((p = new Position(0, 0)), new Rook(p, Color.WHITE));
@@ -56,6 +59,7 @@ public class GameBoard {
         }
         playerToMove = Color.WHITE;
         gameHistory = new ArrayList<Move>();
+        redoQueue = new LinkedList<Move>();
     }
     public GameBoard(GameBoard in) {
         gameBoard = new HashMap<Position,Piece>(in.getGameBoard());
@@ -71,7 +75,7 @@ public class GameBoard {
     }
 
     public boolean move(Move m){						//Returns true iff successful
-
+        redoQueue.clear();
         if(gameBoard.get(m.getFrom()) == null)
             return false;
 
@@ -85,7 +89,7 @@ public class GameBoard {
         m.getPieceMoved().setPosition(m.getTo());
 
         gameHistory.add(m);
-        playerToMove = playerToMove == Color.WHITE ? Color.BLACK : Color.WHITE;
+    playerToMove = playerToMove == Color.WHITE ? Color.BLACK : Color.WHITE;
         return true;
     }
 
@@ -103,44 +107,92 @@ public class GameBoard {
     public String toString(){
         return TextUtils.join("\n", gameHistory);
     }
-    public void undo(){ //example move is ka4_b5
+    public boolean undo(){ //example move is ka4_b5
+        if (gameHistory.isEmpty()) return false;
+
         Move m = gameHistory.get(gameHistory.size()-1);
-        if(m == null)
-            return;
         gameBoard.put(m.getFrom(), m.getPieceMoved());
         gameBoard.put(m.getTo(), m.getPieceCaptured());
 
-        gameHistory.remove(gameHistory.size()-1);
-        return;
+        gameHistory.remove(gameHistory.size() - 1);
+        redoQueue.add(m);
+        return true;
+    }
+    public boolean redo(){
+        if (redoQueue.isEmpty()){
+            return false;
+        }
+        Move m = redoQueue.remove();
+        this.move(m);
+        return true;
     }
 
     public boolean legalMove(Move m) {
-        /* TODO I couldn't understand this code
-            canmove = true;
-            tempint = new int[2];
-            Position temppos = movelist.get(i);
-            tempint[0] = temppos.getRow();
-            tempint[1] = temppos.getColumn();
-            while (tempint != from){
-                if(from[0]-tempint[0] != 0) {
-                    tempint[0] = (int) (tempint[0] + Math.signum(from[0] - tempint[0]));
-                }
-                if(from[1]-tempint[1] != 0) {
-                    tempint[1] = (int) (tempint[1] + Math.signum(from[1] - tempint[1]));
-                }
-                if ( gameBoard[tempint[0]][tempint[1]] != null && movelist.contains(tempint)){
-                    canmove = false;
-                    if(from[0]-tempint[0] != 0) {
-                        tempint[0] = (int) (tempint[0] + Math.signum(from[0] - tempint[0]));
-                    }
-                    if(from[1]-tempint[1] != 0) {
-                        tempint[1] = (int) (tempint[1] + Math.signum(from[1] - tempint[1]));
-                    }
-                }
+        if(m.getPieceMoved().toString().equals("p")){
+            if(m.getTo().getColumn() == m.getFrom().getColumn() && m.getPieceMoved().possibleMoves().contains(m.getTo()) && !gameBoard.containsKey(m.getTo())){ //nothing is blocking the pawn
+                return true;
             }
-         */
-        return true;
+            return (m.getTo().getColumn() == m.getFrom().getColumn()+1 ||m.getTo().getColumn() == m.getFrom().getColumn() -1 &&             //is in adjacent column
+                    m.getTo().getRow() == m.getFrom().getRow()+1 ||m.getTo().getRow() == m.getFrom().getRow() -1 &&                         //is in adjacent row
+                    m.getPieceMoved().possibleMoves().contains(new Position(m.getTo().getRow(),m.getTo().getColumn()+1)) ||                 //is in the same direction
+                    m.getPieceMoved().possibleMoves().contains(new Position(m.getTo().getRow(),m.getTo().getColumn()+-1)));
+        }
+        boolean canmove = true;
+        Position tempPos = m.getTo();
+        if(m.getPieceMoved().toString().equals("r")&&gameBoard.get(m.getTo()).toString().equals("k")&&!m.getPieceMoved().hasMoved()&&!gameBoard.get(m.getTo()).hasMoved()){ //castle
+            canmove = true;
+            tempPos = m.getTo();
+            while (m.getFrom().getColumn() != tempPos.getColumn()){ //checks if anything is between the castling pieces
+                int tempCol = tempPos.getColumn();
+
+                if(m.getFrom().getColumn() > tempPos.getColumn()){
+                    tempCol++;
+                }
+                else if(m.getFrom().getColumn() < tempPos.getColumn()){
+                    tempCol--;
+                }
+
+                tempPos = new Position(m.getFrom().getRow(), tempCol);
+                if(m.getPieceMoved().possibleMoves().contains(tempPos)&&gameBoard.containsKey(tempPos)){
+                    canmove = false;
+                }
+
+            }
+            return canmove;
+        }
+        while (m.getFrom().getColumn() != tempPos.getColumn()){ //naive evaluation of non-pawn pieces
+            int tempCol = tempPos.getColumn();
+            int tempRow = tempPos.getRow();
+            if(m.getFrom().getColumn() > tempPos.getColumn()){
+                tempCol++;
+            }
+            else if(m.getFrom().getColumn() < tempPos.getColumn()){
+                tempCol--;
+            }
+
+            if(m.getFrom().getRow() > tempPos.getRow()){
+                tempRow++;
+            }
+            else if(m.getFrom().getRow() < tempPos.getRow()){
+                tempRow--;
+            }
+            tempPos = new Position(tempRow, tempCol);
+            if(m.getPieceMoved().possibleMoves().contains(tempPos)&&gameBoard.containsKey(tempPos)){
+                canmove = false;
+            }
+
+        }
+        if(false){ //skewer
+            return false;
+        }
+        if(false){ //fork
+            return false;
+        }
+
+        return canmove;
     }
+
+
 
     public List<Move> getLegalMoves(Position from){
         List<Move> moveList = new ArrayList<Move>();
@@ -155,11 +207,25 @@ public class GameBoard {
     }
 
     public String pack(){
-        return null;
+        String temp = "";
+        Position p;
+        for(int i = 0; i < 7; i++) {
+            for(int j = 0; j < 7; j++) {
+                p = new Position(i,j);
+                if (gameBoard.containsKey(p)) {
+                    temp += gameBoard.get(p).toString();
+                }
+                else {
+                    temp += "_";
+                }
+            }
+        }
+        temp += "+" + gameHistory.get(0).toString() + gameHistory.get(1).toString() + gameHistory.get(2).toString() + "+\n";
+        return temp;
     }
 
     public void unpack(String packedString){
-        return;
+
     }
 
     public Map<Position, Piece> getGameBoard(){
