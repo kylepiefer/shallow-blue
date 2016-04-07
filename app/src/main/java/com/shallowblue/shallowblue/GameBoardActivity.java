@@ -18,11 +18,10 @@ import java.util.Map;
 public class GameBoardActivity extends AppCompatActivity {
 
     private GameBoard gameBoard;
-    private Map<Position,Position> boardPositionToScreenPosition;
     private GameBoardActivitySquare[][] gameBoardActivitySquares;
     private GameBoardActivitySquare selectedSquare;
-    private ArrayList<GameBoardActivitySquare> outlinedSquares;
-    private Color color;
+    private ArrayList<GameBoardActivitySquare> highlightedSquares;
+    private Color playerColor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,9 +32,9 @@ public class GameBoardActivity extends AppCompatActivity {
         // use intent extras
         String colorString = getIntent().getStringExtra("Color");
         if (colorString.equalsIgnoreCase("White"))
-            this.color = Color.WHITE;
+            this.playerColor = Color.WHITE;
         else
-            this.color = Color.BLACK;
+            this.playerColor = Color.BLACK;
 
         // this is needed to handle the game logic
         String gameType = getIntent().getStringExtra("Type");
@@ -44,25 +43,27 @@ public class GameBoardActivity extends AppCompatActivity {
         this.gameBoard = new GameBoard();
 
         // this is needed to map logical squares to images on the screen
-        this.createGameBoardSquareGrid(this.color);
+        createGameBoardActivitySquareArray(this.playerColor);
         this.selectedSquare = null;
-        this.outlinedSquares = new ArrayList<GameBoardActivitySquare>();
+        this.highlightedSquares = new ArrayList<GameBoardActivitySquare>();
 
-        this.placePieces();
+        Map<Position, Piece> gameBoardPiecePositions = this.gameBoard.getGameBoard();
+        placePiecesOnBoard(gameBoardPiecePositions);
     }
 
-    private void createGameBoardSquareGrid(Color color) {
+    private void createGameBoardActivitySquareArray(Color playerColor) {
         // allocate the array of objects
         this.gameBoardActivitySquares = new GameBoardActivitySquare[8][8];
 
         // get a reference to the grid layout
-        GridLayout layout = (GridLayout)this.findViewById(R.id.game_board_root);
+        GridLayout grid = (GridLayout)this.findViewById(R.id.game_board_grid);
 
         // calculate the size of each image for later use
-        int imageWidth = this.getResources().getDimensionPixelSize(R.dimen.dimen_game_board_square_width);
+        int imageWidth = this.getResources().getDimensionPixelSize(R.dimen.game_board_activity_square_width);
+        int imageHeight = this.getResources().getDimensionPixelSize(R.dimen.game_board_activity_square_height);
 
         // used to color squares
-        boolean isBlack = true;
+        boolean isBlack = false;
 
         // iterate through the array to make all our squares
         for (int r = 0; r < this.gameBoardActivitySquares.length; r++) {
@@ -70,37 +71,47 @@ public class GameBoardActivity extends AppCompatActivity {
             // row ended with
             isBlack = !isBlack;
             for (int c = 0; c < this.gameBoardActivitySquares[r].length; c++) {
-                Position squarePosition = new Position(r,c);
+                int screenRow = 7 - r;
+                int screenColumn = c;
+                int boardRow = r;
+                int boardColumn = c;
+                if (playerColor == Color.BLACK) {
+                    boardRow = 7 - r;
+                    boardColumn = 7 - c;
+                }
 
+                // set the positions
+                Position boardPosition = new Position(boardRow, boardColumn);
+                Position screenPosition = new Position(screenRow, screenColumn);
+
+                // make the associated frame to hold images
+                FrameLayout squareLayout = new FrameLayout(getApplicationContext());
+                GridLayout.LayoutParams layoutParams =
+                        new GridLayout.LayoutParams(GridLayout.spec(screenRow), GridLayout.spec(screenColumn));
+                layoutParams.width = imageWidth;
+                layoutParams.height = imageHeight;
+                squareLayout.setLayoutParams(layoutParams);
+                grid.addView(squareLayout, layoutParams);
+
+                // make the GBAS
+                GameBoardActivitySquare gbas = new GameBoardActivitySquare(boardPosition, squareLayout);
+                gbas.setScreenPosition(screenPosition);
+                this.gameBoardActivitySquares[boardRow][boardColumn] = gbas;
+
+                // add the square tile image
                 ImageView image = new ImageView(getApplicationContext());
+                FrameLayout.LayoutParams frameLayoutParams = new FrameLayout.LayoutParams(imageWidth, imageHeight);
+                image.setLayoutParams(frameLayoutParams);
                 image.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) { onBoardTouched(v); }
+                    public void onClick(View v) {
+                        onBoardTouched(v);
+                    }
                 });
                 if (isBlack) image.setImageResource(R.drawable.darksquaretile);
                 else image.setImageResource(R.drawable.graysquaretile);
-
-                GridLayout.LayoutParams layoutParams =
-                        new GridLayout.LayoutParams(GridLayout.spec(squarePosition.getRow()),
-                                                    GridLayout.spec(squarePosition.getColumn()));
-                layoutParams.width = imageWidth;
-                layoutParams.height = imageWidth;
-                layout.addView(image, layoutParams);
-
-                GameBoardActivitySquare gbas = new GameBoardActivitySquare(squarePosition, image);
-                int screenRow = 0;
-                int screenColumn = 0;
-                if (color == Color.WHITE) {
-                    screenRow = imageWidth * r;
-                    screenColumn = imageWidth * c;
-
-                } else {
-                    screenRow = 7 * imageWidth - imageWidth * r;
-                    screenColumn = 7 * imageWidth - imageWidth * c;
-                }
-                gbas.setScreenPosition(new Position(screenRow, screenColumn));
                 image.setTag(gbas);
-                this.gameBoardActivitySquares[r][c] = gbas;
+                gbas.setSquareImage(image);
 
                 // flip back color
                 isBlack = !isBlack;
@@ -108,28 +119,29 @@ public class GameBoardActivity extends AppCompatActivity {
         }
     }
 
-    public void placePieces() {
-        Map<Position, Piece> gameBoardMap = this.gameBoard.getGameBoard();
-        for (Position position : gameBoardMap.keySet()) {
-            GameBoardActivitySquare gbas =
-                    this.gameBoardActivitySquares[position.getRow()][position.getColumn()];
-            Piece piece = gameBoardMap.get(position);
-            this.placePieceInSquare(piece, gbas.getBoardPosition());
+    private GameBoardActivitySquare getGBASForPosition(Position position) {
+        GameBoardActivitySquare gbas = this.gameBoardActivitySquares[position.getRow()][position.getColumn()];
+        return gbas;
+    }
+
+    private void placePiecesOnBoard(Map<Position, Piece> gameBoard) {
+        for (Position position : gameBoard.keySet()) {
+            GameBoardActivitySquare gbas = getGBASForPosition(position);
+            Piece piece = gameBoard.get(position);
+            this.placePieceInSquare(piece, gbas);
         }
     }
 
-    private void placePieceInSquare(Piece piece, Position square) {
-        GameBoardActivitySquare gbas = this.gameBoardActivitySquares[square.getRow()][square.getColumn()];
-        RelativeLayout container = (RelativeLayout)this.findViewById(R.id.piece_container);
+    private void placePieceInSquare(Piece piece, GameBoardActivitySquare gbas) {
+        // make the image
         ImageView pieceImage = new ImageView(getApplicationContext());
-
-        int imageWidth = this.getResources().getDimensionPixelSize(R.dimen.dimen_game_board_square_width);
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(imageWidth, imageWidth);
-        layoutParams.leftMargin = gbas.getScreenPosition().getColumn();
-        layoutParams.topMargin = gbas.getScreenPosition().getRow();
+        int imageWidth = this.getResources().getDimensionPixelSize(R.dimen.game_board_activity_square_width);
+        int imageHeight = this.getResources().getDimensionPixelSize(R.dimen.game_board_activity_square_height);
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(imageWidth, imageWidth);
         pieceImage.setLayoutParams(layoutParams);
 
-        if (piece.getColor() == Color.WHITE) {
+        // get piece color
+        if (piece.getColor() == Color.BLACK) {
             if (piece instanceof Pawn) {
                 pieceImage.setImageResource(R.drawable.black_pawn);
             } else if (piece instanceof Bishop) {
@@ -143,7 +155,7 @@ public class GameBoardActivity extends AppCompatActivity {
             } else if (piece instanceof King) {
                 pieceImage.setImageResource(R.drawable.black_king);
             }
-        } else if (piece.getColor() == Color.BLACK) {
+        } else if (piece.getColor() == Color.WHITE) {
             if (piece instanceof Pawn) {
                 pieceImage.setImageResource(R.drawable.white_pawn);
             } else if (piece instanceof Bishop) {
@@ -159,46 +171,93 @@ public class GameBoardActivity extends AppCompatActivity {
             }
         }
 
-        container.addView(pieceImage);
-        gbas.setOccupyingPiece(piece);
-        gbas.setPieceImage(pieceImage);
+        gbas.placePiece(piece, pieceImage);
     }
 
-    public void drawBoardSquareOutline(GameBoardActivitySquare gbas) {
-        if (gbas == null || gbas.getOutline() != null) return;
-
-        FrameLayout container = (FrameLayout)this.findViewById(R.id.board_container);
-        ImageView outlineImage = new ImageView(getApplicationContext());
-
-        int imageWidth = this.getResources().getDimensionPixelSize(R.dimen.dimen_game_board_square_width);
-
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(imageWidth, imageWidth);
-        layoutParams.leftMargin = gbas.getScreenPosition().getColumn();
-        layoutParams.topMargin = gbas.getScreenPosition().getRow();
-        outlineImage.setLayoutParams(layoutParams);
-        outlineImage.setImageResource(R.drawable.board_square_outline);
-        container.addView(outlineImage);
-
-        gbas.setOutline(outlineImage);
-        synchronized(this.outlinedSquares) {
-            this.outlinedSquares.add(gbas);
-        }
-    }
-
-    public void removeBoardSquareOutline(GameBoardActivitySquare gbas) {
+    private void drawBoardSquareHighlight(GameBoardActivitySquare gbas) {
         if (gbas == null) return;
-        ImageView outline = gbas.getOutline();
-        if (outline != null) {
-            FrameLayout container = (FrameLayout)this.findViewById(R.id.board_container);
-            container.removeView(outline);
-            gbas.clearOutline();
-            synchronized(this.outlinedSquares) {
-                this.outlinedSquares.remove(gbas);
-            }
+
+        // make the image
+        ImageView highlightImage = new ImageView(getApplicationContext());
+
+        int imageWidth = this.getResources().getDimensionPixelSize(R.dimen.game_board_activity_square_width);
+        int imageHeight = this.getResources().getDimensionPixelSize(R.dimen.game_board_activity_square_height);
+
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(imageWidth, imageHeight);
+        highlightImage.setLayoutParams(layoutParams);
+        highlightImage.setImageResource(R.drawable.board_square_outline);
+        gbas.addHighlight(highlightImage);
+
+        synchronized(this.highlightedSquares) {
+            this.highlightedSquares.add(gbas);
         }
     }
 
-    public void updateGameboard(Move move) {
+    private void removeBoardSquareOutline(GameBoardActivitySquare gbas) {
+        if (gbas == null) return;
+        gbas.removeHighlight();
+        synchronized(this.highlightedSquares) {
+            this.highlightedSquares.remove(gbas);
+        }
+    }
+
+    private void removeAllSquareHighlights() {
+        for (int i = this.highlightedSquares.size() - 1; i >= 0; i--) {
+            removeBoardSquareOutline(this.highlightedSquares.get(i));
+        }
+    }
+
+    private void animateMove(final GameBoardActivitySquare from, final GameBoardActivitySquare to) {
+        // make sure the move is valid
+        final Piece piece = from.getOccupyingPiece();
+        final ImageView pieceImage = from.getPieceImage();
+        if (piece == null || pieceImage == null) return;
+
+        final int imageWidth = this.getResources().getDimensionPixelSize(R.dimen.game_board_activity_square_width);
+        final int imageHeight = this.getResources().getDimensionPixelSize(R.dimen.game_board_activity_square_height);
+
+        final int deltaScreenRows = to.getScreenPosition().getRow() - from.getScreenPosition().getRow();
+        final int deltaScreenColumns = to.getScreenPosition().getColumn() - from.getScreenPosition().getColumn();
+        final int deltaX = imageWidth * deltaScreenColumns;
+        final int deltaY = imageHeight * deltaScreenRows;
+        final long distance = (long)Math.sqrt(deltaScreenRows * deltaScreenRows + deltaScreenColumns * deltaScreenColumns);
+
+        final ImageView imageCopy = new ImageView(this);
+        final FrameLayout.LayoutParams copyParams = new FrameLayout.LayoutParams(imageWidth, imageHeight);
+        copyParams.topMargin = from.getScreenPosition().getRow() * imageHeight;
+        copyParams.leftMargin = from.getScreenPosition().getColumn() * imageWidth;
+        imageCopy.setLayoutParams(copyParams);
+        imageCopy.setImageDrawable(pieceImage.getDrawable());
+
+        final FrameLayout animationLayer = (FrameLayout)this.findViewById(R.id.game_board_animation_layer);
+        animationLayer.addView(imageCopy);
+        pieceImage.setVisibility(View.INVISIBLE);
+
+        TranslateAnimation animation = new TranslateAnimation(Animation.ABSOLUTE, (float)0,
+                Animation.ABSOLUTE, (float)deltaX,
+                Animation.ABSOLUTE, (float)0,
+                Animation.ABSOLUTE, (float)deltaY);
+        animation.setDuration(200 * distance);
+        animation.setZAdjustment(Animation.ZORDER_TOP);
+        animation.setFillAfter(true);
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {}
+            @Override
+            public void onAnimationRepeat(Animation animation) {}
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                from.removePiece();
+                to.placePiece(piece, pieceImage);
+                pieceImage.setVisibility(View.VISIBLE);
+                imageCopy.clearAnimation();
+                animationLayer.removeView(imageCopy);
+            }
+        });
+        imageCopy.startAnimation(animation);
+    }
+
+    private void updateGameboard(Move move) {
         // find which gbas has the squares
         GameBoardActivitySquare from = null;
         GameBoardActivitySquare to = null;
@@ -213,82 +272,32 @@ public class GameBoardActivity extends AppCompatActivity {
             if (from != null && to != null) break;
         }
 
-        // make sure the move is valid
-        Piece piece = from.getOccupyingPiece();
-        final ImageView pieceImage = from.getPieceImage();
-        if (piece == null || pieceImage == null) return;
-
-        // handle captures after animation
-        final Piece takenPiece = to.getOccupyingPiece();
-        final ImageView takenPieceImage = to.getPieceImage();
-        final RelativeLayout container = (RelativeLayout)this.findViewById(R.id.piece_container);
-
-        // swap pieces
-        to.setOccupyingPiece(piece);
-        from.clearOccupyingPiece();
-        to.setPieceImage(pieceImage);
-        from.clearPieceImage();
-
-        final int deltaX = to.getScreenPosition().getColumn() - from.getScreenPosition().getColumn();
-        final int deltaY = to.getScreenPosition().getRow() - from.getScreenPosition().getRow();
-        long distance = (long)Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-
-        TranslateAnimation animation =
-                new TranslateAnimation(Animation.ABSOLUTE, (float)0,
-                        Animation.ABSOLUTE, (float)deltaX,
-                        Animation.ABSOLUTE, (float)0,
-                        Animation.ABSOLUTE, (float)deltaY);
-        animation.setDuration(distance);
-        animation.setZAdjustment(Animation.ZORDER_TOP);
-        pieceImage.bringToFront();
-        animation.setFillAfter(true);
-        animation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {}
-            @Override
-            public void onAnimationRepeat(Animation animation) {}
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                RelativeLayout.LayoutParams layoutParams =
-                        (RelativeLayout.LayoutParams)pieceImage.getLayoutParams();
-                layoutParams.topMargin = layoutParams.topMargin + deltaY;
-                layoutParams.leftMargin = layoutParams.leftMargin + deltaX;
-                pieceImage.clearAnimation();
-                pieceImage.setLayoutParams(layoutParams);
-
-                if (takenPieceImage != null) container.removeView(takenPieceImage);
-            }
-
-        });
-        pieceImage.startAnimation(animation);
+        animateMove(from, to);
     }
 
     public void onBoardTouched(View squareImage) {
         GameBoardActivitySquare gbas = (GameBoardActivitySquare)squareImage.getTag();
 
         if (this.selectedSquare == gbas) {
-            for (int i = this.outlinedSquares.size() - 1; i >= 0; i--) {
-                removeBoardSquareOutline(this.outlinedSquares.get(i));
-            }
+            removeAllSquareHighlights();
             this.selectedSquare = null;
-        } else if (this.outlinedSquares.contains(gbas)){
+        }
+
+        else if (this.highlightedSquares.contains(gbas)){
             Move move = new Move(this.selectedSquare.getOccupyingPiece(),
                                 this.selectedSquare.getBoardPosition(),
                                 gbas.getBoardPosition());
             if (this.gameBoard.move(move)) {
                 this.updateGameboard(move);
-
-                for (int i = this.outlinedSquares.size() - 1; i >= 0; i--) {
-                    removeBoardSquareOutline(this.outlinedSquares.get(i));
-                }
+                removeAllSquareHighlights();
                 this.selectedSquare = null;
             }
             else Log.d("ShallowBlue", "Move Failed.");
-        } else {
-            for (int i = this.outlinedSquares.size() - 1; i >= 0; i--) {
-                removeBoardSquareOutline(this.outlinedSquares.get(i));
-            }
-            drawBoardSquareOutline(gbas);
+        }
+
+        else {
+            removeAllSquareHighlights();
+            drawBoardSquareHighlight(gbas);
             this.selectedSquare = gbas;
 
             if (gbas.getOccupyingPiece() != null) {
@@ -296,9 +305,8 @@ public class GameBoardActivity extends AppCompatActivity {
 
                 ArrayList<Position> possibleMoves = piece.possibleMoves();
                 for (Position p : possibleMoves) {
-                    GameBoardActivitySquare possibleSquare =
-                            this.gameBoardActivitySquares[p.getRow()][p.getColumn()];
-                    drawBoardSquareOutline(possibleSquare);
+                    GameBoardActivitySquare possibleSquare = getGBASForPosition(p);
+                    drawBoardSquareHighlight(possibleSquare);
                 }
             }
         }
@@ -332,8 +340,5 @@ public class GameBoardActivity extends AppCompatActivity {
         check.putExtra("next",verify);
         startActivity(check);
     }
-
-
-
-
 }
+
