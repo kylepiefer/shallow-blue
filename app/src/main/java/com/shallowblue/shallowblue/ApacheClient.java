@@ -1,7 +1,5 @@
 package com.shallowblue.shallowblue;
-
 import android.os.AsyncTask;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -12,7 +10,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
-
 import java.util.ArrayList;
 
 /**
@@ -28,7 +25,7 @@ public class ApacheClient {
             HttpPost storeVal = new HttpPost("http://shallowBlue");
             ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
             nameValuePairs.add(new BasicNameValuePair("tag", "shallowBlue"));
-            nameValuePairs.add(new BasicNameValuePair("GameBoard", null));
+            nameValuePairs.add(new BasicNameValuePair("GameBoard", strs[0]));
 
             try {
                 UrlEncodedFormEntity httpEntity = new UrlEncodedFormEntity(nameValuePairs);
@@ -53,7 +50,7 @@ public class ApacheClient {
 
         @Override
         protected void onPostExecute(String res) {
-            System.out.println("connected");
+            System.out.println("gameBoard Passed");
         }
     }
 
@@ -84,7 +81,7 @@ public class ApacheClient {
         @Override
         protected void onPostExecute(String res)
         {
-            System.out.println("get");
+            System.out.println("new move got");
         }
     }
 }
