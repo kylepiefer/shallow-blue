@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/board_square_highlight_possible">
-    <stroke android:width="20dp" android:color="#8038F916" />
+    <stroke android:width="2dp" android:color="@color/possible_move_outline" />
+    <solid android:color="@color/possible_move_highlight"/>
     <size android:width="40dp" android:height="40dp" />
 </shape>
