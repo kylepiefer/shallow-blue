@@ -183,10 +183,12 @@ public class GameBoard {
 
         }
         if(false){ //skewer
-            return false;
-        }
-        if(false){ //fork
-            return false;
+            move(m);
+            if(false){ //king is threatned
+               return false;
+            }
+            this.undo();
+            redoQueue.remove();
         }
 
         return canmove;
@@ -240,6 +242,19 @@ public class GameBoard {
 
     public double sbe() {
         return 0;
+    }
+    public List<Move> isThreatened(Piece p) {
+        List<Move> ret = new ArrayList<Move>();
+        for (Map.Entry<Position, Piece> e : gameBoard.entrySet()){
+            if (!(e.getValue().getColor() == playerToMove))
+                ret.addAll(getLegalMoves(e.getKey()));
+        }
+        for (Move e : ret){
+            if(e.getTo()!=p.getPosition()){
+                ret.remove(e);
+            }
+        }
+        return ret;
     }
 
     //TODO Detects when a player has won.
