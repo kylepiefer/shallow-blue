@@ -50,7 +50,7 @@ public class GameBoardActivity extends AppCompatActivity {
         // this is needed to handle the game logic
         String gameType = getIntent().getStringExtra("Type");
         if (gameType != null && gameType.equalsIgnoreCase("Custom"));
-            GameBoard.gameBoard = null;
+            GameBoard.activeGameBoard.gameBoard = null;
         this.gameBoard = new GameBoard();
 
         // this is needed to map logical squares to images on the screen

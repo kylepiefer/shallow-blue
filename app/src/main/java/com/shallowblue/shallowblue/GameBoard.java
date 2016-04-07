@@ -14,9 +14,10 @@ import java.util.Queue;
 
 public class GameBoard {
 
-    public static Map<Position, Piece> gameBoard;
-    public static List<Move> gameHistory;
-    public static Color playerToMove;
+    public static GameBoard activeGameBoard;
+    public Map<Position, Piece> gameBoard;
+    public List<Move> gameHistory;
+    private Color playerToMove;
     private Queue<Move> redoQueue;
 
     public GameBoard() {
@@ -97,7 +98,7 @@ public class GameBoard {
         return true;
     }
 
-    public static void addMove(Move m){
+    public void addMove(Move m){
         gameHistory.add(m);
     }
 
@@ -244,7 +245,7 @@ public class GameBoard {
         return gameBoard;
     }
 
-    public static List<Move> getGameHistory() { return gameHistory; }
+    public List<Move> getGameHistory() { return gameHistory; }
 
     public Color playerToMove() {
         return playerToMove;
