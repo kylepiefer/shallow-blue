@@ -31,7 +31,9 @@ public class PVPGameBoard extends AppCompatActivity {
     public Color turn;
     public Position selPosition;
     public List<Position> selMoves;
-    public final int greenHighlight = R.drawable.board_square_highlight_possible;
+    public List<Move> selLegal;
+    public final int redHighlight = R.drawable.board_square_highlight_possible;
+    public final int greenHighlight = R.drawable.board_square_highlight_legal;
     public final int yellowBoardSelection = R.drawable.board_square_outline;
     ImageView temp;
     boolean doneWithPrev;
@@ -49,6 +51,9 @@ public class PVPGameBoard extends AppCompatActivity {
         imagePositions = new HashMap<ImageView, Position>();
         doneWithPrev = true;
         redoMoves = new ArrayList<>();
+
+        GameBoard.activeGameBoard = new GameBoard();
+
         GameBoard.activeGameBoard.gameHistory = new ArrayList<Move>();
 
         pvpGameboard = new ImageView[8][8];
@@ -200,9 +205,15 @@ public class PVPGameBoard extends AppCompatActivity {
                 selPiece = tempPiece;
                 selPosition = tempPos;
                 selMoves = selPiece.possibleMoves();
+                selLegal = GameBoard.activeGameBoard.getLegalMoves(selPosition);
                 for (int i = 0; i < selMoves.size(); i++) {
                     int selMoveX = selMoves.get(i).getRow();
                     int selMoveY = selMoves.get(i).getColumn();
+                    pvpGameboard[selMoveX][selMoveY].setBackgroundResource(redHighlight);
+                }
+                for (int i = 0; i < selLegal.size(); i++){
+                    int selMoveX = selLegal.get(i).getTo().getRow();
+                    int selMoveY = selLegal.get(i).getTo().getColumn();
                     pvpGameboard[selMoveX][selMoveY].setBackgroundResource(greenHighlight);
                 }
                 return;
