@@ -191,7 +191,7 @@ public class GameBoard {
                 tempRow--;
             }
             tempPos = new Position(tempRow, tempCol);
-            if(m.getPieceMoved().possibleMoves().contains(tempPos)&&gameBoard.containsKey(tempPos)){
+            if(m.getPieceMoved().possibleMoves().contains(tempPos) && gameBoard.get(tempPos) != null){
                 canmove = false;
             }
 
