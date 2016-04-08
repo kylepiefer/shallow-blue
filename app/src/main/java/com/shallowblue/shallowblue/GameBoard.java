@@ -143,10 +143,11 @@ public class GameBoard {
                     possibleMoves().contains(m.getTo()) && gameBoard.get(m.getTo()) == null){ //nothing is blocking the pawn
                 return true;
             }
-            return (m.getTo().getColumn() == m.getFrom().getColumn()+1 ||m.getTo().getColumn() == m.getFrom().getColumn() -1 &&             //is in adjacent column
-                    m.getTo().getRow() == m.getFrom().getRow()+1 ||m.getTo().getRow() == m.getFrom().getRow() -1 &&                         //is in adjacent row
-                    m.getPieceMoved().possibleMoves().contains(new Position(m.getTo().getRow(),m.getTo().getColumn()+1)) ||                 //is in the same direction
-                    m.getPieceMoved().possibleMoves().contains(new Position(m.getTo().getRow(),m.getTo().getColumn()+-1)));
+            return ((m.getTo().getColumn() == m.getFrom().getColumn()+1 || m.getTo().getColumn() == m.getFrom().getColumn() -1 &&             //is in adjacent column
+                    m.getTo().getRow() == m.getFrom().getRow()+1 || m.getTo().getRow() == m.getFrom().getRow() -1) &&                         //is in adjacent row
+                    (m.getPieceMoved().possibleMoves().contains(new Position(m.getTo().getRow(),m.getTo().getColumn()+1)) ||                 //is in the same direction
+                    m.getPieceMoved().possibleMoves().contains(new Position(m.getTo().getRow(),m.getTo().getColumn()+-1))) &&
+                    gameBoard.get(m.getTo()) != null);
         }
         boolean canmove = true;
         Position tempPos = m.getTo();
