@@ -1,9 +1,8 @@
 package com.shallowblue.shallowblue;
 
-import org.junit.Test;
+import junit.framework.Assert;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 /**
  * This is a class to run junit testing on Position.java
@@ -24,10 +23,10 @@ public class PositionTest {
      */
     @Test
     public void position_test() {
-        assertFalse(position0 == null);
-        assertFalse(position1 == null);
-        assertFalse(position2 == null);
-        assertFalse(position3 == null);
+        Assert.assertFalse(position0 == null);
+        Assert.assertFalse(position1 == null);
+        Assert.assertFalse(position2 == null);
+        Assert.assertFalse(position3 == null);
     }
 
     /**
@@ -36,10 +35,10 @@ public class PositionTest {
      */
     @Test
     public void testGetters() {
-        assertTrue(position0.getRow() == 0  && position0.getColumn() == 0);
-        assertTrue(position1.getRow() == 4  && position1.getColumn() == 6);
-        assertTrue(position2.getRow() == -6 && position2.getColumn() == -6);
-        assertTrue(position3.getRow() == 17 && position3.getColumn() == 74);
+        Assert.assertTrue(position0.getRow() == 0 && position0.getColumn() == 0);
+        Assert.assertTrue(position1.getRow() == 4 && position1.getColumn() == 6);
+        Assert.assertTrue(position2.getRow() == -6 && position2.getColumn() == -6);
+        Assert.assertTrue(position3.getRow() == 17 && position3.getColumn() == 74);
     }
 
     /**
@@ -51,11 +50,11 @@ public class PositionTest {
     @Test
     public void testEquals() {
 
-        assertFalse(position0.equals(position1));
-        assertFalse(position2.equals(position3));
+        Assert.assertFalse(position0.equals(position1));
+        Assert.assertFalse(position2.equals(position3));
 
-        assertTrue(position0.equals(new Position(0,0)));
-        assertTrue(position1.equals(position1));
+        Assert.assertTrue(position0.equals(new Position(0, 0)));
+        Assert.assertTrue(position1.equals(position1));
 
     }
 
@@ -77,16 +76,16 @@ public class PositionTest {
     public void testHashCode() {
 
         //1- Position (0,0)
-        assertTrue(position0.hashCode() == 961);
+        Assert.assertTrue(position0.hashCode() == 961);
 
         //2- Position (4,6)
-        assertTrue(position1.hashCode() == 1091);
+        Assert.assertTrue(position1.hashCode() == 1091);
 
         //3- Position (-6,-6)
-        assertTrue(position2.hashCode() == 769);
+        Assert.assertTrue(position2.hashCode() == 769);
 
         //4- Position (17,74)
-        assertTrue(position3.hashCode() == 1562);
+        Assert.assertTrue(position3.hashCode() == 1562);
 
     }
 
@@ -95,10 +94,10 @@ public class PositionTest {
      */
     @Test
     public void testToString() {
-        assertTrue(position0.toString().equals("(0,0)"));
-        assertTrue(position1.toString().equals("(4,6)"));
-        assertTrue(position2.toString().equals("(-6,-6)"));
-        assertTrue(position3.toString().equals("(17,74)"));
+        Assert.assertTrue(position0.toString().equals("(0,0)"));
+        Assert.assertTrue(position1.toString().equals("(4,6)"));
+        Assert.assertTrue(position2.toString().equals("(-6,-6)"));
+        Assert.assertTrue(position3.toString().equals("(17,74)"));
     }
 
 

@@ -134,11 +134,13 @@ public class GameBoard {
     }
 
     public boolean legalMove(Move m) {
-        if(gameBoard.get(m.getTo()).getColor() == gameBoard.get(m.getFrom()).getColor()){
+        if(gameBoard.get(m.getTo()) != null &&
+                gameBoard.get(m.getTo()).getColor() == gameBoard.get(m.getFrom()).getColor()){
             return false;
         }
         if(m.getPieceMoved().toString().equals("p")){
-            if(m.getTo().getColumn() == m.getFrom().getColumn() && m.getPieceMoved().possibleMoves().contains(m.getTo()) && !gameBoard.containsKey(m.getTo())){ //nothing is blocking the pawn
+            if(m.getTo().getColumn() == m.getFrom().getColumn() && m.getPieceMoved().
+                    possibleMoves().contains(m.getTo()) && gameBoard.get(m.getTo()) == null){ //nothing is blocking the pawn
                 return true;
             }
             return (m.getTo().getColumn() == m.getFrom().getColumn()+1 ||m.getTo().getColumn() == m.getFrom().getColumn() -1 &&             //is in adjacent column
@@ -148,10 +150,10 @@ public class GameBoard {
         }
         boolean canmove = true;
         Position tempPos = m.getTo();
-        if (m.getPieceMoved() instanceof Rook &&
+        /*if (m.getPieceMoved() instanceof Rook &&
                 gameBoard.get(m.getTo()) instanceof King &&
                 !m.getPieceMoved().hasMoved()&&!gameBoard.get(m.getTo()).hasMoved()) { //castle
-            canmove = true;
+
             tempPos = m.getTo();
             while (m.getFrom().getColumn() != tempPos.getColumn()){ //checks if anything is between the castling pieces
                 int tempCol = tempPos.getColumn();
@@ -169,9 +171,10 @@ public class GameBoard {
                 }
 
             }
-            return canmove;
-        }
-        while (m.getFrom().getColumn() != tempPos.getColumn()){ //naive evaluation of non-pawn pieces
+            //return canmove;
+        }*/
+        tempPos = m.getTo();
+        while (!m.getFrom().equals(tempPos)){ //naive evaluation of non-pawn pieces
             int tempCol = tempPos.getColumn();
             int tempRow = tempPos.getRow();
             if(m.getFrom().getColumn() > tempPos.getColumn()){
@@ -213,9 +216,18 @@ public class GameBoard {
             moveList.add(new Move(gameBoard.get(from), from, p));
         List<Move> ret = new ArrayList<Move>();
 
-        for(Move m : moveList)
-            if(legalMove(m))
-                ret.add(m);
+        Piece piece = gameBoard.get(from);
+
+        List<Position> possibleMoves = piece.possibleMoves();
+        List<Position> legalMoves = new ArrayList<Position>();
+        for (int p = possibleMoves.size() - 1; p >= 0; p--) {
+            Position curr = possibleMoves.get(p);
+            Move possible = new Move(piece, piece.getPosition(), curr);
+            if (legalMove(possible)) {
+                possibleMoves.remove(p);
+                ret.add(possible);
+            }
+        }
         return ret;
     }
 

@@ -37,6 +37,7 @@ public class GameBoardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game_board);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+
         // initialize toast
         this.toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
 
@@ -49,7 +50,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
         // this is needed to handle the game logic
         String gameType = getIntent().getStringExtra("Type");
-        if (gameType != null && gameType.equalsIgnoreCase("Custom"));
+        if (gameType != null && gameType.equalsIgnoreCase("Custom"))
             GameBoard.activeGameBoard.gameBoard = null;
         this.gameBoard = new GameBoard();
 
@@ -323,7 +324,7 @@ public class GameBoardActivity extends AppCompatActivity {
             this.selectedSquare = gbas;
             drawBoardSquareHighlight(this.selectedSquare, R.drawable.board_square_outline);
 
-            if (gbas.getOccupyingPiece() != null && this.gameBoard.playerToMove() == this.playerColor) {
+            if (gbas.getOccupyingPiece() != null) {
                 Piece piece = gbas.getOccupyingPiece();
 
                 List<Position> possibleMoves = piece.possibleMoves();
@@ -344,7 +345,11 @@ public class GameBoardActivity extends AppCompatActivity {
 
                 for (Position p : legalMoves) {
                     GameBoardActivitySquare legalSquare = getGBASForPosition(p);
-                    drawBoardSquareHighlight(legalSquare, R.drawable.board_square_highlight_legal);
+                    if (gbas.getOccupyingPiece().getColor() == this.playerColor) {
+                        drawBoardSquareHighlight(legalSquare, R.drawable.board_square_highlight_legal);
+                    } else {
+                        drawBoardSquareHighlight(legalSquare, R.drawable.board_square_highlight_possible);
+                    }
                 }
             }
         }
@@ -360,10 +365,13 @@ public class GameBoardActivity extends AppCompatActivity {
 
     public void startingHelper(View v) {
         showToast("The Helper is not currently available."); // TODO
+        new UrlConnection().new Connection().execute("connect");
     }
 
     public void altMove(View v ) {
-        showToast("An alternate move is not currently available."); // TODO
+        showToast("An alternate move is not currently available.");// TODO
+        new UrlConnection().new Request().execute(gameBoard.pack());
+
     }
 
     public void undoMove(View v){

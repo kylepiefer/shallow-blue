@@ -1,8 +1,9 @@
 package com.shallowblue.shallowblue;
 
+import junit.framework.Assert;
+
 import org.junit.Test;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 
 /**
@@ -21,8 +22,8 @@ public class QueenTest {
      */
     @Test
     public void testHasMoved() {
-        assertFalse(wQueen.hasMoved());
-        assertFalse(bQueen.hasMoved());
+        Assert.assertFalse(wQueen.hasMoved());
+        Assert.assertFalse(bQueen.hasMoved());
     }
 
     /**
@@ -33,8 +34,8 @@ public class QueenTest {
      */
     @Test
     public void isPromoting() {
-        assertFalse(wQueen.isPromoting());
-        assertFalse(bQueen.isPromoting());
+        Assert.assertFalse(wQueen.isPromoting());
+        Assert.assertFalse(bQueen.isPromoting());
     }
 
 
@@ -76,37 +77,37 @@ public class QueenTest {
         //1- wQueen
         possibleMoves = wQueen.possibleMoves();
 
-        assertTrue(possibleMoves.contains(new Position(0,0)));
-        assertTrue(possibleMoves.contains(new Position(0,1)));
-        assertTrue(possibleMoves.contains(new Position(0,2)));
-        assertTrue(possibleMoves.contains(new Position(0,4)));
-        assertTrue(possibleMoves.contains(new Position(0,5)));
-        assertTrue(possibleMoves.contains(new Position(0,6)));
-        assertTrue(possibleMoves.contains(new Position(0,7)));
+        Assert.assertTrue(possibleMoves.contains(new Position(0, 0)));
+        Assert.assertTrue(possibleMoves.contains(new Position(0, 1)));
+        Assert.assertTrue(possibleMoves.contains(new Position(0, 2)));
+        Assert.assertTrue(possibleMoves.contains(new Position(0, 4)));
+        Assert.assertTrue(possibleMoves.contains(new Position(0, 5)));
+        Assert.assertTrue(possibleMoves.contains(new Position(0, 6)));
+        Assert.assertTrue(possibleMoves.contains(new Position(0, 7)));
 
-        assertTrue(possibleMoves.contains(new Position(1,3)));
-        assertTrue(possibleMoves.contains(new Position(2,3)));
-        assertTrue(possibleMoves.contains(new Position(3,3)));
-        assertTrue(possibleMoves.contains(new Position(4,3)));
-        assertTrue(possibleMoves.contains(new Position(5,3)));
-        assertTrue(possibleMoves.contains(new Position(6,3)));
-        assertTrue(possibleMoves.contains(new Position(7,3)));
+        Assert.assertTrue(possibleMoves.contains(new Position(1, 3)));
+        Assert.assertTrue(possibleMoves.contains(new Position(2, 3)));
+        Assert.assertTrue(possibleMoves.contains(new Position(3, 3)));
+        Assert.assertTrue(possibleMoves.contains(new Position(4, 3)));
+        Assert.assertTrue(possibleMoves.contains(new Position(5, 3)));
+        Assert.assertTrue(possibleMoves.contains(new Position(6, 3)));
+        Assert.assertTrue(possibleMoves.contains(new Position(7, 3)));
 
-        assertTrue(possibleMoves.contains(new Position(1,2)));
-        assertTrue(possibleMoves.contains(new Position(2,1)));
-        assertTrue(possibleMoves.contains(new Position(3,0)));
+        Assert.assertTrue(possibleMoves.contains(new Position(1, 2)));
+        Assert.assertTrue(possibleMoves.contains(new Position(2, 1)));
+        Assert.assertTrue(possibleMoves.contains(new Position(3, 0)));
 
-        assertTrue(possibleMoves.contains(new Position(1,4)));
-        assertTrue(possibleMoves.contains(new Position(2,5)));
-        assertTrue(possibleMoves.contains(new Position(3,6)));
-        assertTrue(possibleMoves.contains(new Position(4,7)));
+        Assert.assertTrue(possibleMoves.contains(new Position(1, 4)));
+        Assert.assertTrue(possibleMoves.contains(new Position(2, 5)));
+        Assert.assertTrue(possibleMoves.contains(new Position(3, 6)));
+        Assert.assertTrue(possibleMoves.contains(new Position(4, 7)));
 
 
 
 
         //2- bQueen
         possibleMoves = bQueen.possibleMoves();
-        assertTrue(possibleMoves.isEmpty());
+        Assert.assertTrue(possibleMoves.isEmpty());
 
 
     }
@@ -116,8 +117,8 @@ public class QueenTest {
      */
     @Test
     public void testToString() {
-        assertTrue(wQueen.toString().equals("q"));
-        assertTrue(bQueen.toString().equals("q"));
+        Assert.assertTrue(wQueen.toString().equals("q"));
+        Assert.assertTrue(bQueen.toString().equals("q"));
     }
 
 }

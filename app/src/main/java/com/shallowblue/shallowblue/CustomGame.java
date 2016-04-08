@@ -51,6 +51,7 @@ public class CustomGame extends AppCompatActivity {
         boardSetup = new HashMap<Position, Piece>();
         availPos = new Position[8][8];
 
+
         customInitialize();
         imagePositionsInitialize(boardImages);
 
