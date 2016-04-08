@@ -13,6 +13,11 @@ public class Rook extends Piece {
 		
 	}
 
+	public Rook(Rook r) {
+		super(r.getPosition(), r.getColor(), r.getColor() == Color.WHITE ? R.drawable.white_rook : R.drawable.black_rook);
+		this.initialPosition = r.getPosition();
+	}
+
 	@Override
 	public boolean hasMoved() {
 		  return (initialPosition.getRow() == getPosition().getRow()
@@ -29,7 +34,8 @@ public class Rook extends Piece {
 	public ArrayList<Position> possibleMoves() {
 		
 		ArrayList<Position> result = new ArrayList<Position>();
-		
+		if (this.getPosition() == null) return result;
+
 		//Left & right movements
 		for (int i = 0; i <= 7; i++) if (i != getPosition().getColumn()) result.add(new Position(getPosition().getRow(), i));
 		//Up & down

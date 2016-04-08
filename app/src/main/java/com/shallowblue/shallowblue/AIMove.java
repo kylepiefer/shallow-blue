@@ -1,5 +1,7 @@
 package com.shallowblue.shallowblue;
 
+import android.util.Log;
+
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,15 +40,14 @@ public class AIMove {
         double best = Double.NEGATIVE_INFINITY;
         for (Move m : current.getAllMoves()) {
             current.move(m);
-            double v = minAction(current, depth - 1, best, Double.POSITIVE_INFINITY);
+            double v = minAction(new GameBoard(current), depth - 1, best, Double.POSITIVE_INFINITY);
             if(v > best)
                 best = v;
 
             //the sorted map is sorted low-high so we want to negate the value before the put
             moveGoodness.add(new SimpleEntry<Double, Move>(v, m));
-            current.undo();
+            //current.undo();
         }
-
         Collections.sort(moveGoodness, MIN_COMPARATOR);
         List<Move> ret = new ArrayList<Move>();
         for(Entry<Double,Move> e : moveGoodness)
@@ -59,13 +60,14 @@ public class AIMove {
         double best = Double.POSITIVE_INFINITY;
         for (Move m : current.getAllMoves()) {
             current.move(m);
-            double v = maxAction(current, depth - 1, Double.NEGATIVE_INFINITY, best);
+            double v = maxAction(new GameBoard(current), depth - 1, Double.NEGATIVE_INFINITY, best);
             if(v < best)
                 best = v;
 
             moveGoodness.add(new SimpleEntry<Double, Move>(v, m));
-            current.undo();
+            //current.undo();
         }
+
         Collections.sort(moveGoodness, MIN_COMPARATOR);
         List<Move> ret = new ArrayList<Move>();
         for(Entry<Double,Move> e : moveGoodness)
@@ -80,7 +82,7 @@ public class AIMove {
         double v = Double.NEGATIVE_INFINITY;
         for (Move m : current.getAllMoves()) {
             current.move(m);
-            double nextV = minAction(current, depth-1, alpha, beta);
+            double nextV = minAction(new GameBoard(current), depth-1, alpha, beta);
 
             if(nextV > v)
                 v = nextV;
@@ -88,7 +90,7 @@ public class AIMove {
                 alpha = v;
             if(nextV >= beta)
                 return v;
-            current.undo();
+            //current.undo();
         }
         return v;
     }
@@ -100,7 +102,7 @@ public class AIMove {
         double v = Double.NEGATIVE_INFINITY;
         for (Move m : current.getAllMoves()) {
             current.move(m);
-            double nextV = maxAction(current, depth-1, alpha, beta);
+            double nextV = maxAction(new GameBoard(current), depth-1, alpha, beta);
 
             if(nextV < v)
                 v = nextV;
@@ -108,7 +110,7 @@ public class AIMove {
                 return v;
             if(nextV < beta)
                 beta = v;
-            current.undo();
+            //current.undo();
         }
         return v;
     }

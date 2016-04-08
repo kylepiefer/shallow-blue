@@ -10,6 +10,10 @@ public class Queen extends Piece {
 		super(argPosition, color, color == Color.WHITE ? R.drawable.white_queen : R.drawable.black_queen);
 	}
 
+	public Queen(Queen q) {
+		super(q.getPosition(), q.getColor(), q.getColor() == Color.WHITE ? R.drawable.white_queen : R.drawable.black_queen);
+	}
+
 	@Override
 	public boolean hasMoved() {
 		// Unused
@@ -26,7 +30,8 @@ public class Queen extends Piece {
 	public ArrayList<Position> possibleMoves() {
 		
 		ArrayList<Position> result = new ArrayList<Position>();
-		
+		if (this.getPosition() == null) return result;
+
 		//left & right movements
 		for (int i = 0; i <= 7; i++) if (i != getPosition().getColumn()) result.add(new Position(getPosition().getRow(), i));
 		//up and down

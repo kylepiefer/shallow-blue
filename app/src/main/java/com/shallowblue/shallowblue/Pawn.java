@@ -12,6 +12,11 @@ public class Pawn extends Piece {
 		initialPosition = argPosition;
 	}
 
+	public Pawn(Pawn p) {
+		super(p.getPosition(), p.getColor(), p.getColor() == Color.WHITE ? R.drawable.white_pawn : R.drawable.black_pawn);
+		this.initialPosition = p.initialPosition;
+	}
+
 	@Override
 	public boolean hasMoved() {
 		
@@ -22,13 +27,14 @@ public class Pawn extends Piece {
 	@Override
 	public boolean isPromoting() {
 		//Return whether or not the pawn must promote
-		return (getPosition().getRow() == 7);
+		return (getPosition().getRow() == 7||getPosition().getRow() == 0);
 	}
 
 	@Override
 	public ArrayList<Position> possibleMoves() {
 		
 		ArrayList<Position> result = new ArrayList<Position>();
+		if (this.getPosition() == null) return result;
 		
 		//if the pawn is white, a new possible position is generated
 		//by adding +1 to its row. If it's black, add -1 instead.

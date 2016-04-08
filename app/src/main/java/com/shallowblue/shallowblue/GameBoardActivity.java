@@ -279,10 +279,14 @@ public class GameBoardActivity extends AppCompatActivity {
     }
 
     private void mockAIMove() {
-        List<Move> legalAIMoves = this.gameBoard.getAllMoves();
+        /*List<Move> legalAIMoves = this.gameBoard.getAllMoves();
         Random numberGenerator = new Random();
         int moveNumber = (int)Math.floor(numberGenerator.nextDouble() * legalAIMoves.size());
-        Move move = legalAIMoves.get(moveNumber);
+        Move move = legalAIMoves.get(moveNumber);*/
+
+        AIMove ai = new AIMove();
+        List<Move> moves = ai.move(this.gameBoard, 3);
+        Move move = moves.get(0);
         this.gameBoard.move(move);
         updateGameboard(move);
     }

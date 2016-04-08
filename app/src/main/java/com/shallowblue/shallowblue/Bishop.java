@@ -11,6 +11,10 @@ public class Bishop extends Piece {
 		
 	}
 
+	public Bishop(Bishop b) {
+		super(b.getPosition(), b.getColor(), b.getColor() == Color.WHITE ? R.drawable.white_bishop : R.drawable.black_bishop);
+	}
+
 	@Override
 	public boolean hasMoved() {
 		// UNUSED
@@ -26,7 +30,8 @@ public class Bishop extends Piece {
 	@Override
 	public ArrayList<Position> possibleMoves() {
 		ArrayList<Position> result = new ArrayList<Position>();
-		
+		if (this.getPosition() == null) return result;
+
 		int x = getPosition().getRow();
 		int y = getPosition().getColumn();
 		

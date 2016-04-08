@@ -10,6 +10,10 @@ public class Knight extends Piece {
 		
 	}
 
+	public Knight(Knight k) {
+		super(k.getPosition(), k.getColor(), k.getColor() == Color.WHITE ? R.drawable.white_knight : R.drawable.black_knight);
+	}
+
 	@Override
 	public boolean hasMoved() {
 		//UNUSED
@@ -26,7 +30,8 @@ public class Knight extends Piece {
 	public ArrayList<Position> possibleMoves() {
 		
 		ArrayList<Position> result = new ArrayList<Position>();
-		
+		if (this.getPosition() == null) return result;
+
 		int i = getPosition().getRow();
 		int j = getPosition().getColumn();
 		
