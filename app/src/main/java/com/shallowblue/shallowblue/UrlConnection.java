@@ -12,11 +12,11 @@ import android.os.AsyncTask;
 
 
 public class UrlConnection {
-    String URLPath="http://www.google.com";
-    URL url;
-    HttpURLConnection connection;
+    static String URLPath="http://www.google.com";
+    static URL url;
+    static HttpURLConnection connection;
 
-    class connection extends AsyncTask<String, String, String> {
+    class Connection extends AsyncTask<String, String, String> {
 
         @Override
         protected void onPreExecute() {
@@ -72,7 +72,7 @@ public class UrlConnection {
         }
 
     }
-    class request extends AsyncTask<String, String, String> {
+    class Request extends AsyncTask<String, String, String> {
 
         @Override
         protected void onPreExecute() {

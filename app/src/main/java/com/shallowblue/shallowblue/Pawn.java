@@ -15,8 +15,8 @@ public class Pawn extends Piece {
 	@Override
 	public boolean hasMoved() {
 		
-		  return (initialPosition.getRow() == getPosition().getRow()
-		  		&& initialPosition.getColumn() == getPosition().getColumn());
+		  return (!(initialPosition.getRow() == getPosition().getRow()
+		  		&& initialPosition.getColumn() == getPosition().getColumn()));
 	}
 
 	@Override
@@ -29,6 +29,12 @@ public class Pawn extends Piece {
 	public ArrayList<Position> possibleMoves() {
 		
 		ArrayList<Position> result = new ArrayList<Position>();
+
+		//if the pawn's position is illegal, no moves should be added
+		int checkRow = getPosition().getRow();
+		int checkCol = getPosition().getColumn();
+		if (checkRow > 7 || checkRow < 0) return result;
+		if (checkCol > 7 || checkRow < 0) return result;
 		
 		//if the pawn is white, a new possible position is generated
 		//by adding +1 to its row. If it's black, add -1 instead.
@@ -39,6 +45,9 @@ public class Pawn extends Piece {
 		boolean canAdvance = true;
 		if (getColor() == Color.BLACK && getPosition().getRow() == 0) canAdvance = false;
 		if (getColor() == Color.WHITE && getPosition().getRow() == 7) canAdvance = false;
+
+		if (!canAdvance) return result;
+
 		if (canAdvance)
 		result.add(new Position(getPosition().getRow()+direction, getPosition().getColumn()));
 		if (getPosition().getColumn() > 0)

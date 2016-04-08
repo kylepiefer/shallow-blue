@@ -15,8 +15,8 @@ public class Rook extends Piece {
 
 	@Override
 	public boolean hasMoved() {
-		  return (initialPosition.getRow() == getPosition().getRow()
-			  		&& initialPosition.getColumn() == getPosition().getColumn());
+		  return (!(initialPosition.getRow() == getPosition().getRow()
+			  		&& initialPosition.getColumn() == getPosition().getColumn()));
 	}
 
 	@Override
@@ -29,6 +29,12 @@ public class Rook extends Piece {
 	public ArrayList<Position> possibleMoves() {
 		
 		ArrayList<Position> result = new ArrayList<Position>();
+
+		//if the rook's position is illegal, return no moves
+		int checkRow = getPosition().getRow();
+		int checkCol = getPosition().getColumn();
+		if (checkRow > 7 || checkRow < 0) return result;
+		if (checkCol > 7 || checkCol < 0) return result;
 		
 		//Left & right movements
 		for (int i = 0; i <= 7; i++) if (i != getPosition().getColumn()) result.add(new Position(getPosition().getRow(), i));

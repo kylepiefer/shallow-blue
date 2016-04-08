@@ -1,8 +1,8 @@
 package com.shallowblue.shallowblue;
+import junit.framework.Assert;
+
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -29,9 +29,9 @@ public class PawnTest {
      */
     @Test
     public void testHasMoved() {
-        assertFalse(wPawn.hasMoved());
-        assertFalse(bPawn.hasMoved());
-        assertFalse(pPawn.hasMoved());
+        Assert.assertFalse(wPawn.hasMoved());
+        Assert.assertFalse(bPawn.hasMoved());
+        Assert.assertFalse(pPawn.hasMoved());
     }
 
     /**
@@ -42,9 +42,9 @@ public class PawnTest {
      */
     @Test
     public void testIsPromoting() {
-        assertFalse(wPawn.isPromoting());
-        assertFalse(bPawn.isPromoting());
-        assertTrue(pPawn.isPromoting());
+        Assert.assertFalse(wPawn.isPromoting());
+        Assert.assertFalse(bPawn.isPromoting());
+        Assert.assertTrue(pPawn.isPromoting());
     }
 
 
@@ -57,9 +57,9 @@ public class PawnTest {
      */
     @Test
     public void testPossibleMoves() {
-        assertTrue(wPawn.possibleMoves().size() == 4);
-        assertTrue(bPawn.possibleMoves().size() == 0);
-        assertTrue(pPawn.possibleMoves().size() == 0);
+        Assert.assertTrue(wPawn.possibleMoves().size() == 4);
+        Assert.assertTrue(bPawn.possibleMoves().size() == 0);
+        Assert.assertTrue(pPawn.possibleMoves().size() == 0);
     }
 
 
@@ -69,9 +69,9 @@ public class PawnTest {
      */
     @Test
     public void testToString() {
-        assertTrue(wPawn.toString().equals("p"));
-        assertTrue(bPawn.toString().equals("p"));
-        assertTrue(pPawn.toString().equals("p"));
+        Assert.assertTrue(wPawn.toString().equals("p"));
+        Assert.assertTrue(bPawn.toString().equals("p"));
+        Assert.assertTrue(pPawn.toString().equals("p"));
     }
 
 

@@ -1,8 +1,8 @@
 package com.shallowblue.shallowblue;
+import junit.framework.Assert;
+
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 
 
@@ -24,9 +24,9 @@ public class BishopTest {
      */
     @Test
     public void testHasMoved() {
-        assertFalse(bishop0.hasMoved());
-        assertFalse(bishop1.hasMoved());
-        assertFalse(bishop2.hasMoved());
+        Assert.assertFalse(bishop0.hasMoved());
+        Assert.assertFalse(bishop1.hasMoved());
+        Assert.assertFalse(bishop2.hasMoved());
     }
 
     /**
@@ -37,9 +37,9 @@ public class BishopTest {
      */
     @Test
     public void isPromoting() {
-        assertFalse(bishop0.isPromoting());
-        assertFalse(bishop1.isPromoting());
-        assertFalse(bishop2.isPromoting());
+        Assert.assertFalse(bishop0.isPromoting());
+        Assert.assertFalse(bishop1.isPromoting());
+        Assert.assertFalse(bishop2.isPromoting());
 
     }
 
@@ -69,23 +69,24 @@ public class BishopTest {
         //1- bishop0 (0,0):
         possibleMoves = bishop0.possibleMoves();
 
-        assertTrue(possibleMoves.contains(new Position(1,1)));
-        assertTrue(possibleMoves.contains(new Position(2,2)));
-        assertTrue(possibleMoves.contains(new Position(3,3)));
-        assertTrue(possibleMoves.contains(new Position(4,4)));
-        assertTrue(possibleMoves.contains(new Position(5,5)));
-        assertTrue(possibleMoves.contains(new Position(6,6)));
-        assertTrue(possibleMoves.contains(new Position(7,7)));
+        Assert.assertTrue(possibleMoves.contains(new Position(1, 1)));
+        Assert.assertTrue(possibleMoves.contains(new Position(2, 2)));
+        Assert.assertTrue(possibleMoves.contains(new Position(3, 3)));
+        Assert.assertTrue(possibleMoves.contains(new Position(4, 4)));
+        Assert.assertTrue(possibleMoves.contains(new Position(5, 5)));
+        Assert.assertTrue(possibleMoves.contains(new Position(6, 6)));
+        Assert.assertTrue(possibleMoves.contains(new Position(7, 7)));
 
 
         //2- bishop1 (9,10):
         possibleMoves = bishop1.possibleMoves();
-        assertTrue(possibleMoves.isEmpty());
+        Assert.assertTrue(possibleMoves.isEmpty());
+
 
 
         //3- bishop2 (-3,-5):
         possibleMoves = bishop2.possibleMoves();
-        assertTrue(possibleMoves.isEmpty());
+        Assert.assertTrue(possibleMoves.isEmpty());
 
     }
 
@@ -94,9 +95,9 @@ public class BishopTest {
      */
     @Test
     public void testToString() {
-        assertTrue(bishop0.toString().equals("b"));
-        assertTrue(bishop1.toString().equals("b"));
-        assertTrue(bishop2.toString().equals("b"));
+        Assert.assertTrue(bishop0.toString().equals("b"));
+        Assert.assertTrue(bishop1.toString().equals("b"));
+        Assert.assertTrue(bishop2.toString().equals("b"));
 
     }
 
