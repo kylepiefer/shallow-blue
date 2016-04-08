@@ -16,8 +16,8 @@ public class King extends Piece {
 	@Override
 	public boolean hasMoved() {
 		
-		  return (initialPosition.getRow() == getPosition().getRow()
-			  		&& initialPosition.getColumn() == getPosition().getColumn());
+		  return (!(initialPosition.getRow() == getPosition().getRow()
+			  		&& initialPosition.getColumn() == getPosition().getColumn()));
 	}
 
 	@Override

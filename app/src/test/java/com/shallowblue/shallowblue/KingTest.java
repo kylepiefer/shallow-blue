@@ -115,9 +115,9 @@ public class KingTest {
      */
     @Test
     public void testToString() {
-        Assert.assertTrue(wKing.toString().equals("p"));
-        Assert.assertTrue(bKing.toString().equals("p"));
-        Assert.assertTrue(mKing.toString().equals("p"));
+        Assert.assertTrue(wKing.toString().equals("k"));
+        Assert.assertTrue(bKing.toString().equals("k"));
+        Assert.assertTrue(mKing.toString().equals("k"));
 
     }
 
