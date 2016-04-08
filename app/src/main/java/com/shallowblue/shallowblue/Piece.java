@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public abstract class Piece {
 
 	private Position position; //See Position.java
-	private Color color; //See Color.java
+	private final Color color; //See Color.java
 	private int drawableId;
 
 	public Piece(Position argPosition, Color color, int drawableId) {

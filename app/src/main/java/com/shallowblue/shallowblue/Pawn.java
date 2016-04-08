@@ -44,7 +44,7 @@ public class Pawn extends Piece {
 		
 		//if the pawn is white, a new possible position is generated
 		//by adding +1 to its row. If it's black, add -1 instead.
-		int direction = (initialPosition.getRow() == 1) ? 1 : -1;
+		int direction = (this.getColor() == Color.WHITE) ? 1 : -1;
 		
 		//Change made on 04/06/2016 by Mohammad: No "forward" move should
 		//be added to the Pawn's moves list if it's in the final rank.
@@ -54,8 +54,9 @@ public class Pawn extends Piece {
 
 		if (!canAdvance) return result;
 
-		if (canAdvance)
 		result.add(new Position(getPosition().getRow()+direction, getPosition().getColumn()));
+
+		// check if pawn is at the edge of the board (for diagonal captures)
 		if (getPosition().getColumn() > 0)
 			result.add(new Position(getPosition().getRow() + direction, getPosition().getColumn() - 1));
 		if (getPosition().getColumn() < 7)

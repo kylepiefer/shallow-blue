@@ -143,6 +143,8 @@ public class GameBoard {
                 gameBoard.get(m.getTo()).getColor() == gameBoard.get(m.getFrom()).getColor()){
             return false;
         }
+        if (gameBoard.get(m.getFrom()) == null ||
+                this.playerToMove != gameBoard.get(m.getFrom()).getColor()) return false; // THIS IS IMPORTANT.
         if(m.getPieceMoved().toString().equals("p")){
             if(m.getTo().getColumn() == m.getFrom().getColumn() && m.getPieceMoved().
                     possibleMoves().contains(m.getTo()) && gameBoard.get(m.getTo()) == null){ //nothing is blocking the pawn
@@ -270,7 +272,29 @@ public class GameBoard {
     }
 
     public double sbe() {
-        return Math.random();
+        double sum = 0.0;
+            for(Piece p : gameBoard.values()) {
+                double value;
+                if(p instanceof Rook)
+                    value = 5;
+                else if(p instanceof Queen)
+                    value = 9;
+                else if(p instanceof Knight)
+                    value = 3;
+                else if(p instanceof King)
+                    value = 10000;
+                else if(p instanceof Bishop)
+                    value = 3;
+                else
+                    value = 1;
+
+                if(p.getColor() == Color.WHITE)
+                    sum += value;
+                else
+                    sum -= value;
+            }
+
+        return sum;
     }
     public List<Move> isThreatened(Piece p) {
         List<Move> ret = new ArrayList<Move>();
@@ -288,7 +312,15 @@ public class GameBoard {
 
     //TODO Detects when a player has won.
     public boolean gameOver() {
-        return false;
+        boolean blackKing = false;
+        boolean whiteKing = false;
+        for(Piece p : gameBoard.values())
+            if(p instanceof King)
+                if(p.getColor() == Color.WHITE)
+                    whiteKing = true;
+                else
+                    blackKing = true;
+        return whiteKing && blackKing;
     }
 }
 
