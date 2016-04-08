@@ -1,9 +1,7 @@
 package com.shallowblue.shallowblue;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -14,7 +12,6 @@ import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -51,7 +48,9 @@ public class GameBoardActivity extends AppCompatActivity {
         // this is needed to handle the game logic
         String gameType = getIntent().getStringExtra("Type");
         if (gameType != null && gameType.equalsIgnoreCase("Custom"))
-            GameBoard.activeGameBoard.gameBoard = null;
+            this.gameBoard = new GameBoard(GameBoard.activeGameBoard);
+
+        GameBoard.activeGameBoard.gameBoard = null;
         this.gameBoard = new GameBoard();
 
         // this is needed to map logical squares to images on the screen
