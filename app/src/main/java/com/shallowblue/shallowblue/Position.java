@@ -2,40 +2,50 @@ package com.shallowblue.shallowblue;
 
 /**
  * A chess Position is described by two integer values, a row and a column.
- * Row and Column values range from 1-8 (inclusive), to reflect a board's rank
+ * Row and Column values should range from 0-7 (inclusive), to reflect a board's rank
  * Places in which Shallow Blue uses Position include:
  * a variable for Piece and another for each "tile" on the game board
  */
 
 public class Position {
 
-	private int row;
-	private int column;
-	
-	public Position(int x, int y) {
-		row = x;
-		column = y;
+	private final int row;
+	private final int column;
+
+	public Position(int row, int column) {
+		this.row = row;
+		this.column = column;
 	}
-
-
-
 
 	public int getRow() {
-		return row;
+		return this.row;
 	}
-	
-	public void setRow(int newRow) {
-		row = newRow;
-	}
-	
 
 	public int getColumn() {
-		
-		return column;
-	}
-	
-	public void setColumn(int newCol) {
-		column = newCol;
+
+		return this.column;
 	}
 
+	@Override
+	public boolean equals(Object other) {
+		if (!(other instanceof Position)) return false;
+		Position otherPosition = (Position)other;
+		if (this.row != otherPosition.row) return false;
+		if (this.column != otherPosition.column) return false;
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int hashCode = 1;
+		hashCode = 31 * hashCode + this.row;
+		hashCode = 31 * hashCode + this.column;
+		return hashCode;
+	}
+
+	@Override
+	public String toString() {
+		return "(" + this.row + "," + this.column + ")";
+	}
+	public String pack() {return this.row + "" + this.column;}
 }

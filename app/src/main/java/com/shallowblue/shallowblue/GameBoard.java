@@ -3,253 +3,324 @@ package com.shallowblue.shallowblue;
 /**
  * Created by peter on 3/14/2016.
  */
+import android.text.TextUtils;
+import android.util.Log;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.lang.Math;
+import java.util.Map;
+import java.util.Stack;
 
 public class GameBoard {
-    private Piece gameBoard[][];
-    private List<String> gameHistory;
+
+    public static GameBoard activeGameBoard;
+    public Map<Position, Piece> gameBoard;
+    public List<Move> gameHistory;
+    private Color playerToMove;
+    private Stack<Move> redoStack;
+
     public GameBoard() {
-        gameBoard = new Piece[8][8];
-        gameBoard[0][0] = new Rook(new Position(0,0), Color.WHITE);
-        gameBoard[1][0] = new Knight(new Position(1,0), Color.WHITE);
-        gameBoard[2][0] = new Bishop(new Position(2,0), Color.WHITE);
-        gameBoard[3][0] = new Queen(new Position(3,0), Color.WHITE);
-        gameBoard[4][0] = new King(new Position(4,0), Color.WHITE);
-        gameBoard[5][0] = new Bishop(new Position(5,0), Color.WHITE);
-        gameBoard[6][0] = new Knight(new Position(6,0), Color.WHITE);
-        gameBoard[7][0] = new Rook(new Position(7,0), Color.WHITE);
-        gameBoard[0][1] = new Pawn(new Position(0,1), Color.WHITE);
-        gameBoard[1][1] = new Pawn(new Position(1,1), Color.WHITE);
-        gameBoard[2][1] = new Pawn(new Position(2,1), Color.WHITE);
-        gameBoard[3][1] = new Pawn(new Position(3,1), Color.WHITE);
-        gameBoard[4][1] = new Pawn(new Position(4,1), Color.WHITE);
-        gameBoard[5][1] = new Pawn(new Position(5,1), Color.WHITE);
-        gameBoard[6][1] = new Pawn(new Position(6,1), Color.WHITE);
-        gameBoard[7][1] = new Pawn(new Position(7,1), Color.WHITE);
+        if (gameBoard == null) {
+            gameBoard = new HashMap<Position, Piece>();
+            Position p;
+            gameBoard.put((p = new Position(0, 0)), new Rook(p, Color.WHITE));
+            gameBoard.put((p = new Position(0, 1)), new Knight(p, Color.WHITE));
+            gameBoard.put((p = new Position(0, 2)), new Bishop(p, Color.WHITE));
+            gameBoard.put((p = new Position(0, 3)), new Queen(p, Color.WHITE));
+            gameBoard.put((p = new Position(0, 4)), new King(p, Color.WHITE));
+            gameBoard.put((p = new Position(0, 5)), new Bishop(p, Color.WHITE));
+            gameBoard.put((p = new Position(0, 6)), new Knight(p, Color.WHITE));
+            gameBoard.put((p = new Position(0, 7)), new Rook(p, Color.WHITE));
+            gameBoard.put((p = new Position(1, 0)), new Pawn(p, Color.WHITE));
+            gameBoard.put((p = new Position(1, 1)), new Pawn(p, Color.WHITE));
+            gameBoard.put((p = new Position(1, 2)), new Pawn(p, Color.WHITE));
+            gameBoard.put((p = new Position(1, 3)), new Pawn(p, Color.WHITE));
+            gameBoard.put((p = new Position(1, 4)), new Pawn(p, Color.WHITE));
+            gameBoard.put((p = new Position(1, 5)), new Pawn(p, Color.WHITE));
+            gameBoard.put((p = new Position(1, 6)), new Pawn(p, Color.WHITE));
+            gameBoard.put((p = new Position(1, 7)), new Pawn(p, Color.WHITE));
 
-        gameBoard[0][6] = new Pawn(new Position(0,6), Color.BLACK);
-        gameBoard[1][6] = new Pawn(new Position(1,6), Color.BLACK);
-        gameBoard[2][6] = new Pawn(new Position(2,6), Color.BLACK);
-        gameBoard[3][6] = new Pawn(new Position(3,6), Color.BLACK);
-        gameBoard[4][6] = new Pawn(new Position(4,6), Color.BLACK);
-        gameBoard[5][6] = new Pawn(new Position(5,6), Color.BLACK);
-        gameBoard[6][6] = new Pawn(new Position(6,6), Color.BLACK);
-        gameBoard[7][6] = new Pawn(new Position(7,6), Color.BLACK);
-        gameBoard[0][7] = new Rook(new Position(0,7), Color.BLACK);
-        gameBoard[1][7] = new Knight(new Position(1,7), Color.BLACK);
-        gameBoard[2][7] = new Bishop(new Position(2,7), Color.BLACK);
-        gameBoard[3][7] = new Queen(new Position(3,7), Color.BLACK);
-        gameBoard[4][7] = new King(new Position(4,7), Color.BLACK);
-        gameBoard[5][7] = new Bishop(new Position(5,7), Color.BLACK);
-        gameBoard[6][7] = new Knight(new Position(6,7), Color.BLACK);
-        gameBoard[7][7] = new Rook(new Position(7,7), Color.BLACK);
-
-        gameHistory = new ArrayList<String>();
+            gameBoard.put((p = new Position(6, 0)), new Pawn(p, Color.BLACK));
+            gameBoard.put((p = new Position(6, 1)), new Pawn(p, Color.BLACK));
+            gameBoard.put((p = new Position(6, 2)), new Pawn(p, Color.BLACK));
+            gameBoard.put((p = new Position(6, 3)), new Pawn(p, Color.BLACK));
+            gameBoard.put((p = new Position(6, 4)), new Pawn(p, Color.BLACK));
+            gameBoard.put((p = new Position(6, 5)), new Pawn(p, Color.BLACK));
+            gameBoard.put((p = new Position(6, 6)), new Pawn(p, Color.BLACK));
+            gameBoard.put((p = new Position(6, 7)), new Pawn(p, Color.BLACK));
+            gameBoard.put((p = new Position(7, 0)), new Rook(p, Color.BLACK));
+            gameBoard.put((p = new Position(7, 1)), new Knight(p, Color.BLACK));
+            gameBoard.put((p = new Position(7, 2)), new Bishop(p, Color.BLACK));
+            gameBoard.put((p = new Position(7, 3)), new Queen(p, Color.BLACK));
+            gameBoard.put((p = new Position(7, 4)), new King(p, Color.BLACK));
+            gameBoard.put((p = new Position(7, 5)), new Bishop(p, Color.BLACK));
+            gameBoard.put((p = new Position(7, 6)), new Knight(p, Color.BLACK));
+            gameBoard.put((p = new Position(7, 7)), new Rook(p, Color.BLACK));
+        }
+        playerToMove = Color.WHITE;
+        gameHistory = new ArrayList<Move>();
+        redoStack = new Stack<Move>();
     }
     public GameBoard(GameBoard in) {
-        gameBoard = new Piece[8][9];
-        for(int i= 0; i<8; i++){
-            for(int j= 0; i<9; i++){
-                gameBoard[i][j] = in.getGameBoard()[i][j];
-            }
-        }
-
-
-        gameHistory = new ArrayList<String>();
-
-
-    }
-    public List<int[][]> getAllMoves(){
-        List<int[][]> templist = new ArrayList<int[][]>();
-        int[] tempcoord = {0,0};
-        for(int i= 0; i<8; i++){
-            tempcoord[0] = i;
-            for(int j= 0; i<9; i++){
-                tempcoord[1] = j;
-                if (gameBoard[i][j] != null){
-                    templist.addAll(this.getLegalMoves(tempcoord));
-                }
-            }
-        }
-        return templist;
+        gameBoard = new HashMap<Position,Piece>();
+        for(Map.Entry<Position,Piece> e : in.gameBoard.entrySet())
+            gameBoard.put(e.getKey(),Piece.copy(e.getValue()));
+        gameHistory = new ArrayList<Move>(in.getGameHistory());
+        playerToMove = in.playerToMove();
+        redoStack = new Stack<Move>();
     }
 
-    public boolean Move(int from[], int to[]){						//Returns true iff successful
-        if(gameBoard[from[0]][from[1]] != null){					//example move is ka4_b5
-            String tempstring = "";									//Adds to gameHistory
-            tempstring += gameBoard[from[0]][from[1]].toString();
-            switch (from[0]) {
-                case 0: tempstring += "a" + from[1];
-                    break;
-                case 1: tempstring += "b" + from[1];
-                    break;
-                case 2: tempstring += "c" + from[1];
-                    break;
-                case 3: tempstring += "d" + from[1];
-                    break;
-                case 4: tempstring += "e" + from[1];
-                    break;
-                case 5: tempstring += "f" + from[1];
-                    break;
-                case 6: tempstring += "g" + from[1];
-                    break;
-                case 7: tempstring += "h" + from[1];
-                    break;
-            }
-            if(gameBoard[to[0]][to[1]] != null){
-                tempstring += gameBoard[to[0]][to[1]].toString();
-            }
-            else{
-                tempstring += "_";
-            }
-            switch (to[0]) {
-                case 0: tempstring += "a" + to[1];
-                    break;
-                case 1: tempstring += "b" + to[1];
-                    break;
-                case 2: tempstring += "c" + to[1];
-                    break;
-                case 3: tempstring += "d" + to[1];
-                    break;
-                case 4: tempstring += "e" + to[1];
-                    break;
-                case 5: tempstring += "f" + to[1];
-                    break;
-                case 6: tempstring += "g" + to[1];
-                    break;
-                case 7: tempstring += "h" + to[1];
-                    break;
-            }
-            gameBoard[to[0]][to[1]] = gameBoard[from[0]][from[1]]; 	//Actually perform the move
-            gameBoard[from[0]][from[1]] = null;
-            gameHistory.add(tempstring);
-            return true;
-        }
-        return false;
+    private void switchPlayerToMove() {
+        this.playerToMove = (playerToMove == Color.WHITE) ? Color.BLACK : Color.WHITE;
     }
-    public boolean put(Piece piece, int[] to){
-        if(gameBoard[to[0]][to[1]] != null){
-            gameBoard[to[0]][to[1]] = piece;
+
+    public List<Move> getAllMoves(){
+        List<Move> ret = new ArrayList<Move>();
+        for(Map.Entry<Position,Piece> e : gameBoard.entrySet())
+            if(e.getValue() != null && e.getValue().getColor() == playerToMove)
+                ret.addAll(getLegalMoves(e.getKey()));
+        return ret;
+    }
+
+    public boolean move(Move m){						//Returns true iff successful
+        redoStack.clear();
+        if(gameBoard.get(m.getFrom()) == null)
+            return false;
+
+        if (gameBoard.get(m.getTo()) != null) {
+            m.setPieceCaptured(gameBoard.get(m.getTo()));
+            this.gameBoard.remove(m.getTo()).setPosition(null);
+        }
+
+        gameBoard.put(m.getTo(), gameBoard.get(m.getFrom()));
+        gameBoard.remove(m.getFrom());
+        m.getPieceMoved().setPosition(m.getTo());
+
+        gameHistory.add(m);
+        switchPlayerToMove();
+        return true;
+    }
+
+    public void addMove(Move m){
+        gameHistory.add(m);
+    }
+
+    public boolean put(Piece p){
+        if(gameBoard.get(p.getPosition()) == null){
+            gameBoard.put(p.getPosition(),p);
             return true;
         }
         return false;
     }
     public String toString(){
-        String tempstring = gameHistory.get(0);
-        for(int i= 1; i<gameHistory.size(); i++){
-            tempstring += "/n" + gameHistory.get(i);
-        }
-
-        return tempstring;
+        return TextUtils.join("\n", gameHistory);
     }
-    public void undo(){ //example move is ka4_b5
-        int to[] = new int[2];
-        int from[] = new int[2];
-        String temp = gameHistory.get(gameHistory.size()-1);
+    public boolean undo(){ //example move is ka4_b5
+        if (gameHistory.isEmpty()) return false;
 
+        Move m = gameHistory.get(gameHistory.size()-1);
+        gameBoard.put(m.getFrom(), m.getPieceMoved());
+        gameBoard.put(m.getTo(), m.getPieceCaptured());
 
-        switch (temp.charAt(1)) {
-            case 'a': from[0] = 0;
-            case 'b': from[0] = 1;
-            case 'c': from[0] = 2;
-            case 'd': from[0] = 3;
-            case 'e': from[0] = 4;
-            case 'f': from[0] = 5;
-            case 'g': from[0] = 6;
-            case 'h': from[0] = 7;
-        }
-        switch (temp.charAt(2)) {
-            case '1': from[1] = 1;
-            case '2': from[1] = 2;
-            case '3': from[1] = 3;
-            case '4': from[1] = 4;
-            case '5': from[1] = 5;
-            case '6': from[1] = 6;
-            case '7': from[1] = 7;
-            case '8': from[1] = 8;
-        }
-        switch (temp.charAt(4)) {
-            case 'a': to[0] = 0;
-            case 'b': to[0] = 1;
-            case 'c': to[0] = 2;
-            case 'd': to[0] = 3;
-            case 'e': to[0] = 4;
-            case 'f': to[0] = 5;
-            case 'g': to[0] = 6;
-            case 'h': to[0] = 7;
-        }
-        switch (temp.charAt(5)) {
-            case '1': to[1] = 1;
-            case '2': to[1] = 2;
-            case '3': to[1] = 3;
-            case '4': to[1] = 4;
-            case '5': to[1] = 5;
-            case '6': to[1] = 6;
-            case '7': to[1] = 7;
-            case '8': to[1] = 8;
-        }
-        gameBoard[from[0]][from[1]] = gameBoard[to[0]][to[1]];
-        gameBoard[to[0]][to[1]] = null;
-        switch (temp.charAt(3)) {
-            // TODO: Construct the pieces properly here
-            case 'p': this.put(new Pawn(new Position(0,0), Color.BLACK), to);
-            case 'k': this.put(new King(new Position(0,0), Color.BLACK), to);
-            case 'r': this.put(new Rook(new Position(0,0), Color.BLACK), to);
-            case 'n': this.put(new Knight(new Position(0,0), Color.BLACK), to);
-            case 'b': this.put(new Bishop(new Position(0,0), Color.BLACK), to);
-            case 'q': this.put(new Queen(new Position(0,0), Color.BLACK), to);
-            case '_':
-        }
-        gameHistory.remove(gameHistory.get(gameHistory.size()-1));
-        return;
+        gameHistory.remove(gameHistory.size() - 1);
+        redoStack.push(m);
+        switchPlayerToMove();
+        return true;
     }
-    public List<int[][]> getLegalMoves(int[] from){
-        ArrayList<Position> movelist = gameBoard[from[0]][from[1]].possibleMoves();
-        ArrayList<int[][]> templist = new ArrayList<int[][]>();
-        int i = 0;
-        boolean canmove;
-        int[] tempint;
-        while(i<movelist.size()){
-            canmove = true;
-            tempint = new int[2];
-            Position temppos = movelist.get(i);
-            tempint[0] = temppos.getRow();
-            tempint[1] = temppos.getColumn();
-            while (tempint != from){
-                if(from[0]-tempint[0] != 0) {
-                    tempint[0] = (int) (tempint[0] + Math.signum(from[0] - tempint[0]));
+    public boolean redo(){
+        if (redoStack.isEmpty()){
+            return false;
+        }
+        Move m = redoStack.pop();
+        this.move(m);
+        return true;
+    }
+
+    public boolean legalMove(Move m) {
+        if(gameBoard.get(m.getTo()) != null && gameBoard.get(m.getFrom()) != null &&
+                gameBoard.get(m.getTo()).getColor() == gameBoard.get(m.getFrom()).getColor()){
+            return false;
+        }
+        if (gameBoard.get(m.getFrom()) == null ||
+                this.playerToMove != gameBoard.get(m.getFrom()).getColor()) return false; // THIS IS IMPORTANT.
+        if(m.getPieceMoved().toString().equals("p")){
+            if(m.getTo().getColumn() == m.getFrom().getColumn() && m.getPieceMoved().
+                    possibleMoves().contains(m.getTo()) && gameBoard.get(m.getTo()) == null){ //nothing is blocking the pawn
+                return true;
+            }
+            return ((m.getTo().getColumn() == m.getFrom().getColumn()+1 || m.getTo().getColumn() == m.getFrom().getColumn() -1 &&             //is in adjacent column
+                    m.getTo().getRow() == m.getFrom().getRow()+1 || m.getTo().getRow() == m.getFrom().getRow() -1) &&                         //is in adjacent row
+                    (m.getPieceMoved().possibleMoves().contains(new Position(m.getTo().getRow(),m.getTo().getColumn()+1)) ||                 //is in the same direction
+                    m.getPieceMoved().possibleMoves().contains(new Position(m.getTo().getRow(),m.getTo().getColumn()+-1))) &&
+                    gameBoard.get(m.getTo()) != null);
+        }
+        boolean canmove = true;
+        Position tempPos = m.getTo();
+        /*if (m.getPieceMoved() instanceof Rook &&
+                gameBoard.get(m.getTo()) instanceof King &&
+                !m.getPieceMoved().hasMoved()&&!gameBoard.get(m.getTo()).hasMoved()) { //castle
+
+            tempPos = m.getTo();
+            while (m.getFrom().getColumn() != tempPos.getColumn()){ //checks if anything is between the castling pieces
+                int tempCol = tempPos.getColumn();
+
+                if(m.getFrom().getColumn() > tempPos.getColumn()){
+                    tempCol++;
                 }
-                if(from[1]-tempint[1] != 0) {
-                    tempint[1] = (int) (tempint[1] + Math.signum(from[1] - tempint[1]));
+                else if(m.getFrom().getColumn() < tempPos.getColumn()){
+                    tempCol--;
                 }
-                if ( gameBoard[tempint[0]][tempint[1]] != null && movelist.contains(tempint)){
+
+                tempPos = new Position(m.getFrom().getRow(), tempCol);
+                if(m.getPieceMoved().possibleMoves().contains(tempPos)&&gameBoard.containsKey(tempPos)){
                     canmove = false;
-                    if(from[0]-tempint[0] != 0) {
-                        tempint[0] = (int) (tempint[0] + Math.signum(from[0] - tempint[0]));
-                    }
-                    if(from[1]-tempint[1] != 0) {
-                        tempint[1] = (int) (tempint[1] + Math.signum(from[1] - tempint[1]));
-                    }
+                }
+
+            }
+            //return canmove;
+        }*/
+        tempPos = m.getTo();
+        while (!m.getFrom().equals(tempPos)){ //naive evaluation of non-pawn pieces
+            int tempCol = tempPos.getColumn();
+            int tempRow = tempPos.getRow();
+            if(m.getFrom().getColumn() > tempPos.getColumn()){
+                tempCol++;
+            }
+            else if(m.getFrom().getColumn() < tempPos.getColumn()){
+                tempCol--;
+            }
+
+            if(m.getFrom().getRow() > tempPos.getRow()){
+                tempRow++;
+            }
+            else if(m.getFrom().getRow() < tempPos.getRow()){
+                tempRow--;
+            }
+            tempPos = new Position(tempRow, tempCol);
+            if(m.getPieceMoved().possibleMoves().contains(tempPos) && gameBoard.get(tempPos) != null){
+                canmove = false;
+            }
+
+        }
+        if(false){ //skewer
+            move(m);
+            if(false){ //king is threatned
+               return false;
+            }
+            this.undo();
+            redoStack.pop();
+        }
+
+        return canmove;
+    }
+
+
+
+    public List<Move> getLegalMoves(Position from){
+        List<Move> moveList = new ArrayList<Move>();
+        for(Position p : gameBoard.get(from).possibleMoves())
+            moveList.add(new Move(gameBoard.get(from), from, p));
+        List<Move> ret = new ArrayList<Move>();
+
+        Piece piece = gameBoard.get(from);
+
+        List<Position> possibleMoves = piece.possibleMoves();
+        List<Position> legalMoves = new ArrayList<Position>();
+        for (int p = possibleMoves.size() - 1; p >= 0; p--) {
+            Position curr = possibleMoves.get(p);
+            Move possible = new Move(piece, piece.getPosition(), curr);
+            if (legalMove(possible)) {
+                possibleMoves.remove(p);
+                ret.add(possible);
+            }
+        }
+        return ret;
+    }
+
+    public String pack(){
+        String temp = "";
+        Position p;
+        for(int i = 0; i < 7; i++) {
+            for(int j = 0; j < 7; j++) {
+                p = new Position(i,j);
+                if (gameBoard.containsKey(p)) {
+                    temp += gameBoard.get(p).toString();
+                }
+                else {
+                    temp += "_";
                 }
             }
-            if(canmove){
-                int[][] temparray = {from,tempint};
-                templist.add(temparray);
-            }
-            i++;
         }
-        return templist;
+        temp += "+" + gameHistory.get(0).toString() + gameHistory.get(1).toString() + gameHistory.get(2).toString() + "+\n";
+        return temp;
     }
-    public String pack(){
-        return null;
-    }
+
     public void unpack(String packedString){
-        return;
+
     }
-    public Piece[][] getGameBoard(){
+
+    public Map<Position, Piece> getGameBoard(){
         return gameBoard;
+    }
+
+    public List<Move> getGameHistory() { return gameHistory; }
+
+    public Color playerToMove() {
+        return playerToMove;
+    }
+
+    public double sbe() {
+        double sum = 0.0;
+            for(Piece p : gameBoard.values()) {
+                double value;
+                if(p instanceof Rook)
+                    value = 5;
+                else if(p instanceof Queen)
+                    value = 9;
+                else if(p instanceof Knight)
+                    value = 3;
+                else if(p instanceof King)
+                    value = 10000;
+                else if(p instanceof Bishop)
+                    value = 3;
+                else
+                    value = 1;
+
+                if(p.getColor() == Color.WHITE)
+                    sum += value;
+                else
+                    sum -= value;
+            }
+
+        return sum;
+    }
+    public List<Move> isThreatened(Piece p) {
+        List<Move> ret = new ArrayList<Move>();
+        for (Map.Entry<Position, Piece> e : gameBoard.entrySet()){
+            if (!(e.getValue().getColor() == playerToMove))
+                ret.addAll(getLegalMoves(e.getKey()));
+        }
+        for (Move e : ret){
+            if(e.getTo()!=p.getPosition()){
+                ret.remove(e);
+            }
+        }
+        return ret;
+    }
+
+    //TODO Detects when a player has won.
+    public boolean gameOver() {
+        boolean blackKing = false;
+        boolean whiteKing = false;
+        for(Piece p : gameBoard.values())
+            if(p instanceof King)
+                if(p.getColor() == Color.WHITE)
+                    whiteKing = true;
+                else
+                    blackKing = true;
+        return whiteKing && blackKing;
     }
 }
 

@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 
 public class StartGameActivity extends AppCompatActivity {
@@ -16,6 +18,7 @@ public class StartGameActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_start_game);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         // set up the spinners
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.StartGameActivity_ai_array, android.R.layout.simple_spinner_dropdown_item);
@@ -28,15 +31,32 @@ public class StartGameActivity extends AppCompatActivity {
 
     public void newGame(View button) {
         Intent newGameIntent = new Intent(getApplicationContext(), GameBoardActivity.class);
+        RadioButton radioButtonWhite = (RadioButton)this.findViewById(R.id.button_white);
+        if (radioButtonWhite.isChecked())
+            newGameIntent.putExtra("Color", "White");
+        else
+            newGameIntent.putExtra("Color", "Black");
         startActivity(newGameIntent);
     }
+
     public void createGame(View button){
         Intent createGameIntent = new Intent(getApplicationContext(), CustomGame.class);
+        Bundle playercount = new Bundle();
+        playercount.putInt("players", 1);
+        createGameIntent.putExtra("type",playercount);
         startActivity(createGameIntent);
     }
+
     public void loadGame(View button){
         Intent loadGameIntent = new Intent(getApplicationContext(), loadgame.class);
+        Bundle game = new Bundle();
+        game.putInt("game", 4);
+        loadGameIntent.putExtra("start", game);
         startActivity(loadGameIntent);
+    }
+
+    public void onBackPressed(){
+        finish();
     }
 
 }

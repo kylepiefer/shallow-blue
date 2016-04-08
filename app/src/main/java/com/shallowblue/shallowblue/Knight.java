@@ -6,8 +6,12 @@ import java.util.ArrayList;
 public class Knight extends Piece {
 
 	public Knight(Position argPosition, Color color) {
-		super(argPosition, color);
+		super(argPosition, color, color == Color.WHITE ? R.drawable.white_knight : R.drawable.black_knight);
 		
+	}
+
+	public Knight(Knight k) {
+		super(k.getPosition(), k.getColor(), k.getColor() == Color.WHITE ? R.drawable.white_knight : R.drawable.black_knight);
 	}
 
 	@Override
@@ -26,7 +30,8 @@ public class Knight extends Piece {
 	public ArrayList<Position> possibleMoves() {
 		
 		ArrayList<Position> result = new ArrayList<Position>();
-		
+		if (this.getPosition() == null) return result;
+
 		int i = getPosition().getRow();
 		int j = getPosition().getColumn();
 		
@@ -39,8 +44,8 @@ public class Knight extends Piece {
 		
 		for (int k = 0; k < iPositions.length; k++) {
 			int row = iPositions[k], col = jPositions[k];
-			if (row >= 1 && row <= 8) //if row is not out of bounds
-				if (col >= 1 && col <= 8) //and column is not out of bounds
+			if (row >= 0 && row <= 7) //if row is not out of bounds
+				if (col >= 0 && col <= 7) //and column is not out of bounds
 					if (row != i && col != j) //and we're not looking at our current position
 						result.add(new Position(row,col));
 		}

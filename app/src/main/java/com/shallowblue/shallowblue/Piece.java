@@ -12,11 +12,21 @@ import java.util.ArrayList;
 public abstract class Piece {
 
 	private Position position; //See Position.java
-	private Color color; //See Color.java
-	
-	public Piece(Position argPosition, Color color) {
+	private final Color color; //See Color.java
+	private int drawableId;
+
+	public Piece(Position argPosition, Color color, int drawableId) {
 		this.position = argPosition;
 		this.color = color;
+		this.drawableId = drawableId;
+	}
+
+	public int getDrawableId(){
+		return drawableId;
+	}
+
+	public void setDrawableId(int id){
+		drawableId = id;
 	}
 	
 	/**
@@ -46,7 +56,6 @@ public abstract class Piece {
 	
 	//Getters & Setters
 	public Position getPosition(){return position;};
-	public void setPosition(Position newPosition) {position = newPosition;}
 	public Color getColor() {return color;}
 	
 	/**
@@ -60,6 +69,18 @@ public abstract class Piece {
 	 * Rook   = "r"
 	 */
 	public abstract String toString();
+
+	public void setPosition(Position p){
+		position = p;
+	}
 	
-	
+	public static Piece copy(Piece p) {
+		if (p instanceof Pawn) return new Pawn((Pawn)p);
+		if (p instanceof Rook) return new Rook((Rook)p);
+		if (p instanceof Knight) return new Knight((Knight)p);
+		if (p instanceof Queen) return new Queen((Queen)p);
+		if (p instanceof King) return new King((King)p);
+		if (p instanceof Bishop) return new Bishop((Bishop)p);
+		return null;
+	}
 }

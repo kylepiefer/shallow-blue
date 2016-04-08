@@ -8,7 +8,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".PVPGameBoard"
-    android:background="#c8200a">
+    android:background="@drawable/redwallpaperbackground">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -21,7 +21,7 @@
             android:rotation="180"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="15"
+            android:layout_weight="17.5"
             android:weightSum="2"
             android:padding="0dp"
             android:orientation="horizontal"
@@ -42,25 +42,38 @@
                     android:padding="0dp"
                     android:orientation="horizontal" >
 
-                    <Button android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/GameBoardActivity_undo"
-                        android:id="@+id/Undo2" />
 
-                    <Button android:layout_width="0dp"
+
+                    <ImageView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/GameBoardActivity_redo"
-                        android:id="@+id/Redo2" />
+                        android:id="@+id/undo2"
+                        android:src="@drawable/sp_undo_move"
+                        android:layout_gravity="center_horizontal"
+                        android:onClick="pvpundo2" />
+
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:id="@+id/redo2"
+                        android:src="@drawable/sp_redo_move"
+                        android:layout_gravity="left"
+                        android:onClick="pvpredo2" />
 
                 </LinearLayout>
 
-                <Button android:layout_width="match_parent"
-                    android:layout_height="0dp"
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/GameBoardActivity_start_helper"
-                    android:id="@+id/Helper2" />
+                    android:id="@+id/helper2"
+                    android:src="@drawable/sp_start_helper"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="3dp"
+                    android:onClick="pvpstarthelp2" />
 
             </LinearLayout>
 
@@ -72,555 +85,1083 @@
                 android:padding="0dp"
                 android:orientation="vertical" >
 
-                <Button android:layout_width="match_parent"
+                <ImageView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/GameBoardActivity_options"
-                    android:id="@+id/Options2" />
+                    android:id="@+id/options2"
+                    android:onClick = "pvpoptionsScreen2"
+                    android:src="@drawable/sp_options" />
 
-                <Button android:layout_width="match_parent"
+                <ImageView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/GameBoardActivity_suggest_alternate_move"
-                    android:textSize="10dp"
-                    android:id="@+id/SuggestAlternate2" />
+                    android:layout_weight="1"
+                    android:id="@+id/suggestalternate2"
+                    android:src="@drawable/sp_suggest_alt_move"
+                    android:layout_marginTop="3dp"
+                    android:onClick="pvpsuggalt2" />
 
             </LinearLayout>
 
         </LinearLayout>
 
-        <GridLayout
+        <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_gravity="center"
-            android:layout_weight="70"
-            android:paddingTop="25dp">
-
-            <!-- row 8 -->
-            <ImageView
-                android:id="@+id/multiplayer_board_a8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="0"
-                android:layout_column="0"
-                android:src="@drawable/board_square_light"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_b8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="0"
-                android:layout_column="1"
-                android:src="@drawable/board_square_dark"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_c8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="0"
-                android:layout_column="2"
-                android:src="@drawable/board_square_light"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_d8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="0"
-                android:layout_column="3"
-                android:src="@drawable/board_square_dark"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_e8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="0"
-                android:layout_column="4"
-                android:src="@drawable/board_square_light"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_f8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="0"
-                android:layout_column="5"
-                android:src="@drawable/board_square_dark"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_g8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="0"
-                android:layout_column="6"
-                android:src="@drawable/board_square_light"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_h8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="0"
-                android:layout_column="7"
-                android:src="@drawable/board_square_dark"/>
-
-            <!-- row 7 -->
-            <ImageView
-                android:id="@+id/multiplayer_board_a7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="1"
-                android:layout_column="0"
-                android:src="@drawable/board_square_dark"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_b7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="1"
-                android:layout_column="1"
-                android:src="@drawable/board_square_light"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_c7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="1"
-                android:layout_column="2"
-                android:src="@drawable/board_square_dark"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_d7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="1"
-                android:layout_column="3"
-                android:src="@drawable/board_square_light"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_e7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="1"
-                android:layout_column="4"
-                android:src="@drawable/board_square_dark"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_f7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="1"
-                android:layout_column="5"
-                android:src="@drawable/board_square_light"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_g7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="1"
-                android:layout_column="6"
-                android:src="@drawable/board_square_dark"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_h7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="1"
-                android:layout_column="7"
-                android:src="@drawable/board_square_light"/>
-
-            <!-- row 6 -->
-            <ImageView
-                android:id="@+id/multiplayer_board_a6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="2"
-                android:layout_column="0"
-                android:src="@drawable/board_square_light"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_b6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="2"
-                android:layout_column="1"
-                android:src="@drawable/board_square_dark"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_c6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="2"
-                android:layout_column="2"
-                android:src="@drawable/board_square_light"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_d6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="2"
-                android:layout_column="3"
-                android:src="@drawable/board_square_dark"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_e6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="2"
-                android:layout_column="4"
-                android:src="@drawable/board_square_light"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_f6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="2"
-                android:layout_column="5"
-                android:src="@drawable/board_square_dark"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_g6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="2"
-                android:layout_column="6"
-                android:src="@drawable/board_square_light"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_h6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="2"
-                android:layout_column="7"
-                android:src="@drawable/board_square_dark"/>
-
-            <!-- row 5 -->
-            <ImageView
-                android:id="@+id/multiplayer_board_a5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="3"
-                android:layout_column="0"
-                android:src="@drawable/board_square_dark"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_b5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="3"
-                android:layout_column="1"
-                android:src="@drawable/board_square_light"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_c5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="3"
-                android:layout_column="2"
-                android:src="@drawable/board_square_dark"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_d5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="3"
-                android:layout_column="3"
-                android:src="@drawable/board_square_light"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_e5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="3"
-                android:layout_column="4"
-                android:src="@drawable/board_square_dark"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_f5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="3"
-                android:layout_column="5"
-                android:src="@drawable/board_square_light"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_g5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="3"
-                android:layout_column="6"
-                android:src="@drawable/board_square_dark"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_h5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="3"
-                android:layout_column="7"
-                android:src="@drawable/board_square_light"/>
-
-            <!-- row 4 -->
-            <ImageView
-                android:id="@+id/multiplayer_board_a4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="4"
-                android:layout_column="0"
-                android:src="@drawable/board_square_light"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_b4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="4"
-                android:layout_column="1"
-                android:src="@drawable/board_square_dark"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_c4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="4"
-                android:layout_column="2"
-                android:src="@drawable/board_square_light"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_d4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="4"
-                android:layout_column="3"
-                android:src="@drawable/board_square_dark"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_e4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="4"
-                android:layout_column="4"
-                android:src="@drawable/board_square_light"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_f4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="4"
-                android:layout_column="5"
-                android:src="@drawable/board_square_dark"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_g4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="4"
-                android:layout_column="6"
-                android:src="@drawable/board_square_light"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_h4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="4"
-                android:layout_column="7"
-                android:src="@drawable/board_square_dark"/>
-
-            <!-- row 3 -->
-            <ImageView
-                android:id="@+id/multiplayer_board_a3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="5"
-                android:layout_column="0"
-                android:src="@drawable/board_square_dark"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_b3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="5"
-                android:layout_column="1"
-                android:src="@drawable/board_square_light"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_c3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="5"
-                android:layout_column="2"
-                android:src="@drawable/board_square_dark"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_d3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="5"
-                android:layout_column="3"
-                android:src="@drawable/board_square_light"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_e3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="5"
-                android:layout_column="4"
-                android:src="@drawable/board_square_dark"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_f3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="5"
-                android:layout_column="5"
-                android:src="@drawable/board_square_light"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_g3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="5"
-                android:layout_column="6"
-                android:src="@drawable/board_square_dark"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_h3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="5"
-                android:layout_column="7"
-                android:src="@drawable/board_square_light"/>
-
-            <!-- row 2 -->
-            <ImageView
-                android:id="@+id/multiplayer_board_a2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="6"
-                android:layout_column="0"
-                android:src="@drawable/board_square_light"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_b2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="6"
-                android:layout_column="1"
-                android:src="@drawable/board_square_dark"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_c2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="6"
-                android:layout_column="2"
-                android:src="@drawable/board_square_light"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_d2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="6"
-                android:layout_column="3"
-                android:src="@drawable/board_square_dark"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_e2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="6"
-                android:layout_column="4"
-                android:src="@drawable/board_square_light"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_f2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="6"
-                android:layout_column="5"
-                android:src="@drawable/board_square_dark"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_g2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="6"
-                android:layout_column="6"
-                android:src="@drawable/board_square_light"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_h2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="6"
-                android:layout_column="7"
-                android:src="@drawable/board_square_dark"/>
-
-            <!-- row 1 -->
-            <ImageView
-                android:id="@+id/multiplayer_board_a1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="7"
-                android:layout_column="0"
-                android:src="@drawable/board_square_dark"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_b1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="7"
-                android:layout_column="1"
-                android:src="@drawable/board_square_light"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_c1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="7"
-                android:layout_column="2"
-                android:src="@drawable/board_square_dark"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_d1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="7"
-                android:layout_column="3"
-                android:src="@drawable/board_square_light"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_e1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="7"
-                android:layout_column="4"
-                android:src="@drawable/board_square_dark"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_f1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="7"
-                android:layout_column="5"
-                android:src="@drawable/board_square_light"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_g1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="7"
-                android:layout_column="6"
-                android:src="@drawable/board_square_dark"/>
-
-            <ImageView
-                android:id="@+id/multiplayer_board_h1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="7"
-                android:layout_column="7"
-                android:src="@drawable/board_square_light"/>
-
-        </GridLayout>
+            android:layout_weight="65"
+            android:layout_gravity="center_horizontal">
+
+            <GridLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="70"
+                android:columnCount="8"
+                android:rowCount="8" >
+
+                <ImageView
+                    android:id="@+id/imageView66"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="0"
+                    android:layout_column="0"
+                    android:src="@drawable/graysquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView67"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="0"
+                    android:layout_column="1"
+                    android:src="@drawable/darksquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView68"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="0"
+                    android:layout_column="2"
+                    android:src="@drawable/graysquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView69"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="0"
+                    android:layout_column="3"
+                    android:src="@drawable/darksquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView70"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="0"
+                    android:layout_column="4"
+                    android:src="@drawable/graysquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView71"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="0"
+                    android:layout_column="5"
+                    android:src="@drawable/darksquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView72"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="0"
+                    android:layout_column="6"
+                    android:src="@drawable/graysquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView73"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="0"
+                    android:layout_column="7"
+                    android:src="@drawable/darksquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView74"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="1"
+                    android:layout_column="0"
+                    android:src="@drawable/darksquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView75"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="1"
+                    android:layout_column="1"
+                    android:src="@drawable/graysquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView76"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="1"
+                    android:layout_column="2"
+                    android:src="@drawable/darksquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView77"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="1"
+                    android:layout_column="3"
+                    android:src="@drawable/graysquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView78"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="1"
+                    android:layout_column="4"
+                    android:src="@drawable/darksquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView79"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="1"
+                    android:layout_column="5"
+                    android:src="@drawable/graysquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView80"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="1"
+                    android:layout_column="6"
+                    android:src="@drawable/darksquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView81"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="1"
+                    android:layout_column="7"
+                    android:src="@drawable/graysquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView82"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="2"
+                    android:layout_column="0"
+                    android:src="@drawable/graysquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView83"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="2"
+                    android:layout_column="1"
+                    android:src="@drawable/darksquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView84"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="2"
+                    android:layout_column="2"
+                    android:src="@drawable/graysquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView85"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="2"
+                    android:layout_column="3"
+                    android:src="@drawable/darksquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView86"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="2"
+                    android:layout_column="4"
+                    android:src="@drawable/graysquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView87"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="2"
+                    android:layout_column="5"
+                    android:src="@drawable/darksquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView88"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="2"
+                    android:layout_column="6"
+                    android:src="@drawable/graysquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView89"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="2"
+                    android:layout_column="7"
+                    android:src="@drawable/darksquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView90"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="3"
+                    android:layout_column="0"
+                    android:src="@drawable/darksquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView91"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="3"
+                    android:layout_column="1"
+                    android:src="@drawable/graysquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView92"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="3"
+                    android:layout_column="2"
+                    android:src="@drawable/darksquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView93"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="3"
+                    android:layout_column="3"
+                    android:src="@drawable/graysquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView94"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="3"
+                    android:layout_column="4"
+                    android:src="@drawable/darksquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView95"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="3"
+                    android:layout_column="5"
+                    android:src="@drawable/graysquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView96"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="3"
+                    android:layout_column="6"
+                    android:src="@drawable/darksquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView97"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="3"
+                    android:layout_column="7"
+                    android:src="@drawable/graysquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView98"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="4"
+                    android:layout_column="0"
+                    android:src="@drawable/graysquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView99"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="4"
+                    android:layout_column="1"
+                    android:src="@drawable/darksquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView100"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="4"
+                    android:layout_column="2"
+                    android:src="@drawable/graysquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView101"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="4"
+                    android:layout_column="3"
+                    android:src="@drawable/darksquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView102"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="4"
+                    android:layout_column="4"
+                    android:src="@drawable/graysquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView103"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="4"
+                    android:layout_column="5"
+                    android:src="@drawable/darksquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView104"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="4"
+                    android:layout_column="6"
+                    android:src="@drawable/graysquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView105"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="4"
+                    android:layout_column="7"
+                    android:src="@drawable/darksquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView106"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="5"
+                    android:layout_column="0"
+                    android:src="@drawable/darksquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView107"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="5"
+                    android:layout_column="1"
+                    android:src="@drawable/graysquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView108"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="5"
+                    android:layout_column="2"
+                    android:src="@drawable/darksquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView109"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="5"
+                    android:layout_column="3"
+                    android:src="@drawable/graysquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView110"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="5"
+                    android:layout_column="4"
+                    android:src="@drawable/darksquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView111"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="5"
+                    android:layout_column="5"
+                    android:src="@drawable/graysquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView112"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="5"
+                    android:layout_column="6"
+                    android:src="@drawable/darksquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView113"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="5"
+                    android:layout_column="7"
+                    android:src="@drawable/graysquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView114"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="6"
+                    android:layout_column="0"
+                    android:src="@drawable/graysquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView115"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="6"
+                    android:layout_column="1"
+                    android:src="@drawable/darksquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView116"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="6"
+                    android:layout_column="2"
+                    android:src="@drawable/graysquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView117"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="6"
+                    android:layout_column="3"
+                    android:src="@drawable/darksquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView118"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="6"
+                    android:layout_column="4"
+                    android:src="@drawable/graysquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView119"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="6"
+                    android:layout_column="5"
+                    android:src="@drawable/darksquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView120"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="6"
+                    android:layout_column="6"
+                    android:src="@drawable/graysquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView121"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="6"
+                    android:layout_column="7"
+                    android:src="@drawable/darksquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView122"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="7"
+                    android:layout_column="0"
+                    android:src="@drawable/darksquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView123"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="7"
+                    android:layout_column="1"
+                    android:src="@drawable/graysquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView124"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="7"
+                    android:layout_column="2"
+                    android:src="@drawable/darksquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView125"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="7"
+                    android:layout_column="3"
+                    android:src="@drawable/graysquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView126"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="7"
+                    android:layout_column="4"
+                    android:src="@drawable/darksquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView127"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="7"
+                    android:layout_column="5"
+                    android:src="@drawable/graysquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView128"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="7"
+                    android:layout_column="6"
+                    android:src="@drawable/darksquaretile" />
+
+                <ImageView
+                    android:id="@+id/imageView129"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="7"
+                    android:layout_column="7"
+                    android:src="@drawable/graysquaretile" />
+            </GridLayout>
+
+            <GridLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="70"
+                android:columnCount="8"
+                android:rowCount="8"
+                android:id="@+id/pieceHolder">
+
+                <ImageView
+                    android:id="@+id/pvpgame00"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="0"
+                    android:layout_column="0"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame01"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="0"
+                    android:layout_column="1"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame02"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="0"
+                    android:layout_column="2"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame03"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="0"
+                    android:layout_column="3"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame04"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="0"
+                    android:layout_column="4"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame05"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="0"
+                    android:layout_column="5"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame06"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="0"
+                    android:layout_column="6"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame07"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="0"
+                    android:layout_column="7"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame10"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="1"
+                    android:layout_column="0"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame11"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="1"
+                    android:layout_column="1"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame12"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="1"
+                    android:layout_column="2"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame13"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="1"
+                    android:layout_column="3"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame14"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="1"
+                    android:layout_column="4"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame15"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="1"
+                    android:layout_column="5"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame16"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="1"
+                    android:layout_column="6"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame17"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="1"
+                    android:layout_column="7"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame20"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="2"
+                    android:layout_column="0"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame21"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="2"
+                    android:layout_column="1"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame22"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="2"
+                    android:layout_column="2"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame23"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="2"
+                    android:layout_column="3"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame24"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="2"
+                    android:layout_column="4"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame25"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="2"
+                    android:layout_column="5"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame26"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="2"
+                    android:layout_column="6"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame27"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="2"
+                    android:layout_column="7"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame30"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="3"
+                    android:layout_column="0"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame31"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="3"
+                    android:layout_column="1"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame32"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="3"
+                    android:layout_column="2"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame33"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="3"
+                    android:layout_column="3"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame34"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="3"
+                    android:layout_column="4"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame35"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="3"
+                    android:layout_column="5"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame36"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="3"
+                    android:layout_column="6"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame37"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="3"
+                    android:layout_column="7"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame40"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="4"
+                    android:layout_column="0"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame41"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="4"
+                    android:layout_column="1"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame42"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="4"
+                    android:layout_column="2"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame43"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="4"
+                    android:layout_column="3"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame44"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="4"
+                    android:layout_column="4"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame45"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="4"
+                    android:layout_column="5"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame46"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="4"
+                    android:layout_column="6"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame47"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="4"
+                    android:layout_column="7"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame50"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="5"
+                    android:layout_column="0"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame51"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="5"
+                    android:layout_column="1"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame52"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="5"
+                    android:layout_column="2"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame53"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="5"
+                    android:layout_column="3"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame54"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="5"
+                    android:layout_column="4"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame55"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="5"
+                    android:layout_column="5"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame56"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="5"
+                    android:layout_column="6"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame57"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="5"
+                    android:layout_column="7"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame60"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="6"
+                    android:layout_column="0"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame61"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="6"
+                    android:layout_column="1"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame62"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="6"
+                    android:layout_column="2"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame63"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="6"
+                    android:layout_column="3"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame64"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="6"
+                    android:layout_column="4"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame65"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="6"
+                    android:layout_column="5"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame66"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="6"
+                    android:layout_column="6"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame67"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="6"
+                    android:layout_column="7"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame70"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="7"
+                    android:layout_column="0"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame71"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="7"
+                    android:layout_column="1"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame72"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="7"
+                    android:layout_column="2"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame73"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="7"
+                    android:layout_column="3"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame74"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="7"
+                    android:layout_column="4"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame75"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="7"
+                    android:layout_column="5"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame76"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="7"
+                    android:layout_column="6"
+                    android:onClick="movePiece" />
+
+                <ImageView
+                    android:id="@+id/pvpgame77"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_row="7"
+                    android:layout_column="7"
+                    android:nestedScrollingEnabled="false"
+                    android:onClick="movePiece" />
+            </GridLayout>
+
+        </FrameLayout>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="15"
+            android:layout_weight="17.5"
             android:weightSum="2"
             android:padding="0dp"
             android:orientation="horizontal"
@@ -642,29 +1183,34 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:padding="0dp"
-                    android:orientation="horizontal" >
+                    android:orientation="horizontal">
 
-                    <Button
-                        android:layout_width="0dp"
+                    <ImageView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/GameBoardActivity_undo"
-                        android:id="@+id/Undo1" />
+                        android:id="@+id/undo1"
+                        android:src="@drawable/sp_undo_move"
+                        android:onClick="pvpundo1" />
 
-                    <Button
-                        android:layout_width="0dp"
+                    <ImageView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/GameBoardActivity_redo"
-                        android:id="@+id/Redo1" />
+                        android:id="@+id/redo1"
+                        android:src="@drawable/sp_redo_move"
+                        android:onClick="pvpredo1" />
                 </LinearLayout>
 
-                <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/GameBoardActivity_start_helper"
-                    android:id="@+id/Helper1" />
+                    android:id="@+id/helper1"
+                    android:src="@drawable/sp_start_helper"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="3dp"
+                    android:onClick="pvpstarthelp1" />
             </LinearLayout>
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -675,20 +1221,23 @@
                 android:padding="0dp"
                 android:orientation="vertical" >
 
-                <Button
-                    android:layout_width="match_parent"
+                <ImageView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/GameBoardActivity_options"
-                    android:id="@+id/Options1" />
+                    android:id="@+id/options1"
+                    android:onClick = "pvpoptionsScreen1"
+                    android:src="@drawable/sp_options" />
 
-                <Button
-                    android:layout_width="match_parent"
+                <ImageView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/GameBoardActivity_suggest_alternate_move"
-                    android:textSize="10dp"
-                    android:id="@+id/SuggestAlternate1"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:id="@+id/suggestalternate1"
+                    android:src="@drawable/sp_suggest_alt_move"
+                    android:layout_marginTop="3dp"
+                    android:onClick="pvpsuggalt1"
+                    android:nestedScrollingEnabled="false" />
             </LinearLayout>
         </LinearLayout>
 

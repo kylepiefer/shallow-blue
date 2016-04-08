@@ -6,7 +6,12 @@ import java.util.ArrayList;
 public class Queen extends Piece {
 
 	public Queen(Position argPosition, Color color) {
-		super(argPosition, color);
+
+		super(argPosition, color, color == Color.WHITE ? R.drawable.white_queen : R.drawable.black_queen);
+	}
+
+	public Queen(Queen q) {
+		super(q.getPosition(), q.getColor(), q.getColor() == Color.WHITE ? R.drawable.white_queen : R.drawable.black_queen);
 	}
 
 	@Override
@@ -25,11 +30,20 @@ public class Queen extends Piece {
 	public ArrayList<Position> possibleMoves() {
 		
 		ArrayList<Position> result = new ArrayList<Position>();
+		if (this.getPosition() == null) return result;
+
+		//if the queen's position is illegal, no moves should be added:
+		int checkRow = getPosition().getRow();
+		int checkCol = getPosition().getColumn();
+		if (checkRow > 7 || checkRow < 0) return result;
+		if (checkCol > 7 || checkCol < 0) return result;
 		
 		//left & right movements
-		for (int i = 1; i <= 8; i++) if (i != getPosition().getColumn()) result.add(new Position(getPosition().getRow(), i));
+		for (int i = 0; i <= 7; i++)
+			if (i != getPosition().getColumn()) result.add(new Position(getPosition().getRow(), i));
 		//up and down
-		for (int i = 1; i <= 8; i++) if (i != getPosition().getRow()) result.add(new Position(i, getPosition().getColumn()));
+		for (int i = 0; i <= 7; i++)
+			if (i != getPosition().getRow()) result.add(new Position(i, getPosition().getColumn()));
 		
 		int x = getPosition().getRow();
 		int y = getPosition().getColumn();
@@ -37,23 +51,23 @@ public class Queen extends Piece {
 		//For diagonal movements:
 		
 		//top left
-		for (int i = x, j = y; i <= 8 && j >= 1; i++, j--) {
+		for (int i = x, j = y; i <= 7 && j >= 0; i++, j--) {
 			if (i != x && j != y) result.add(new Position(i,j));
 		}
 			
 				
 		//top right 
-		for (int i = x, j = y; i <= 8 && j <= 8; i++, j++) {
+		for (int i = x, j = y; i <= 7 && j <= 7; i++, j++) {
 			if (i != x && j != y) result.add(new Position(i,j));
 		}
 		
 		//bottom left
-		for (int i = x, j = y; i >= 1 && j >= 1; i--, j--) {
+		for (int i = x, j = y; i >= 0 && j >= 0; i--, j--) {
 			if (i != x && j != y) result.add(new Position(i,j));
 		}
 		
 		//bottom right
-		for (int i = x, j = y; i >= 1 && j <= 8; i--, j++) {
+		for (int i = x, j = y; i >= 0 && j <= 7; i--, j++) {
 			if (i != x && j != y) result.add(new Position(i,j));
 		}
 		
