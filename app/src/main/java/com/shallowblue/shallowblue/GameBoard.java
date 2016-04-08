@@ -259,7 +259,7 @@ public class GameBoard {
     }
 
     public double sbe() {
-        return 0;
+        return Math.random();
     }
     public List<Move> isThreatened(Piece p) {
         List<Move> ret = new ArrayList<Move>();
