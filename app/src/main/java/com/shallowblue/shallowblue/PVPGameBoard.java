@@ -210,20 +210,20 @@ public class PVPGameBoard extends AppCompatActivity {
                     int selMoveX = selMoves.get(i).getRow();
                     int selMoveY = selMoves.get(i).getColumn();
                     pvpGameboard[selMoveX][selMoveY].setBackgroundResource(redHighlight);
-                }
-                for (int i = 0; i < selLegal.size(); i++){
-                    int selMoveX = selLegal.get(i).getTo().getRow();
-                    int selMoveY = selLegal.get(i).getTo().getColumn();
-                    pvpGameboard[selMoveX][selMoveY].setBackgroundResource(greenHighlight);
+                    Position curr = selMoves.get(i);
+                    Move possible = new Move(selPiece, selPiece.getPosition(), curr);
+                    if (GameBoard.activeGameBoard.legalMove(possible)) {
+                        pvpGameboard[selMoveX][selMoveY].setBackgroundResource(greenHighlight);
+                    }
                 }
                 return;
             }
         } else {
             int tempX = tempPos.getRow();
             int tempY = tempPos.getColumn();
-            for (int x = 0; x < selMoves.size(); x++){
-                int selX = selMoves.get(x).getRow();
-                int selY = selMoves.get(x).getColumn();
+            for (int x = 0; x < selLegal.size(); x++){
+                int selX = selLegal.get(x).getTo().getRow();
+                int selY = selLegal.get(x).getTo().getColumn();
                 if (selX == tempX && selY == tempY){
                     foundMatch = true;
                     break;
@@ -250,10 +250,12 @@ public class PVPGameBoard extends AppCompatActivity {
         boardSetup.put(tempPos, selPiece);
         boardSetup.put(selPosition, null);
 
+        int multiplier = this.getResources().getDimensionPixelSize(R.dimen.game_board_activity_square_width);
+
         int moveY = tempPos.getRow() - selPosition.getRow();
         int moveX = tempPos.getColumn() - selPosition.getColumn();
 
-        TranslateAnimation mAnimation = new TranslateAnimation(0, moveX * 80, 0, moveY * 80);
+        TranslateAnimation mAnimation = new TranslateAnimation(0, moveX * multiplier, 0, moveY * multiplier);
         mAnimation.setDuration(1000);
         mAnimation.setFillAfter(false);
         selImage.setAnimation(mAnimation);
@@ -262,6 +264,7 @@ public class PVPGameBoard extends AppCompatActivity {
         Move move = new Move(selPiece, selPosition, tempPos );
         move.setPieceCaptured(tempPiece);
         GameBoard.activeGameBoard.addMove(move);
+        GameBoard.activeGameBoard.move(move);
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {

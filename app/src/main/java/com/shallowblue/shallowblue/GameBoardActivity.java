@@ -37,6 +37,7 @@ public class GameBoardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game_board);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+
         // initialize toast
         this.toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
 
@@ -368,10 +369,13 @@ public class GameBoardActivity extends AppCompatActivity {
 
     public void startingHelper(View v) {
         showToast("The Helper is not currently available."); // TODO
+        new UrlConnection().new Connection().execute("connect");
     }
 
     public void altMove(View v ) {
-        showToast("An alternate move is not currently available."); // TODO
+        showToast("An alternate move is not currently available.");// TODO
+        new UrlConnection().new Request().execute(gameBoard.pack());
+
     }
 
     public void undoMove(View v){

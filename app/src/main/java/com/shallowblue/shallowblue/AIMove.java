@@ -14,13 +14,13 @@ import java.util.Map.Entry;
  */
 public class AIMove {
 
-    private static final Comparator<Entry<Double,Move>> MIN_COMPARATOR =
+    protected static final Comparator<Entry<Double,Move>> MIN_COMPARATOR =
             new Comparator<Entry<Double,Move>>() {
                 public int compare(Entry<Double,Move> e1, Entry<Double,Move> e2){
                     return Double.compare(e1.getKey(), e2.getKey());
                 }
             };
-    private static final Comparator<Entry<Double,Move>> MAX_COMPARATOR =
+    protected static final Comparator<Entry<Double,Move>> MAX_COMPARATOR =
             new Comparator<Entry<Double,Move>>() {
                 public int compare(Entry<Double,Move> e1, Entry<Double,Move> e2){
                     return Double.compare(e2.getKey(), e1.getKey());

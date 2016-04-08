@@ -32,10 +32,18 @@ public class Queen extends Piece {
 		ArrayList<Position> result = new ArrayList<Position>();
 		if (this.getPosition() == null) return result;
 
+		//if the queen's position is illegal, no moves should be added:
+		int checkRow = getPosition().getRow();
+		int checkCol = getPosition().getColumn();
+		if (checkRow > 7 || checkRow < 0) return result;
+		if (checkCol > 7 || checkCol < 0) return result;
+		
 		//left & right movements
-		for (int i = 0; i <= 7; i++) if (i != getPosition().getColumn()) result.add(new Position(getPosition().getRow(), i));
+		for (int i = 0; i <= 7; i++)
+			if (i != getPosition().getColumn()) result.add(new Position(getPosition().getRow(), i));
 		//up and down
-		for (int i = 0; i <= 7; i++) if (i != getPosition().getRow()) result.add(new Position(i, getPosition().getColumn()));
+		for (int i = 0; i <= 7; i++)
+			if (i != getPosition().getRow()) result.add(new Position(i, getPosition().getColumn()));
 		
 		int x = getPosition().getRow();
 		int y = getPosition().getColumn();
