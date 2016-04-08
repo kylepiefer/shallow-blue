@@ -239,20 +239,26 @@ public class GameBoard {
 
     public String pack(){
         String temp = "";
-        Position p;
-        for(int i = 0; i < 7; i++) {
-            for(int j = 0; j < 7; j++) {
-                p = new Position(i,j);
-                if (gameBoard.containsKey(p)) {
-                    temp += gameBoard.get(p).toString();
-                }
-                else {
-                    temp += "_";
+        try {
+            Position p;
+            for (int i = 0; i < 7; i++) {
+                for (int j = 0; j < 7; j++) {
+                    p = new Position(i, j);
+                    if (gameBoard.containsKey(p)) {
+                        temp += gameBoard.get(p).toString();
+                    } else {
+                        temp += "_";
+                    }
                 }
             }
+
+            temp += "+" + gameHistory.get(0).toString() + gameHistory.get(1).toString() + gameHistory.get(2).toString() + "+\n";
+            return temp;
         }
-        //null exception when on gameHistory available
-        //temp += "+" + gameHistory.get(0).toString() + gameHistory.get(1).toString() + gameHistory.get(2).toString() + "+\n";
+        catch(Exception e)
+        {
+            //null exception when on gameHistory available
+        }
         return temp;
     }
 
