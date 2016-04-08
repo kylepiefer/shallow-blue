@@ -4,13 +4,14 @@ package com.shallowblue.shallowblue;
  * Created by peter on 3/14/2016.
  */
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
+import java.util.Stack;
 
 public class GameBoard {
 
@@ -18,7 +19,7 @@ public class GameBoard {
     public Map<Position, Piece> gameBoard;
     public List<Move> gameHistory;
     private Color playerToMove;
-    private Queue<Move> redoQueue;
+    private Stack<Move> redoStack;
 
     public GameBoard() {
         if (gameBoard == null) {
@@ -60,11 +61,15 @@ public class GameBoard {
         }
         playerToMove = Color.WHITE;
         gameHistory = new ArrayList<Move>();
-        redoQueue = new LinkedList<Move>();
+        redoStack = new Stack<Move>();
     }
     public GameBoard(GameBoard in) {
-        gameBoard = new HashMap<Position,Piece>(in.getGameBoard());
+        gameBoard = new HashMap<Position,Piece>();
+        for(Map.Entry<Position,Piece> e : in.gameBoard.entrySet())
+            gameBoard.put(e.getKey(),Piece.copy(e.getValue()));
         gameHistory = new ArrayList<Move>(in.getGameHistory());
+        playerToMove = in.playerToMove();
+        redoStack = new Stack<Move>();
     }
 
     private void switchPlayerToMove() {
@@ -74,19 +79,19 @@ public class GameBoard {
     public List<Move> getAllMoves(){
         List<Move> ret = new ArrayList<Move>();
         for(Map.Entry<Position,Piece> e : gameBoard.entrySet())
-            if(e.getValue().getColor() == playerToMove)
+            if(e.getValue() != null && e.getValue().getColor() == playerToMove)
                 ret.addAll(getLegalMoves(e.getKey()));
         return ret;
     }
 
     public boolean move(Move m){						//Returns true iff successful
-        redoQueue.clear();
+        redoStack.clear();
         if(gameBoard.get(m.getFrom()) == null)
             return false;
 
         if (gameBoard.get(m.getTo()) != null) {
             m.setPieceCaptured(gameBoard.get(m.getTo()));
-            gameBoard.get(m.getTo()).setPosition(null);
+            this.gameBoard.remove(m.getTo()).setPosition(null);
         }
 
         gameBoard.put(m.getTo(), gameBoard.get(m.getFrom()));
@@ -120,21 +125,21 @@ public class GameBoard {
         gameBoard.put(m.getTo(), m.getPieceCaptured());
 
         gameHistory.remove(gameHistory.size() - 1);
-        redoQueue.add(m);
+        redoStack.push(m);
         switchPlayerToMove();
         return true;
     }
     public boolean redo(){
-        if (redoQueue.isEmpty()){
+        if (redoStack.isEmpty()){
             return false;
         }
-        Move m = redoQueue.remove();
+        Move m = redoStack.pop();
         this.move(m);
         return true;
     }
 
     public boolean legalMove(Move m) {
-        if(gameBoard.get(m.getTo()) != null &&
+        if(gameBoard.get(m.getTo()) != null && gameBoard.get(m.getFrom()) != null &&
                 gameBoard.get(m.getTo()).getColor() == gameBoard.get(m.getFrom()).getColor()){
             return false;
         }
@@ -203,7 +208,7 @@ public class GameBoard {
                return false;
             }
             this.undo();
-            redoQueue.remove();
+            redoStack.pop();
         }
 
         return canmove;
@@ -265,7 +270,7 @@ public class GameBoard {
     }
 
     public double sbe() {
-        return 0;
+        return Math.random();
     }
     public List<Move> isThreatened(Piece p) {
         List<Move> ret = new ArrayList<Move>();
