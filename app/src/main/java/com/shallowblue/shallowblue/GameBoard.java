@@ -149,10 +149,10 @@ public class GameBoard {
         }
         boolean canmove = true;
         Position tempPos = m.getTo();
-        if (m.getPieceMoved() instanceof Rook &&
+        /*if (m.getPieceMoved() instanceof Rook &&
                 gameBoard.get(m.getTo()) instanceof King &&
                 !m.getPieceMoved().hasMoved()&&!gameBoard.get(m.getTo()).hasMoved()) { //castle
-            canmove = true;
+
             tempPos = m.getTo();
             while (m.getFrom().getColumn() != tempPos.getColumn()){ //checks if anything is between the castling pieces
                 int tempCol = tempPos.getColumn();
@@ -170,9 +170,10 @@ public class GameBoard {
                 }
 
             }
-            return canmove;
-        }
-        while (m.getFrom().getColumn() != tempPos.getColumn()){ //naive evaluation of non-pawn pieces
+            //return canmove;
+        }*/
+        tempPos = m.getTo();
+        while (!m.getFrom().equals(tempPos)){ //naive evaluation of non-pawn pieces
             int tempCol = tempPos.getColumn();
             int tempRow = tempPos.getRow();
             if(m.getFrom().getColumn() > tempPos.getColumn()){
