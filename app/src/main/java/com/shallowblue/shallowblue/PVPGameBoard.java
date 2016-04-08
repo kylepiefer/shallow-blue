@@ -451,19 +451,19 @@ public class PVPGameBoard extends AppCompatActivity {
     }
 
     public void pvpsuggalt1(View v){
-
+        new UrlConnection().new Request().execute(GameBoard.activeGameBoard.pack());
     }
 
     public void pvpsuggalt2(View v){
-
+        new UrlConnection().new Request().execute(GameBoard.activeGameBoard.pack());
     }
 
     public void pvpstarthelp1(View v){
-
+        new UrlConnection().new Connection().execute("connect");
     }
 
     public void pvpstarthelp2(View v){
-
+        new UrlConnection().new Connection().execute("connect");
     }
 
     public void onBackPressed(){

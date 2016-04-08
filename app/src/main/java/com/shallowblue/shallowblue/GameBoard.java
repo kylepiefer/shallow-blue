@@ -245,7 +245,8 @@ public class GameBoard {
                 }
             }
         }
-        temp += "+" + gameHistory.get(0).toString() + gameHistory.get(1).toString() + gameHistory.get(2).toString() + "+\n";
+        //null exception when on gameHistory available
+        //temp += "+" + gameHistory.get(0).toString() + gameHistory.get(1).toString() + gameHistory.get(2).toString() + "+\n";
         return temp;
     }
 
