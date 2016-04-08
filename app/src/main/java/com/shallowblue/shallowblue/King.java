@@ -13,6 +13,11 @@ public class King extends Piece {
 		
 	}
 
+	public King(King k) {
+		super(k.getPosition(), k.getColor(), k.getColor() == Color.WHITE ? R.drawable.white_king : R.drawable.black_king);
+		this.initialPosition = k.getPosition();
+	}
+
 	@Override
 	public boolean hasMoved() {
 		
@@ -29,6 +34,8 @@ public class King extends Piece {
 	@Override
 	public ArrayList<Position> possibleMoves() {
 		ArrayList<Position> result = new ArrayList<Position>();
+		if (this.getPosition() == null) return result;
+
 		int pieceRow = getPosition().getRow();
 		int pieceCol = getPosition().getColumn();
 		
