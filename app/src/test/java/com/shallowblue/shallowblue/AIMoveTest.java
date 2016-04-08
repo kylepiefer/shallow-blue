@@ -16,7 +16,7 @@ import java.util.Map;
 public class AIMoveTest extends AIMove{
 
     @Test
-    public static void comparatorTest() {
+    public void comparatorTest() {
         List<Map.Entry<Double,Move>> input = new ArrayList<Map.Entry<Double,Move>>();
         input.addAll(Arrays.asList(
                 new AbstractMap.SimpleEntry<Double, Move>(2.0,null),
@@ -34,5 +34,10 @@ public class AIMoveTest extends AIMove{
         Assert.assertTrue(input.get(1).getKey() == 2.0);
         Assert.assertTrue(input.get(2).getKey() == 1.0);
 
+    }
+
+    @Test
+    public void moveTest() {
+        Assert.assertTrue(new AIMove().move(new GameBoard(), 0).size() > 0);
     }
 }
