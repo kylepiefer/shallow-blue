@@ -139,7 +139,8 @@ public class GameBoard {
             return false;
         }
         if(m.getPieceMoved().toString().equals("p")){
-            if(m.getTo().getColumn() == m.getFrom().getColumn() && m.getPieceMoved().possibleMoves().contains(m.getTo()) && !gameBoard.containsKey(m.getTo())){ //nothing is blocking the pawn
+            if(m.getTo().getColumn() == m.getFrom().getColumn() && m.getPieceMoved().
+                    possibleMoves().contains(m.getTo()) && gameBoard.get(m.getTo()) == null){ //nothing is blocking the pawn
                 return true;
             }
             return (m.getTo().getColumn() == m.getFrom().getColumn()+1 ||m.getTo().getColumn() == m.getFrom().getColumn() -1 &&             //is in adjacent column
@@ -215,9 +216,18 @@ public class GameBoard {
             moveList.add(new Move(gameBoard.get(from), from, p));
         List<Move> ret = new ArrayList<Move>();
 
-        for(Move m : moveList)
-            if(legalMove(m))
-                ret.add(m);
+        Piece piece = gameBoard.get(from);
+
+        List<Position> possibleMoves = piece.possibleMoves();
+        List<Position> legalMoves = new ArrayList<Position>();
+        for (int p = possibleMoves.size() - 1; p >= 0; p--) {
+            Position curr = possibleMoves.get(p);
+            Move possible = new Move(piece, piece.getPosition(), curr);
+            if (legalMove(possible)) {
+                possibleMoves.remove(p);
+                ret.add(possible);
+            }
+        }
         return ret;
     }
 
