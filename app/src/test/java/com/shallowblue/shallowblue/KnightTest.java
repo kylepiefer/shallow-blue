@@ -1,8 +1,8 @@
 package com.shallowblue.shallowblue;
+import junit.framework.Assert;
+
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 
 /**
@@ -22,9 +22,9 @@ public class KnightTest {
      */
     @Test
     public void testHasMoved() {
-        assertFalse(wKnight.hasMoved());
-        assertFalse(bKnight.hasMoved());
-        assertFalse(mKnight.hasMoved());
+        Assert.assertFalse(wKnight.hasMoved());
+        Assert.assertFalse(bKnight.hasMoved());
+        Assert.assertFalse(mKnight.hasMoved());
     }
 
     /**
@@ -35,9 +35,9 @@ public class KnightTest {
      */
     @Test
     public void isPromoting() {
-        assertFalse(wKnight.isPromoting());
-        assertFalse(bKnight.isPromoting());
-        assertFalse(mKnight.isPromoting());
+        Assert.assertFalse(wKnight.isPromoting());
+        Assert.assertFalse(bKnight.isPromoting());
+        Assert.assertFalse(mKnight.isPromoting());
     }
 
 
@@ -65,24 +65,24 @@ public class KnightTest {
 
         //1- wKnight
         possibleMoves = wKnight.possibleMoves();
-        assertTrue(possibleMoves.contains(new Position(1,2)));
-        assertTrue(possibleMoves.contains(new Position(2,1)));
+        Assert.assertTrue(possibleMoves.contains(new Position(1, 2)));
+        Assert.assertTrue(possibleMoves.contains(new Position(2, 1)));
 
 
         //2- bKnight
         possibleMoves = bKnight.possibleMoves();
-        assertTrue(possibleMoves.isEmpty());
+        Assert.assertTrue(possibleMoves.isEmpty());
 
         //3- mKnight
         possibleMoves = mKnight.possibleMoves();
-        assertTrue(possibleMoves.contains(new Position(2,1)));
-        assertTrue(possibleMoves.contains(new Position(4,1)));
-        assertTrue(possibleMoves.contains(new Position(5,2)));
-        assertTrue(possibleMoves.contains(new Position(1,2)));
-        assertTrue(possibleMoves.contains(new Position(5,4)));
-        assertTrue(possibleMoves.contains(new Position(1,4)));
-        assertTrue(possibleMoves.contains(new Position(4,5)));
-        assertTrue(possibleMoves.contains(new Position(2,5)));
+        Assert.assertTrue(possibleMoves.contains(new Position(2, 1)));
+        Assert.assertTrue(possibleMoves.contains(new Position(4, 1)));
+        Assert.assertTrue(possibleMoves.contains(new Position(5, 2)));
+        Assert.assertTrue(possibleMoves.contains(new Position(1, 2)));
+        Assert.assertTrue(possibleMoves.contains(new Position(5, 4)));
+        Assert.assertTrue(possibleMoves.contains(new Position(1, 4)));
+        Assert.assertTrue(possibleMoves.contains(new Position(4, 5)));
+        Assert.assertTrue(possibleMoves.contains(new Position(2, 5)));
     }
 
 
@@ -91,9 +91,9 @@ public class KnightTest {
      */
     @Test
     public void testToString() {
-        assertTrue(wKnight.toString().equals("n"));
-        assertTrue(bKnight.toString().equals("n"));
-        assertTrue(mKnight.toString().equals("n"));
+        Assert.assertTrue(wKnight.toString().equals("n"));
+        Assert.assertTrue(bKnight.toString().equals("n"));
+        Assert.assertTrue(mKnight.toString().equals("n"));
 
     }
 

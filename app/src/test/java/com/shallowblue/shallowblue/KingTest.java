@@ -1,8 +1,8 @@
 package com.shallowblue.shallowblue;
+import junit.framework.Assert;
+
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 
 
@@ -29,9 +29,9 @@ public class KingTest {
      */
     @Test
     public void testHasMoved() {
-        assertFalse(wKing.hasMoved());
-        assertFalse(bKing.hasMoved());
-        assertFalse(mKing.hasMoved());
+        Assert.assertFalse(wKing.hasMoved());
+        Assert.assertFalse(bKing.hasMoved());
+        Assert.assertFalse(mKing.hasMoved());
     }
 
 
@@ -42,9 +42,9 @@ public class KingTest {
      */
     @Test
     public void testIsPromoting() {
-        assertFalse(wKing.isPromoting());
-        assertFalse(bKing.isPromoting());
-        assertFalse(mKing.isPromoting());
+        Assert.assertFalse(wKing.isPromoting());
+        Assert.assertFalse(bKing.isPromoting());
+        Assert.assertFalse(mKing.isPromoting());
     }
 
 
@@ -76,35 +76,35 @@ public class KingTest {
         /*** wKing ***/
         possibleMoves = wKing.possibleMoves();
 
-        assertTrue(possibleMoves.size() == 5);
-        assertTrue(possibleMoves.contains(new Position(1,4)));
-        assertTrue(possibleMoves.contains(new Position(0,5)));
-        assertTrue(possibleMoves.contains(new Position(0,3)));
-        assertTrue(possibleMoves.contains(new Position(1,5)));
-        assertTrue(possibleMoves.contains(new Position(1, 3)));
+        Assert.assertTrue(possibleMoves.size() == 5);
+        Assert.assertTrue(possibleMoves.contains(new Position(1, 4)));
+        Assert.assertTrue(possibleMoves.contains(new Position(0, 5)));
+        Assert.assertTrue(possibleMoves.contains(new Position(0, 3)));
+        Assert.assertTrue(possibleMoves.contains(new Position(1, 5)));
+        Assert.assertTrue(possibleMoves.contains(new Position(1, 3)));
 
 
         /*** bKing ***/
         possibleMoves = bKing.possibleMoves();
 
-        assertTrue(possibleMoves.isEmpty());
+        Assert.assertTrue(possibleMoves.isEmpty());
 
 
         /*** mKing ***/
         possibleMoves = mKing.possibleMoves();
 
-        assertTrue(possibleMoves.size() == 8);
+        Assert.assertTrue(possibleMoves.size() == 8);
 
-        assertTrue(possibleMoves.contains(new Position(4,2)));
-        assertTrue(possibleMoves.contains(new Position(4,3)));
-        assertTrue(possibleMoves.contains(new Position(4,4)));
+        Assert.assertTrue(possibleMoves.contains(new Position(4, 2)));
+        Assert.assertTrue(possibleMoves.contains(new Position(4, 3)));
+        Assert.assertTrue(possibleMoves.contains(new Position(4, 4)));
 
-        assertTrue(possibleMoves.contains(new Position(3,2)));
-        assertTrue(possibleMoves.contains(new Position(3,4)));
+        Assert.assertTrue(possibleMoves.contains(new Position(3, 2)));
+        Assert.assertTrue(possibleMoves.contains(new Position(3, 4)));
 
-        assertTrue(possibleMoves.contains(new Position(2,2)));
-        assertTrue(possibleMoves.contains(new Position(2,3)));
-        assertTrue(possibleMoves.contains(new Position(2,4)));
+        Assert.assertTrue(possibleMoves.contains(new Position(2, 2)));
+        Assert.assertTrue(possibleMoves.contains(new Position(2, 3)));
+        Assert.assertTrue(possibleMoves.contains(new Position(2, 4)));
 
 
     }
@@ -115,9 +115,9 @@ public class KingTest {
      */
     @Test
     public void testToString() {
-        assertTrue(wKing.toString().equals("p"));
-        assertTrue(bKing.toString().equals("p"));
-        assertTrue(mKing.toString().equals("p"));
+        Assert.assertTrue(wKing.toString().equals("p"));
+        Assert.assertTrue(bKing.toString().equals("p"));
+        Assert.assertTrue(mKing.toString().equals("p"));
 
     }
 

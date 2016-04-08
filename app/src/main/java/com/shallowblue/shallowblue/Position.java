@@ -2,7 +2,7 @@ package com.shallowblue.shallowblue;
 
 /**
  * A chess Position is described by two integer values, a row and a column.
- * Row and Column values range from 1-8 (inclusive), to reflect a board's rank
+ * Row and Column values should range from 0-7 (inclusive), to reflect a board's rank
  * Places in which Shallow Blue uses Position include:
  * a variable for Piece and another for each "tile" on the game board
  */
