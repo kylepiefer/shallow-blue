@@ -250,10 +250,12 @@ public class PVPGameBoard extends AppCompatActivity {
         boardSetup.put(tempPos, selPiece);
         boardSetup.put(selPosition, null);
 
+        int multiplier = this.getResources().getDimensionPixelSize(R.dimen.game_board_activity_square_width);
+
         int moveY = tempPos.getRow() - selPosition.getRow();
         int moveX = tempPos.getColumn() - selPosition.getColumn();
 
-        TranslateAnimation mAnimation = new TranslateAnimation(0, moveX * 80, 0, moveY * 80);
+        TranslateAnimation mAnimation = new TranslateAnimation(0, moveX * multiplier, 0, moveY * multiplier);
         mAnimation.setDuration(1000);
         mAnimation.setFillAfter(false);
         selImage.setAnimation(mAnimation);
