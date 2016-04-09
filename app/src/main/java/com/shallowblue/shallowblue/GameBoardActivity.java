@@ -50,7 +50,7 @@ public class GameBoardActivity extends AppCompatActivity {
         if (gameType != null && gameType.equalsIgnoreCase("Custom"))
             this.gameBoard = new GameBoard(GameBoard.activeGameBoard);
 
-        GameBoard.activeGameBoard.gameBoard = null;
+        GameBoard.activeGameBoard = null;
         this.gameBoard = new GameBoard();
 
         // this is needed to map logical squares to images on the screen
