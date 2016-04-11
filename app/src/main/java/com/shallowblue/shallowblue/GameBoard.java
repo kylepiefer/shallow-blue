@@ -66,8 +66,11 @@ public class GameBoard {
     public GameBoard(GameBoard in) {
         gameBoard = new HashMap<Position,Piece>();
         for(Map.Entry<Position,Piece> e : in.gameBoard.entrySet())
-            gameBoard.put(e.getKey(),Piece.copy(e.getValue()));
-        gameHistory = new ArrayList<Move>(in.getGameHistory());
+            gameBoard.put(new Position(e.getKey()),Piece.copy(e.getValue()));
+        gameHistory = new ArrayList<Move>();
+        for (Move m : in.gameHistory) {
+            gameHistory.add(new Move(m));
+        }
         playerToMove = in.playerToMove();
         redoStack = new Stack<Move>();
     }
@@ -84,8 +87,8 @@ public class GameBoard {
         return ret;
     }
 
-    public boolean move(Move m){						//Returns true iff successful
-        redoStack.clear();
+    private boolean move(Move m, boolean clearRedoStack) {
+        if (clearRedoStack) redoStack.clear();
         if(gameBoard.get(m.getFrom()) == null)
             return false;
 
@@ -96,11 +99,15 @@ public class GameBoard {
 
         gameBoard.put(m.getTo(), gameBoard.get(m.getFrom()));
         gameBoard.remove(m.getFrom());
-        m.getPieceMoved().setPosition(m.getTo());
+        gameBoard.get(m.getTo()).setPosition(m.getTo());
 
         gameHistory.add(m);
         switchPlayerToMove();
         return true;
+    }
+
+    public boolean move(Move m){						//Returns true iff successful
+        return move(m, true);
     }
 
     public void addMove(Move m){
@@ -123,6 +130,8 @@ public class GameBoard {
         Move m = gameHistory.get(gameHistory.size()-1);
         gameBoard.put(m.getFrom(), m.getPieceMoved());
         gameBoard.put(m.getTo(), m.getPieceCaptured());
+        if (m.getPieceCaptured() != null) m.getPieceCaptured().setPosition(m.getTo());
+        m.getPieceMoved().setPosition(m.getFrom());
 
         gameHistory.remove(gameHistory.size() - 1);
         redoStack.push(m);
@@ -134,7 +143,7 @@ public class GameBoard {
             return false;
         }
         Move m = redoStack.pop();
-        this.move(m);
+        move(m, false);
         return true;
     }
 
@@ -215,28 +224,20 @@ public class GameBoard {
 
         return canmove;
     }
-
-
-
+    
     public List<Move> getLegalMoves(Position from){
-        List<Move> moveList = new ArrayList<Move>();
-        for(Position p : gameBoard.get(from).possibleMoves())
-            moveList.add(new Move(gameBoard.get(from), from, p));
-        List<Move> ret = new ArrayList<Move>();
-
         Piece piece = gameBoard.get(from);
-
         List<Position> possibleMoves = piece.possibleMoves();
-        List<Position> legalMoves = new ArrayList<Position>();
+        List<Move> legalMoves = new ArrayList<Move>();
         for (int p = possibleMoves.size() - 1; p >= 0; p--) {
             Position curr = possibleMoves.get(p);
             Move possible = new Move(piece, piece.getPosition(), curr);
             if (legalMove(possible)) {
                 possibleMoves.remove(p);
-                ret.add(possible);
+                legalMoves.add(possible);
             }
         }
-        return ret;
+        return legalMoves;
     }
 
     public String pack(){
@@ -292,8 +293,10 @@ public class GameBoard {
                     value = 10000;
                 else if(p instanceof Bishop)
                     value = 3;
-                else
+                else if (p instanceof Pawn)
                     value = 1;
+                else
+                    continue; // null
 
                 if(p.getColor() == Color.WHITE)
                     sum += value;

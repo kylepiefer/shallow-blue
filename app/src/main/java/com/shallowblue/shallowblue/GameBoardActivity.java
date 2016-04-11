@@ -2,6 +2,7 @@ package com.shallowblue.shallowblue;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -17,7 +18,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
+import java.util.Queue;
 
 public class GameBoardActivity extends AppCompatActivity {
 
@@ -34,8 +35,6 @@ public class GameBoardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game_board);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-
-        // initialize toast
         this.toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
 
         // use intent extras
@@ -59,10 +58,12 @@ public class GameBoardActivity extends AppCompatActivity {
         this.highlightedSquares = new ArrayList<GameBoardActivitySquare>();
 
         Map<Position, Piece> gameBoardPiecePositions = this.gameBoard.getGameBoard();
-        placePiecesOnBoard(gameBoardPiecePositions);
+        refreshBoard(gameBoardPiecePositions);
 
-        if (this.playerColor == Color.BLACK) mockAIMove();
+        if (this.playerColor == Color.BLACK) aiMove();
     }
+
+    public GameBoard getGameBoard() { return this.gameBoard; }
 
     private void createGameBoardActivitySquareArray(Color playerColor) {
         // allocate the array of objects
@@ -137,11 +138,24 @@ public class GameBoardActivity extends AppCompatActivity {
         return gbas;
     }
 
-    private void placePiecesOnBoard(Map<Position, Piece> gameBoard) {
-        for (Position position : gameBoard.keySet()) {
-            GameBoardActivitySquare gbas = getGBASForPosition(position);
-            Piece piece = gameBoard.get(position);
-            this.placePieceInSquare(piece, gbas);
+    private void refreshBoard(Map<Position, Piece> gameBoard) {
+        synchronized (this.gameBoardActivitySquares) {
+            // remove all pieces
+            for (int r = 0; r < this.gameBoardActivitySquares.length; r++){
+                for (int c = 0; c < this.gameBoardActivitySquares[r].length; c++) {
+                    Position position = new Position(r, c);
+                    GameBoardActivitySquare gbas = getGBASForPosition(position);
+                    if (gbas.getOccupyingPiece() != null) {
+                        gbas.removePiece();
+                    }
+                }
+            }
+
+            for (Position position : gameBoard.keySet()) {
+                GameBoardActivitySquare gbas = getGBASForPosition(position);
+                Piece piece = gameBoard.get(position);
+                if (piece != null) this.placePieceInSquare(piece, gbas);
+            }
         }
     }
 
@@ -221,8 +235,9 @@ public class GameBoardActivity extends AppCompatActivity {
         this.selectedSquare = null;
     }
 
-    private void animateMove(final GameBoardActivitySquare from, final GameBoardActivitySquare to) {
+    private void animateMove(final GameBoardActivitySquare from, final GameBoardActivitySquare to, final boolean advanceTurn) {
         // cache values for handler
+        final GameBoardActivity gameBoardActivity = this;
         final GameBoard gameBoard = this.gameBoard;
         final Color playerColor = this.playerColor;
 
@@ -238,7 +253,7 @@ public class GameBoardActivity extends AppCompatActivity {
         final int deltaScreenColumns = to.getScreenPosition().getColumn() - from.getScreenPosition().getColumn();
         final int deltaX = imageWidth * deltaScreenColumns;
         final int deltaY = imageHeight * deltaScreenRows;
-        final long distance = (long)Math.sqrt(deltaScreenRows * deltaScreenRows + deltaScreenColumns * deltaScreenColumns);
+        //final long distance = (long)Math.sqrt(deltaScreenRows * deltaScreenRows + deltaScreenColumns * deltaScreenColumns);
 
         final ImageView imageCopy = new ImageView(this);
         final FrameLayout.LayoutParams copyParams = new FrameLayout.LayoutParams(imageWidth, imageHeight);
@@ -255,47 +270,49 @@ public class GameBoardActivity extends AppCompatActivity {
                 Animation.ABSOLUTE, (float)deltaX,
                 Animation.ABSOLUTE, (float)0,
                 Animation.ABSOLUTE, (float)deltaY);
-        animation.setDuration(200 * distance);
+        animation.setDuration(800);
         animation.setZAdjustment(Animation.ZORDER_TOP);
         animation.setFillAfter(true);
         animation.setAnimationListener(new Animation.AnimationListener() {
             @Override
-            public void onAnimationStart(Animation animation) {}
+            public void onAnimationStart(Animation animation) {
+            }
+
             @Override
-            public void onAnimationRepeat(Animation animation) {}
+            public void onAnimationRepeat(Animation animation) {
+            }
+
             @Override
             public void onAnimationEnd(Animation animation) {
-                from.removePiece();
-                to.placePiece(piece, pieceImage);
-                pieceImage.setVisibility(View.VISIBLE);
+                gameBoardActivity.refreshBoard(gameBoardActivity.gameBoard.getGameBoard());
                 imageCopy.clearAnimation();
                 animationLayer.removeView(imageCopy);
-
-                // TODO: Make this work like it's supposed to
-                if (gameBoard.playerToMove() != playerColor) mockAIMove();
+                if (advanceTurn) aiMove();
             }
         });
-        imageCopy.startAnimation(animation);
+
+        imageCopy.setAnimation(animation);
+        imageCopy.getAnimation().start();
     }
 
-    private void mockAIMove() {
-        /*List<Move> legalAIMoves = this.gameBoard.getAllMoves();
-        Random numberGenerator = new Random();
-        int moveNumber = (int)Math.floor(numberGenerator.nextDouble() * legalAIMoves.size());
-        Move move = legalAIMoves.get(moveNumber);*/
+    private void aiMove() {
+        if (false) {
+            List<Move> legalAIMoves = this.gameBoard.getAllMoves();
+            int moveNumber = (int)Math.floor(Math.random() * legalAIMoves.size());
+            Move move = legalAIMoves.get(moveNumber);
+            getGameBoard().move(move);
+            updateGameboard(move, false);
+        }
 
-        AIMove ai = new AIMove();
-        List<Move> moves = ai.move(this.gameBoard, 3);
-        Move move = moves.get(0);
-        this.gameBoard.move(move);
-        updateGameboard(move);
+        AsyncTask task = new AIMoveTask().execute(getGameBoard());
     }
 
-    private void updateGameboard(Move move) {
-        GameBoardActivitySquare from = getGBASForPosition(move.getFrom());
-        GameBoardActivitySquare to = getGBASForPosition(move.getTo());
-
-        animateMove(from, to);
+    private void updateGameboard(Move move, boolean advanceTurn) {
+        synchronized (this.gameBoardActivitySquares) {
+            GameBoardActivitySquare from = getGBASForPosition(move.getFrom());
+            GameBoardActivitySquare to = getGBASForPosition(move.getTo());
+            animateMove(from, to, advanceTurn);
+        }
     }
 
     public void onBoardTouched(View squareImage) {
@@ -316,7 +333,7 @@ public class GameBoardActivity extends AppCompatActivity {
                                  gbas.getBoardPosition());
 
             if (this.gameBoard.move(move)) {
-                this.updateGameboard(move);
+                this.updateGameboard(move, true);
                 removeAllSquareHighlights();
             }
             else Log.d("ShallowBlue", "Move Failed.");
@@ -377,28 +394,42 @@ public class GameBoardActivity extends AppCompatActivity {
 
     }
 
-    public void undoMove(View v){
+    private boolean undoMove() {
         List<Move> gameHistory = this.gameBoard.getGameHistory();
         Move lastMove = null;
         if (!gameHistory.isEmpty()) lastMove = gameHistory.get(gameHistory.size() - 1);
         if (this.gameBoard.undo()) {
             removeAllSquareHighlights();
             Move reversedMove = new Move(lastMove.getPieceMoved(), lastMove.getTo(), lastMove.getFrom());
-            this.updateGameboard(reversedMove);
+            updateGameboard(reversedMove, false);
+            return true;
         } else {
             showToast("There is no move to undo.");
+            return false;
         }
     }
 
-    public void redoMove(View v) {
+    public void undoMove(View v){
+        boolean undone = undoMove();
+        if (undone) undoMove();
+    }
+
+    private boolean redoMove() {
         if (this.gameBoard.redo()) {
             removeAllSquareHighlights();
             List<Move> gameHistory = this.gameBoard.getGameHistory();
             Move nextMove = gameHistory.get(gameHistory.size() - 1);
-            this.updateGameboard(nextMove);
+            updateGameboard(nextMove, false);
+            return true;
         } else {
             showToast("There is no move to redo.");
+            return false;
         }
+    }
+
+    public void redoMove(View v) {
+        boolean redoneMove = redoMove();
+        if (redoneMove) redoMove();
     }
 
     public void optionsScreen(View v){
@@ -412,6 +443,23 @@ public class GameBoardActivity extends AppCompatActivity {
         verify.putString("activity","main");
         check.putExtra("next",verify);
         startActivity(check);
+    }
+
+    private class AIMoveTask extends AsyncTask<GameBoard, Integer, Move> {
+        protected Move doInBackground(GameBoard... gameBoards) {
+            GameBoard gameBoard = gameBoards[0];
+            AIMove ai = new AIMove();
+            List<Move> moves = ai.move(gameBoard, 3);
+            if (moves.isEmpty()) return null;
+            Move move = moves.get(0);
+            return move;
+        }
+
+        protected void onPostExecute(Move move) {
+            if (move == null) return;
+            getGameBoard().move(move);
+            updateGameboard(move, false);
+        }
     }
 }
 

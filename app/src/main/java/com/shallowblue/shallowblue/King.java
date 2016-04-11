@@ -5,17 +5,16 @@ import java.util.ArrayList;
 
 public class King extends Piece {
 
-	private Position initialPosition;
+	private final Position initialPosition;
 	
 	public King(Position argPosition, Color color) {
 		super(argPosition, color, color == Color.WHITE ? R.drawable.white_king : R.drawable.black_king);
 		initialPosition = argPosition;
-		
 	}
 
 	public King(King k) {
 		super(k.getPosition(), k.getColor(), k.getColor() == Color.WHITE ? R.drawable.white_king : R.drawable.black_king);
-		this.initialPosition = k.getPosition();
+		this.initialPosition = k.initialPosition;
 	}
 
 	@Override

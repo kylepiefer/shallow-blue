@@ -65,7 +65,7 @@ public class AIMove {
                 best = v;
 
             moveGoodness.add(new SimpleEntry<Double, Move>(v, m));
-            //current.undo();
+            current.undo();
         }
 
         Collections.sort(moveGoodness, MIN_COMPARATOR);
@@ -90,7 +90,7 @@ public class AIMove {
                 alpha = v;
             if(nextV >= beta)
                 return v;
-            //current.undo();
+            current.undo();
         }
         return v;
     }

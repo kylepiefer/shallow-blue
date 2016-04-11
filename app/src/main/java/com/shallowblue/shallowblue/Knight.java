@@ -7,7 +7,6 @@ public class Knight extends Piece {
 
 	public Knight(Position argPosition, Color color) {
 		super(argPosition, color, color == Color.WHITE ? R.drawable.white_knight : R.drawable.black_knight);
-		
 	}
 
 	public Knight(Knight k) {
