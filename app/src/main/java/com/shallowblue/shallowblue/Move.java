@@ -15,6 +15,13 @@ public class Move {
         this.to = to;
     }
 
+    public Move(Move in) {
+        this.from = new Position(in.getFrom());
+        this.to = new Position(in.getTo());
+        this.pieceMoved = Piece.copy(in.getPieceMoved());
+        this.pieceCaptured = Piece.copy(in.getPieceCaptured());
+    }
+
     public Position getFrom() {
         return from;
     }

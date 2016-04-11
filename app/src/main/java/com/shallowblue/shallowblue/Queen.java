@@ -6,7 +6,6 @@ import java.util.ArrayList;
 public class Queen extends Piece {
 
 	public Queen(Position argPosition, Color color) {
-
 		super(argPosition, color, color == Color.WHITE ? R.drawable.white_queen : R.drawable.black_queen);
 	}
 
