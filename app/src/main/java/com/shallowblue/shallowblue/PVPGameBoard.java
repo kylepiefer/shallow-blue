@@ -296,16 +296,32 @@ public class PVPGameBoard extends AppCompatActivity {
     }
 
     public void pvpundo1(View v){
-        Intent endGame = new Intent(getApplicationContext(),EndOfGameActivity.class);
-        startActivity(endGame);
 
         List<Move> history = GameBoard.activeGameBoard.getGameHistory();
-        if (history.isEmpty()){
+        Move lastMove = null;
+        Color currTurn = GameBoard.activeGameBoard.playerToMove();
+        if (GameBoard.activeGameBoard.undo()) {
+            if (selPosition != null) {
+                for (int i = 0; i < selMoves.size(); i++) {
+                    int row = selMoves.get(i).getRow();
+                    int column = selMoves.get(i).getColumn();
+                    pvpGameboard[row][column].setBackgroundResource(0);
+                }
+            }
+            Piece moved = lastMove.getPieceMoved();
+            Piece taken = lastMove.getPieceCaptured();
+            Position from = lastMove.getFrom();
+            Position to = lastMove.getTo();
+            
+            Move reversedMove = new Move(lastMove.getPieceMoved(), lastMove.getTo(), lastMove.getFrom());
+            redoMoves.add(reversedMove);
+            return;
+        }
+        else {
             Toast.makeText(PVPGameBoard.this, "Sorry, you can't undo a move when one doesn't" +
                     " exist.", Toast.LENGTH_SHORT).show();
             return;
         }
-        Color currTurn = GameBoard.activeGameBoard.playerToMove();
 
         /*
 
