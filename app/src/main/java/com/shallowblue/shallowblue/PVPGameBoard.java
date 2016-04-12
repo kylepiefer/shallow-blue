@@ -296,7 +296,19 @@ public class PVPGameBoard extends AppCompatActivity {
     }
 
     public void pvpundo1(View v){
+        Intent endGame = new Intent(getApplicationContext(),EndOfGameActivity.class);
+        startActivity(endGame);
+
         List<Move> history = GameBoard.activeGameBoard.getGameHistory();
+        if (history.isEmpty()){
+            Toast.makeText(PVPGameBoard.this, "Sorry, you can't undo a move when one doesn't" +
+                    " exist.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Color currTurn = GameBoard.activeGameBoard.playerToMove();
+
+        /*
+
         if (history.isEmpty()){
             Toast.makeText(PVPGameBoard.this, "Sorry, you can't undo a move when one doesn't" +
                             " exist.", Toast.LENGTH_SHORT).show();
@@ -332,6 +344,7 @@ public class PVPGameBoard extends AppCompatActivity {
                     Toast.LENGTH_SHORT).show();
             return;
         }
+        */
     }
 
     public void pvpundo2(View v){
