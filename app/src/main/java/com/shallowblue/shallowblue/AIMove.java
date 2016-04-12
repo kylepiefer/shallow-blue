@@ -29,8 +29,9 @@ public class AIMove {
 
     public List<Move> move(GameBoard current, int depth) {
         current = new GameBoard(current);
+        List<Move> ret;
         if(current.playerToMove() == Color.WHITE)
-            return maxAction(current, depth);
+            return ret = maxAction(current, depth);
         return minAction(current, depth);
     }
 
@@ -38,7 +39,9 @@ public class AIMove {
     private List<Move> maxAction(GameBoard current, int depth) {
         List<Entry<Double,Move>> moveGoodness = new ArrayList<Entry<Double,Move>>();
         double best = Double.NEGATIVE_INFINITY;
-        for (Move m : current.getAllMoves()) {
+        List<Move> moves = current.getAllMoves();
+        Collections.shuffle(moves);
+        for (Move m : moves) {
             current.move(m);
             double v = minAction(new GameBoard(current), depth - 1, best, Double.POSITIVE_INFINITY);
             if(v > best)
@@ -58,7 +61,9 @@ public class AIMove {
     private List<Move> minAction(GameBoard current, int depth) {
         List<Entry<Double,Move>> moveGoodness = new ArrayList<Entry<Double,Move>>();
         double best = Double.POSITIVE_INFINITY;
-        for (Move m : current.getAllMoves()) {
+        List<Move> = current.getAllMoves();
+        Collections.shuffle(moves);
+        for (Move m : moves) {
             current.move(m);
             double v = maxAction(new GameBoard(current), depth - 1, Double.NEGATIVE_INFINITY, best);
             if(v < best)
