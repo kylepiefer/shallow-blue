@@ -60,7 +60,7 @@ public class AIMove {
     private List<Move> minAction(GameBoard current, int depth) {
         List<Entry<Double,Move>> moveGoodness = new ArrayList<Entry<Double,Move>>();
         double best = Double.POSITIVE_INFINITY;
-        List<Move> = current.getAllMoves();
+        List<Move> moves = current.getAllMoves();
         Collections.shuffle(moves);
         for (Move m : moves) {
             current.move(m);
