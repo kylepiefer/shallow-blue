@@ -198,7 +198,7 @@ public class GameBoard {
             }
 
             // Check for En Passant.
-            if (m.getFrom().getColumn() != m.getTo().getColumn()) {
+            if (gameHistory.size() > 0 && m.getFrom().getColumn() != m.getTo().getColumn()) {
                 Move test = gameHistory.get(gameHistory.size() - 1);
                 if (test.getPieceMoved() instanceof Pawn && // must be a pawn
                         test.getTo().getRow() == m.getFrom().getRow() && // that is currently in the same row as us
