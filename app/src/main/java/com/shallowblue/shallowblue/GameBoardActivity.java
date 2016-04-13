@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -49,11 +50,22 @@ public class GameBoardActivity extends AppCompatActivity {
 
         // this is needed to handle the game logic
         String gameType = getIntent().getStringExtra("Type");
-        if (gameType != null && gameType.equalsIgnoreCase("Custom"))
-            this.gameBoard = new GameBoard(GameBoard.activeGameBoard);
-
-        GameBoard.activeGameBoard = null;
-        this.gameBoard = new GameBoard();
+        if (gameType != null && gameType.equalsIgnoreCase("Custom")) {
+            // Hack to make this work with the wrong positions from CustomGame activity.
+            // Correct the positions.
+            Map<Position, Piece> correctedBoard = new HashMap<Position, Piece>();
+            for (Position original : GameBoard.customPositions.keySet()) {
+                Position corrected = new Position(7 - original.getRow(), original.getColumn());
+                Piece piece = GameBoard.customPositions.get(original);
+                piece.setPosition(corrected);
+                correctedBoard.put(corrected, piece);
+            }
+            this.gameBoard = new GameBoard(correctedBoard);
+            GameBoard.customPositions = null;
+            GameBoard.activeGameBoard = null;
+        } else {
+            this.gameBoard = new GameBoard();
+        }
 
         // this is needed to map logical squares to images on the screen
         createGameBoardActivitySquareArray(this.playerColor);
@@ -306,7 +318,9 @@ public class GameBoardActivity extends AppCompatActivity {
                     return;
                 }
 
-                if (advanceTurn) aiMove();
+                if (advanceTurn && gameBoard.playerToMove() != playerColor) {
+                    aiMove();
+                }
             }
         });
 
@@ -354,8 +368,9 @@ public class GameBoardActivity extends AppCompatActivity {
             if (this.gameBoard.move(move)) {
                 this.updateGameboard(move, true);
                 removeAllSquareHighlights();
+            } else {
+                Log.d("ShallowBlue", "Player move failed: " + move.toString() + " Reason: " + getGameBoard().getLastExplanation());
             }
-            else Log.d("ShallowBlue", "Move Failed.");
         }
 
         else {
@@ -430,7 +445,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
     public void undoMove(View v){
         if (movesToUndo > 0 || movesToRedo > 0) return;
-        movesToUndo = 2;
+        movesToUndo = gameBoard.playerToMove() == playerColor ? 2 : 1;
         boolean undone = undoMove();
         if (!undone) {
             movesToUndo = 0;
@@ -452,7 +467,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
     public void redoMove(View v) {
         if (movesToUndo > 0 || movesToRedo > 0) return;
-        movesToRedo = 2;
+        movesToRedo = gameBoard.playerToMove() == playerColor ? 2 : 1;
         boolean redone = redoMove();
         if (!redone) {
             movesToRedo = 0;
@@ -487,9 +502,14 @@ public class GameBoardActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(Move move) {
-            if (move == null) return;
-            getGameBoard().move(move);
-            updateGameboard(move, false);
+            if (move == null) {
+                return;
+            }
+            if (getGameBoard().move(move)) {
+                updateGameboard(move, false);
+            } else {
+                Log.d("ShallowBlue", "AI move failed: " + move.toString() + " Reason: " + getGameBoard().getLastExplanation());
+            }
         }
     }
 }

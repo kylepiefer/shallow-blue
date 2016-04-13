@@ -53,4 +53,9 @@ public class Move {
         if (this.pieceCaptured != other.pieceCaptured) return false;
         return true;
     }
+
+    @Override
+    public String toString() {
+        return this.getFrom().toString() + "->" + this.getTo().toString();
+    }
 }
