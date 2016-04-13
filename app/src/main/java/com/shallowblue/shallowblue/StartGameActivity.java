@@ -37,6 +37,7 @@ public class StartGameActivity extends AppCompatActivity {
         else
             newGameIntent.putExtra("Color", "Black");
         startActivity(newGameIntent);
+        finish();
     }
 
     public void createGame(View button){
@@ -45,6 +46,7 @@ public class StartGameActivity extends AppCompatActivity {
         playercount.putInt("players", 1);
         createGameIntent.putExtra("type",playercount);
         startActivity(createGameIntent);
+        finish();
     }
 
     public void loadGame(View button){

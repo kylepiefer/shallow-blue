@@ -20,6 +20,7 @@ public class GameBoard {
     public List<Move> gameHistory;
     private Color playerToMove;
     private Stack<Move> redoStack;
+    private String explanation;
 
     public GameBoard() {
         if (gameBoard == null) {
@@ -88,19 +89,29 @@ public class GameBoard {
     }
 
     private boolean move(Move m, boolean clearRedoStack) {
-        if (clearRedoStack) redoStack.clear();
-        if(gameBoard.get(m.getFrom()) == null)
+        // Check that the move is valid.
+        if (gameBoard.get(m.getFrom()) == null || !legalMove(m)) {
             return false;
+        }
 
+        // Clear the redo stack now since we know we are proceeding.
+        if (clearRedoStack) redoStack.clear();
+
+        // Handle capturing if necessary.
         if (gameBoard.get(m.getTo()) != null) {
             m.setPieceCaptured(gameBoard.get(m.getTo()));
             this.gameBoard.remove(m.getTo()).setPosition(null);
         }
 
+        // Update the game board.
         gameBoard.put(m.getTo(), gameBoard.get(m.getFrom()));
         gameBoard.remove(m.getFrom());
-        gameBoard.get(m.getTo()).setPosition(m.getTo());
 
+        // Update the piece's position in both places to be safe.
+        gameBoard.get(m.getTo()).setPosition(m.getTo());
+        m.getPieceMoved().setPosition(m.getTo());
+
+        // Handle bookkeeping.
         gameHistory.add(m);
         switchPlayerToMove();
         return true;
@@ -147,24 +158,60 @@ public class GameBoard {
         return true;
     }
 
+    public String getLastExplanation() {
+        if (this.explanation == null) return "";
+        return this.explanation;
+    }
+
     public boolean legalMove(Move m) {
-        if(gameBoard.get(m.getTo()) != null && gameBoard.get(m.getFrom()) != null &&
-                gameBoard.get(m.getTo()).getColor() == gameBoard.get(m.getFrom()).getColor()){
+        // Check to make sure there is a piece in the square and that it belongs to the player
+        // whose turn it is.
+        if (gameBoard.get(m.getFrom()) == null) {
+            this.explanation = "You can only move from a square that contains a piece.";
             return false;
         }
-        if (gameBoard.get(m.getFrom()) == null ||
-                this.playerToMove != gameBoard.get(m.getFrom()).getColor()) return false; // THIS IS IMPORTANT.
-        if(m.getPieceMoved().toString().equals("p")){
-            if(m.getTo().getColumn() == m.getFrom().getColumn() && m.getPieceMoved().
-                    possibleMoves().contains(m.getTo()) && gameBoard.get(m.getTo()) == null){ //nothing is blocking the pawn
-                return true;
-            }
-            return ((m.getTo().getColumn() == m.getFrom().getColumn()+1 || m.getTo().getColumn() == m.getFrom().getColumn() -1 &&             //is in adjacent column
-                    m.getTo().getRow() == m.getFrom().getRow()+1 || m.getTo().getRow() == m.getFrom().getRow() -1) &&                         //is in adjacent row
-                    (m.getPieceMoved().possibleMoves().contains(new Position(m.getTo().getRow(),m.getTo().getColumn()+1)) ||                 //is in the same direction
-                    m.getPieceMoved().possibleMoves().contains(new Position(m.getTo().getRow(),m.getTo().getColumn()+-1))) &&
-                    gameBoard.get(m.getTo()) != null);
+
+        if (this.playerToMove != gameBoard.get(m.getFrom()).getColor()) {
+            this.explanation = "You can only move a piece that is your color.";
+            return false;
         }
+
+        // Check to make sure there is not a friendly piece in the square being moved to.
+        if (gameBoard.get(m.getTo()) != null &&
+                gameBoard.get(m.getTo()).getColor() == gameBoard.get(m.getFrom()).getColor()){
+            this.explanation = "You cannot capture your own piece.";
+            return false;
+        }
+
+        // Check to make sure the move is possible.
+        if (!m.getPieceMoved().possibleMoves().contains(m.getTo())) {
+            // TODO: Make each piece have a method to describe how it moves and call it here.
+            this.explanation = "This piece does not move this way!";
+            return false;
+        }
+
+        // Check to make sure a pawn isn't capturing forward or moving diagonally when not capturing.
+        if (m.getPieceMoved() instanceof Pawn) {
+            if (m.getFrom().getColumn() == m.getTo().getColumn() && gameBoard.get(m.getTo()) != null) {
+                this.explanation = "Pawns can only capture enemy pieces diagonally.";
+                return false;
+            }
+
+            // Check for En Passant.
+            if (m.getFrom().getColumn() != m.getTo().getColumn()) {
+                Move test = gameHistory.get(gameHistory.size() - 1);
+                if (test.getPieceMoved() instanceof Pawn && // must be a pawn
+                        test.getTo().getRow() == m.getFrom().getRow() && // that is currently in the same row as us
+                        Math.abs(test.getTo().getColumn() - m.getFrom().getColumn()) == 1 && // that is one column away
+                        Math.abs(test.getFrom().getRow() - test.getTo().getRow()) == 2) { // that just performed a double jump
+                    this.explanation = "This pawn can perform en Passant.";
+                } else if (gameBoard.get(m.getTo()) == null) { // otherwise the capture is illegal
+                    this.explanation = "Pawns can only move diagonally when capturing.";
+                    return false;
+                }
+            }
+        }
+
         boolean canmove = true;
         Position tempPos = m.getTo();
         /*if (m.getPieceMoved() instanceof Rook &&
@@ -330,7 +377,7 @@ public class GameBoard {
                     whiteKing = true;
                 else
                     blackKing = true;
-        return whiteKing && blackKing;
+        return !(whiteKing && blackKing);
     }
 }
 
