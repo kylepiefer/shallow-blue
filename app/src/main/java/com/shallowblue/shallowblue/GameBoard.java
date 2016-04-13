@@ -197,9 +197,18 @@ public class GameBoard {
                 return false;
             }
 
-            if (m.getFrom().getColumn() != m.getTo().getColumn() && gameBoard.get(m.getTo()) != null) {
-                this.explanation = "Pawns can only move diagonally when capturing.";
-                return false;
+            // Check for En Passant.
+            if (m.getFrom().getColumn() != m.getTo().getColumn()) {
+                Move test = gameHistory.get(gameHistory.size() - 1);
+                if (test.getPieceMoved() instanceof Pawn && // must be a pawn
+                        test.getTo().getRow() == m.getFrom().getRow() && // that is currently in the same row as us
+                        Math.abs(test.getTo().getColumn() - m.getFrom().getColumn()) == 1 && // that is one column away
+                        Math.abs(test.getFrom().getRow() - test.getTo().getRow()) == 2) { // that just performed a double jump
+                    this.explanation = "This pawn can perform en Passant.";
+                } else if (gameBoard.get(m.getTo()) == null) { // otherwise the capture is illegal
+                    this.explanation = "Pawns can only move diagonally when capturing.";
+                    return false;
+                }
             }
         }
 
@@ -368,7 +377,7 @@ public class GameBoard {
                     whiteKing = true;
                 else
                     blackKing = true;
-        return whiteKing && blackKing;
+        return !(whiteKing && blackKing);
     }
 }
 

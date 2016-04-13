@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -28,6 +29,8 @@ public class GameBoardActivity extends AppCompatActivity {
     private ArrayList<GameBoardActivitySquare> highlightedSquares;
     private Color playerColor;
     private Toast toast;
+    private int movesToUndo = 0;
+    private int movesToRedo = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -253,7 +256,7 @@ public class GameBoardActivity extends AppCompatActivity {
         final int deltaScreenColumns = to.getScreenPosition().getColumn() - from.getScreenPosition().getColumn();
         final int deltaX = imageWidth * deltaScreenColumns;
         final int deltaY = imageHeight * deltaScreenRows;
-        //final long distance = (long)Math.sqrt(deltaScreenRows * deltaScreenRows + deltaScreenColumns * deltaScreenColumns);
+        final long distance = (long)Math.sqrt(deltaScreenRows * deltaScreenRows + deltaScreenColumns * deltaScreenColumns);
 
         final ImageView imageCopy = new ImageView(this);
         final FrameLayout.LayoutParams copyParams = new FrameLayout.LayoutParams(imageWidth, imageHeight);
@@ -270,29 +273,45 @@ public class GameBoardActivity extends AppCompatActivity {
                 Animation.ABSOLUTE, (float)deltaX,
                 Animation.ABSOLUTE, (float)0,
                 Animation.ABSOLUTE, (float)deltaY);
-        animation.setDuration(800);
+        animation.setDuration(200 * distance);
         animation.setZAdjustment(Animation.ZORDER_TOP);
         animation.setFillAfter(true);
         animation.setAnimationListener(new Animation.AnimationListener() {
             @Override
-            public void onAnimationStart(Animation animation) {
-            }
+            public void onAnimationStart(Animation animation) {}
 
             @Override
-            public void onAnimationRepeat(Animation animation) {
-            }
+            public void onAnimationRepeat(Animation animation) {}
 
             @Override
             public void onAnimationEnd(Animation animation) {
                 gameBoardActivity.refreshBoard(gameBoardActivity.gameBoard.getGameBoard());
                 imageCopy.clearAnimation();
                 animationLayer.removeView(imageCopy);
+
+                if (movesToUndo > 0) {
+                    movesToUndo = movesToUndo - 1;
+                    if (movesToUndo > 0) undoMove();
+                    return;
+                }
+
+                if (movesToRedo > 0) {
+                    movesToRedo = movesToRedo - 1;
+                    if (movesToRedo > 0) redoMove();
+                    return;
+                }
+
+                if (gameBoard.gameOver()) {
+                    endGame();
+                    return;
+                }
+
                 if (advanceTurn) aiMove();
             }
         });
 
         imageCopy.setAnimation(animation);
-        imageCopy.getAnimation().start();
+        animation.start();
     }
 
     private void aiMove() {
@@ -410,8 +429,12 @@ public class GameBoardActivity extends AppCompatActivity {
     }
 
     public void undoMove(View v){
+        if (movesToUndo > 0 || movesToRedo > 0) return;
+        movesToUndo = 2;
         boolean undone = undoMove();
-        if (undone) undoMove();
+        if (!undone) {
+            movesToUndo = 0;
+        }
     }
 
     private boolean redoMove() {
@@ -428,8 +451,12 @@ public class GameBoardActivity extends AppCompatActivity {
     }
 
     public void redoMove(View v) {
-        boolean redoneMove = redoMove();
-        if (redoneMove) redoMove();
+        if (movesToUndo > 0 || movesToRedo > 0) return;
+        movesToRedo = 2;
+        boolean redone = redoMove();
+        if (!redone) {
+            movesToRedo = 0;
+        }
     }
 
     public void optionsScreen(View v){
@@ -443,6 +470,10 @@ public class GameBoardActivity extends AppCompatActivity {
         verify.putString("activity","main");
         check.putExtra("next",verify);
         startActivity(check);
+    }
+
+    private void endGame() {
+
     }
 
     private class AIMoveTask extends AsyncTask<GameBoard, Integer, Move> {
