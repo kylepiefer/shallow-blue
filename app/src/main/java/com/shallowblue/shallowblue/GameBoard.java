@@ -168,6 +168,7 @@ public class GameBoard {
         // whose turn it is.
         if (gameBoard.get(m.getFrom()) == null) {
             this.explanation = "You can only move from a square that contains a piece.";
+            return false;
         }
 
         if (this.playerToMove != gameBoard.get(m.getFrom()).getColor()) {
@@ -189,12 +190,17 @@ public class GameBoard {
             return false;
         }
 
-        // Check to make sure a pawn isn't capturing forward.
-        if (m.getPieceMoved() instanceof Pawn &&
-                m.getFrom().getColumn() == m.getTo().getColumn() &&
-                gameBoard.get(m.getTo()) != null){
-            this.explanation = "Pawns can only capture enemy pieces diagonally.";
-            return false;
+        // Check to make sure a pawn isn't capturing forward or moving diagonally when not capturing.
+        if (m.getPieceMoved() instanceof Pawn) {
+            if (m.getFrom().getColumn() == m.getTo().getColumn() && gameBoard.get(m.getTo()) != null) {
+                this.explanation = "Pawns can only capture enemy pieces diagonally.";
+                return false;
+            }
+
+            if (m.getFrom().getColumn() != m.getTo().getColumn() && gameBoard.get(m.getTo()) != null) {
+                this.explanation = "Pawns can only move diagonally when capturing.";
+                return false;
+            }
         }
 
         boolean canmove = true;
