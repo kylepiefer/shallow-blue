@@ -16,6 +16,7 @@ import java.util.Stack;
 public class GameBoard {
 
     public static GameBoard activeGameBoard;
+    public static Map<Position, Piece> customPositions;
     public Map<Position, Piece> gameBoard;
     public List<Move> gameHistory;
     private Color playerToMove;
@@ -64,6 +65,7 @@ public class GameBoard {
         gameHistory = new ArrayList<Move>();
         redoStack = new Stack<Move>();
     }
+
     public GameBoard(GameBoard in) {
         gameBoard = new HashMap<Position,Piece>();
         for(Map.Entry<Position,Piece> e : in.gameBoard.entrySet())
@@ -73,6 +75,13 @@ public class GameBoard {
             gameHistory.add(new Move(m));
         }
         playerToMove = in.playerToMove();
+        redoStack = new Stack<Move>();
+    }
+
+    public GameBoard(Map<Position, Piece> map) {
+        gameBoard = map;
+        gameHistory = new ArrayList<Move>();
+        playerToMove = Color.WHITE;
         redoStack = new Stack<Move>();
     }
 
@@ -184,7 +193,7 @@ public class GameBoard {
         }
 
         // Check to make sure the move is possible.
-        if (!m.getPieceMoved().possibleMoves().contains(m.getTo())) {
+        if (!gameBoard.get(m.getFrom()).possibleMoves().contains(m.getTo())) {
             // TODO: Make each piece have a method to describe how it moves and call it here.
             this.explanation = "This piece does not move this way!";
             return false;
@@ -198,12 +207,13 @@ public class GameBoard {
             }
 
             // Check for En Passant.
-            if (gameHistory.size() > 0 && m.getFrom().getColumn() != m.getTo().getColumn()) {
-                Move test = gameHistory.get(gameHistory.size() - 1);
-                if (test.getPieceMoved() instanceof Pawn && // must be a pawn
+            if (m.getFrom().getColumn() != m.getTo().getColumn()) {
+                Move test = gameHistory.size() > 0 ? gameHistory.get(gameHistory.size() - 1) : null; // must have a move made
+                if (test != null && test.getPieceMoved() instanceof Pawn && // must be a pawn
                         test.getTo().getRow() == m.getFrom().getRow() && // that is currently in the same row as us
                         Math.abs(test.getTo().getColumn() - m.getFrom().getColumn()) == 1 && // that is one column away
-                        Math.abs(test.getFrom().getRow() - test.getTo().getRow()) == 2) { // that just performed a double jump
+                        Math.abs(test.getFrom().getRow() - test.getTo().getRow()) == 2 && // that just performed a double jump
+                        test.getTo().getColumn() == m.getTo().getColumn()) { // and we are moving toward their column.
                     this.explanation = "This pawn can perform en Passant.";
                 } else if (gameBoard.get(m.getTo()) == null) { // otherwise the capture is illegal
                     this.explanation = "Pawns can only move diagonally when capturing.";
@@ -255,7 +265,7 @@ public class GameBoard {
                 tempRow--;
             }
             tempPos = new Position(tempRow, tempCol);
-            if(m.getPieceMoved().possibleMoves().contains(tempPos) && gameBoard.get(tempPos) != null){
+            if(gameBoard.get(m.getFrom()).possibleMoves().contains(tempPos) && gameBoard.get(tempPos) != null){
                 canmove = false;
             }
 
