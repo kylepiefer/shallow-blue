@@ -20,6 +20,7 @@ public class GameBoard {
     public List<Move> gameHistory;
     private Color playerToMove;
     private Stack<Move> redoStack;
+    private String explanation;
 
     public GameBoard() {
         if (gameBoard == null) {
@@ -157,22 +158,34 @@ public class GameBoard {
         return true;
     }
 
+    public String getLastExplanation() {
+        if (this.explanation == null) return "";
+        return this.explanation;
+    }
+
     public boolean legalMove(Move m) {
         // Check to make sure there is a piece in the square and that it belongs to the player
         // whose turn it is.
-        if (gameBoard.get(m.getFrom()) == null ||
-                this.playerToMove != gameBoard.get(m.getFrom()).getColor()) {
+        if (gameBoard.get(m.getFrom()) == null) {
+            this.explanation = "You can only move from a square that contains a piece.";
+        }
+
+        if (this.playerToMove != gameBoard.get(m.getFrom()).getColor()) {
+            this.explanation = "You can only move a piece that is your color.";
             return false;
         }
 
         // Check to make sure there is not a friendly piece in the square being moved to.
         if (gameBoard.get(m.getTo()) != null &&
                 gameBoard.get(m.getTo()).getColor() == gameBoard.get(m.getFrom()).getColor()){
+            this.explanation = "You cannot capture your own piece.";
             return false;
         }
 
         // Check to make sure the move is possible.
         if (!m.getPieceMoved().possibleMoves().contains(m.getTo())) {
+            // TODO: Make each piece have a method to describe how it moves and call it here.
+            this.explanation = "This piece does not move this way!";
             return false;
         }
 
@@ -180,6 +193,7 @@ public class GameBoard {
         if (m.getPieceMoved() instanceof Pawn &&
                 m.getFrom().getColumn() == m.getTo().getColumn() &&
                 gameBoard.get(m.getTo()) != null){
+            this.explanation = "Pawns can only capture enemy pieces diagonally.";
             return false;
         }
 
