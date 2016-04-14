@@ -321,6 +321,11 @@ public class GameBoardActivity extends AppCompatActivity {
                 imageCopy.clearAnimation();
                 animationLayer.removeView(imageCopy);
 
+                if (gameBoard.gameOver()) {
+                    endGame();
+                    return;
+                }
+
                 if (movesToUndo > 0) {
                     movesToUndo = movesToUndo - 1;
                     if (movesToUndo > 0) undoMove();
@@ -330,11 +335,6 @@ public class GameBoardActivity extends AppCompatActivity {
                 if (movesToRedo > 0) {
                     movesToRedo = movesToRedo - 1;
                     if (movesToRedo > 0) redoMove();
-                    return;
-                }
-
-                if (gameBoard.gameOver()) {
-                    endGame();
                     return;
                 }
 
@@ -508,6 +508,8 @@ public class GameBoardActivity extends AppCompatActivity {
     }
 
     private void endGame() {
+        movesToRedo = 0;
+        movesToUndo = 0;
         Intent endGame = new Intent(this, EndOfGameActivity.class);
         Bundle params = new Bundle();
         // TODO: Add parameters to the bundle.
