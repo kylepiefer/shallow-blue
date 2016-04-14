@@ -27,11 +27,26 @@ public class AIMove {
                 }
             };
 
+    private static int positionsExamined = 0;
+
     public List<Move> move(GameBoard current, int depth) {
+        positionsExamined = 0;
+        long startTime = System.currentTimeMillis();
+
         current = new GameBoard(current);
+        List<Move> moves;
         if(current.playerToMove() == Color.WHITE)
-            return maxAction(current, depth);
-        return minAction(current, depth);
+            moves = maxAction(current, depth);
+        else
+            moves = minAction(current, depth);
+
+        long stopTime = System.currentTimeMillis();
+        float elapsedTime = (float)((stopTime - startTime) / 1000.0);
+        Log.i("AIMove", "Time taken: " + String.format("%.3f", elapsedTime) + " seconds.");
+        Log.i("AIMove", "Positions examined: " + positionsExamined);
+        Log.i("AIMove", "Rate: " + String.format("%.3f", ((float)positionsExamined / elapsedTime)) + " positions per second");
+
+        return moves;
     }
 
     //returns a sorted list of moves from best to worst
@@ -49,6 +64,7 @@ public class AIMove {
             //the sorted map is sorted low-high so we want to negate the value before the put
             moveGoodness.add(new SimpleEntry<Double, Move>(v, m));
             current.undo();
+            positionsExamined++;
         }
         Collections.sort(moveGoodness, MIN_COMPARATOR);
         List<Move> ret = new ArrayList<Move>();
@@ -70,6 +86,7 @@ public class AIMove {
 
             moveGoodness.add(new SimpleEntry<Double, Move>(v, m));
             current.undo();
+            positionsExamined++;
         }
 
         Collections.sort(moveGoodness, MIN_COMPARATOR);
@@ -95,6 +112,7 @@ public class AIMove {
             if(nextV >= beta)
                 return v;
             current.undo();
+            positionsExamined++;
         }
         return v;
     }
@@ -115,6 +133,7 @@ public class AIMove {
             if(nextV < beta)
                 beta = v;
             current.undo();
+            positionsExamined++;
         }
         return v;
     }

@@ -9,7 +9,6 @@ import android.view.View;
 
 public class EndOfGameActivity extends AppCompatActivity {
 
-    public Intent nextactivity = new Intent();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,13 +26,16 @@ public class EndOfGameActivity extends AppCompatActivity {
     }
 
     public void undoLastMove(View v){
-
+        Intent result = new Intent();
+        result.putExtra("Action", "Undo");
+        setResult(RESULT_OK, result);
+        finish();
     }
 
     public void mainMenu(View v){
-        nextactivity = new Intent(EndOfGameActivity.this, MainMenuActivity.class);
-        nextactivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(nextactivity);
+        Intent result = new Intent();
+        result.putExtra("Action", "Quit");
+        setResult(RESULT_OK, result);
         finish();
     }
 }

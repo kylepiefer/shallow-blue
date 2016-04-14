@@ -24,6 +24,8 @@ import java.util.Queue;
 
 public class GameBoardActivity extends AppCompatActivity {
 
+    private static final int END_OF_GAME_REQUEST = 1;
+
     private GameBoard gameBoard;
     private GameBoardActivitySquare[][] gameBoardActivitySquares;
     private GameBoardActivitySquare selectedSquare;
@@ -76,6 +78,24 @@ public class GameBoardActivity extends AppCompatActivity {
         refreshBoard(gameBoardPiecePositions);
 
         if (this.playerColor == Color.BLACK) aiMove();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == END_OF_GAME_REQUEST) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                String action = data.getStringExtra("Action");
+                if (action.equalsIgnoreCase("Undo")) {
+                    undoMove(null);
+                } else if (action.equalsIgnoreCase("Quit")) {
+                    Intent quit = new Intent(getApplicationContext(), MainMenuActivity.class);
+                    startActivity(quit);
+                    finish();
+                }
+            }
+        }
     }
 
     public GameBoard getGameBoard() { return this.gameBoard; }
@@ -488,7 +508,11 @@ public class GameBoardActivity extends AppCompatActivity {
     }
 
     private void endGame() {
-
+        Intent endGame = new Intent(this, EndOfGameActivity.class);
+        Bundle params = new Bundle();
+        // TODO: Add parameters to the bundle.
+        endGame.putExtras(params);
+        startActivityForResult(endGame, END_OF_GAME_REQUEST);
     }
 
     private class AIMoveTask extends AsyncTask<GameBoard, Integer, Move> {
