@@ -44,7 +44,13 @@ public class King extends Piece {
 					if (j >= 0 && j <= 7) //column isn't out of bounds
 						if (!(i == pieceRow && j == pieceCol)) //we're not adding the current position
 							result.add(new Position(i,j));
-		
+
+		// if a King is in its initial position, it can potentially castle
+		if (getPosition().equals(initialPosition)) {
+			result.add(new Position(getPosition().getRow(), getPosition().getColumn() + 2));
+            result.add(new Position(getPosition().getRow(), getPosition().getColumn() - 2));
+        }
+
 		return result;
 	}
 
