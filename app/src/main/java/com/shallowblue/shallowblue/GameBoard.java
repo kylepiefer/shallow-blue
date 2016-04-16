@@ -107,7 +107,12 @@ public class GameBoard {
         // Handle capturing if necessary.
         if (gameBoard.get(m.getTo()) != null) {
             m.setPieceCaptured(gameBoard.get(m.getTo()));
-            this.gameBoard.remove(m.getTo()).setPosition(null);
+            this.gameBoard.remove(m.getTo());
+        } else if (isLegalEnPassant(m)) {
+            int direction = playerToMove == Color.WHITE ? -1 : 1;
+            Position capturedPosition = new Position(m.getTo().getRow() + direction, m.getTo().getColumn());
+            m.setPieceCaptured(gameBoard.get(capturedPosition));
+            this.gameBoard.remove(capturedPosition);
         }
 
         // Update the game board.
@@ -146,10 +151,14 @@ public class GameBoard {
         if (gameHistory.isEmpty()) return false;
 
         Move m = gameHistory.get(gameHistory.size()-1);
+
+        gameBoard.remove(m.getTo());
         gameBoard.put(m.getFrom(), m.getPieceMoved());
-        gameBoard.put(m.getTo(), m.getPieceCaptured());
-        if (m.getPieceCaptured() != null) m.getPieceCaptured().setPosition(m.getTo());
         m.getPieceMoved().setPosition(m.getFrom());
+
+        if (m.getPieceCaptured() != null) {
+            gameBoard.put(m.getPieceCaptured().getPosition(), m.getPieceCaptured());
+        }
 
         gameHistory.remove(gameHistory.size() - 1);
         redoStack.push(m);
@@ -168,6 +177,22 @@ public class GameBoard {
     public String getLastExplanation() {
         if (this.explanation == null) return "";
         return this.explanation;
+    }
+
+    private boolean isLegalEnPassant(Move m) {
+        if (!(m.getPieceMoved() instanceof Pawn)) return false; // must being moving a pawn
+        if (m.getFrom().getColumn() == m.getTo().getColumn()) return false; // must be moving diagonally
+
+        Move test = gameHistory.size() > 0 ? gameHistory.get(gameHistory.size() - 1) : null;
+        if (test == null) return false;// must have a move made
+        if (!(test.getPieceMoved() instanceof Pawn)) return false; // must be a pawn
+        if (test.getTo().getRow() != m.getFrom().getRow()) return false; // that is currently in the same row as us
+        if (Math.abs(test.getTo().getColumn() - m.getFrom().getColumn()) != 1) return false; // that is one column away
+        if (Math.abs(test.getFrom().getRow() - test.getTo().getRow()) != 2) return false; // that just performed a double jump
+        if (test.getTo().getColumn() != m.getTo().getColumn()) return false; // and we are moving toward their column.
+
+        // the move meets all the criteria to be a legal en passant
+        return true;
     }
 
     public boolean legalMove(Move m) {
@@ -206,12 +231,7 @@ public class GameBoard {
 
             // Check for En Passant.
             if (m.getFrom().getColumn() != m.getTo().getColumn()) {
-                Move test = gameHistory.size() > 0 ? gameHistory.get(gameHistory.size() - 1) : null; // must have a move made
-                if (test != null && test.getPieceMoved() instanceof Pawn && // must be a pawn
-                        test.getTo().getRow() == m.getFrom().getRow() && // that is currently in the same row as us
-                        Math.abs(test.getTo().getColumn() - m.getFrom().getColumn()) == 1 && // that is one column away
-                        Math.abs(test.getFrom().getRow() - test.getTo().getRow()) == 2 && // that just performed a double jump
-                        test.getTo().getColumn() == m.getTo().getColumn()) { // and we are moving toward their column.
+                if (isLegalEnPassant(m)) {
                     this.explanation = "This pawn can perform en Passant.";
                 } else if (gameBoard.get(m.getTo()) == null) { // otherwise the capture is illegal
                     this.explanation = "Pawns can only move diagonally when capturing.";
@@ -320,8 +340,8 @@ public class GameBoard {
         return temp;
     }
 
-    public void unpack(String packedString){
-
+    public boolean unpack(String packedString){
+        return false;
     }
 
     public Map<Position, Piece> getGameBoard(){

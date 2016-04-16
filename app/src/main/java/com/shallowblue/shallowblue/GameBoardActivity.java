@@ -32,6 +32,7 @@ public class GameBoardActivity extends AppCompatActivity {
     private ArrayList<GameBoardActivitySquare> highlightedSquares;
     private Color playerColor;
     private Toast toast;
+    private SavedGameManager savedGameManager;
     private int movesToUndo = 0;
     private int movesToRedo = 0;
 
@@ -42,6 +43,7 @@ public class GameBoardActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         this.toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
+        this.savedGameManager = new SavedGameManager();
 
         // use intent extras
         String colorString = getIntent().getStringExtra("Color");
@@ -321,6 +323,12 @@ public class GameBoardActivity extends AppCompatActivity {
                 imageCopy.clearAnimation();
                 animationLayer.removeView(imageCopy);
 
+                if (selectedSquare != null) {
+                    GameBoardActivitySquare temp = selectedSquare;
+                    removeAllSquareHighlights();
+                    onBoardTouched(temp.getSquareImage());
+                }
+
                 if (gameBoard.gameOver()) {
                     endGame();
                     return;
@@ -528,7 +536,7 @@ public class GameBoardActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(Move move) {
-            if (move == null) {
+            if (move == null || getGameBoard().playerToMove() == playerColor) {
                 return;
             }
             if (getGameBoard().move(move)) {
@@ -539,4 +547,3 @@ public class GameBoardActivity extends AppCompatActivity {
         }
     }
 }
-
