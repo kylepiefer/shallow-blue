@@ -31,6 +31,7 @@ public class GameBoardActivity extends AppCompatActivity {
     private GameBoardActivitySquare selectedSquare;
     private ArrayList<GameBoardActivitySquare> highlightedSquares;
     private Color playerColor;
+    private int difficulty = 0;
     private Toast toast;
     private SavedGameManager savedGameManager;
     private int movesToUndo = 0;
@@ -46,6 +47,12 @@ public class GameBoardActivity extends AppCompatActivity {
         this.savedGameManager = new SavedGameManager();
 
         // use intent extras
+        if (getIntent().hasExtra("Difficulty")) {
+            this.difficulty = getIntent().getIntExtra("Difficulty", 3);
+        } else {
+            this.difficulty = 0;
+        }
+
         String colorString = getIntent().getStringExtra("Color");
         if (colorString.equalsIgnoreCase("White"))
             this.playerColor = Color.WHITE;
@@ -529,7 +536,7 @@ public class GameBoardActivity extends AppCompatActivity {
         protected Move doInBackground(GameBoard... gameBoards) {
             GameBoard gameBoard = gameBoards[0];
             AIMove ai = new AIMove();
-            List<Move> moves = ai.move(gameBoard, 3);
+            List<Move> moves = ai.move(gameBoard, difficulty);
             if (moves.isEmpty()) return null;
             Move move = moves.get(0);
             return move;
@@ -541,6 +548,7 @@ public class GameBoardActivity extends AppCompatActivity {
             }
             if (getGameBoard().move(move)) {
                 updateGameboard(move, false);
+                System.gc();
             } else {
                 Log.d("ShallowBlue", "AI move failed: " + move.toString() + " Reason: " + getGameBoard().getLastExplanation());
             }
