@@ -77,6 +77,12 @@ public class GameBoardActivity extends AppCompatActivity {
         Map<Position, Piece> gameBoardPiecePositions = this.gameBoard.getGameBoard();
         refreshBoard(gameBoardPiecePositions);
 
+        // TODO: This is just a test; remember to get rid of it.
+        boolean status = SavedGameManager.saveGame(getApplicationContext(), this.gameBoard);
+        Log.d("GameBoardActivity", String.valueOf(status));
+        status = SavedGameManager.loadGame(getApplicationContext(), "savedGame");
+        Log.d("GameBoardActivity", String.valueOf(status));
+
         if (this.playerColor == Color.BLACK) aiMove();
     }
 
