@@ -4,11 +4,9 @@ package com.shallowblue.shallowblue;
  * Created by peter on 3/14/2016.
  */
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -85,7 +83,7 @@ public class GameBoard {
         redoStack = new Stack<Move>();
     }
 
-    private void switchPlayerToMove() {
+    public void switchPlayerToMove() {
         this.playerToMove = (playerToMove == Color.WHITE) ? Color.BLACK : Color.WHITE;
     }
 
