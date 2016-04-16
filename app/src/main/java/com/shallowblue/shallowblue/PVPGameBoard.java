@@ -478,10 +478,12 @@ public class PVPGameBoard extends AppCompatActivity {
     }
 
     public void pvpsuggalt1(View v){
-        new UrlConnection().new Request().execute(GameBoard.activeGameBoard.pack());
-        Toast.makeText(PVPGameBoard.this, "Sorry, this function is still being worked on.",
-                Toast.LENGTH_SHORT).show();
-        return;
+        Intent openPawnPromotion = new Intent(getApplicationContext(),PawnPromotion.class);
+        startActivity(openPawnPromotion);
+        //new UrlConnection().new Request().execute(GameBoard.activeGameBoard.pack());
+        //Toast.makeText(PVPGameBoard.this, "Sorry, this function is still being worked on.",
+        //        Toast.LENGTH_SHORT).show();
+        //return;
     }
 
     public void pvpsuggalt2(View v){
