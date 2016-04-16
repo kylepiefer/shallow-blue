@@ -4,49 +4,37 @@ import android.content.Context;
 import android.util.Log;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
+import java.nio.charset.Charset;
 
 /**
  * Created by Kyle on 4/14/2016.
  */
 public class SavedGameManager {
 
-    private static byte[] getBytes(String data) {
+    public SavedGameManager() {}
+
+    private byte[] getBytesFromString(String data) {
         if (data == null || data.isEmpty()) return null;
 
         byte[] bytes = null;
-        ByteArrayOutputStream byteArrayOutputStream = null;
+        Charset charset = Charset.forName("US-ASCII");
 
         try {
-            byteArrayOutputStream = new ByteArrayOutputStream(data.length());
-            bytes = byteArrayOutputStream.toByteArray();
+            bytes = data.getBytes(charset);
         } catch (Exception exception) {
             Log.e("SavedGameManager", exception.toString());
-        } finally {
-            if (byteArrayOutputStream != null) {
-                try {
-                    byteArrayOutputStream.close();
-                } catch (Exception e) {
-                }
-            }
+            bytes = null;
         }
 
         return bytes;
     }
 
-    private static boolean writeBytesToFile(byte[] bytes, File file) {
+    private boolean writeBytesToFile(byte[] bytes, File file) {
         boolean returnValue = false;
         if (bytes == null) return returnValue;
 
@@ -67,30 +55,56 @@ public class SavedGameManager {
         return returnValue;
     }
 
-    private static byte[] readBytesFromFile(File file) {
+    private byte[] readBytesFromFile(File file) {
+        if (file == null) return null;
 
+        int fileSize = (int) file.length();
+        byte[] bytes = new byte[fileSize];
+
+        FileInputStream fileInputStream = null;
+        BufferedInputStream bufferedInputStream = null;
+
+        try {
+            fileInputStream = new FileInputStream(file);
+            bufferedInputStream = new BufferedInputStream(fileInputStream);
+            bufferedInputStream.read(bytes, 0, fileSize);
+        } catch (Exception exception) {
+            Log.e("SavedGameManager", exception.toString());
+            bytes = null;
+        } finally {
+            if (fileInputStream != null) {
+                try { fileInputStream.close(); } catch (Exception e) {}
+            }
+
+            if (bufferedInputStream != null) {
+                try { bufferedInputStream.close(); } catch (Exception e) {}
+            }
+        }
+
+        return bytes;
     }
 
-    private static File getFile(String filename, Context context) {
+    private File getFile(String filename, Context context) {
         File file = null;
         try {
             file = new File(context.getFilesDir(), filename);
         } catch (Exception exception) {
-            file = null;
             Log.e("SavedGameManager", exception.toString());
+            file = null;
         }
         return file;
     }
 
-    public static boolean saveGame(Context context, GameBoard game) {
+    public boolean saveGame(Context context, GameBoard game) {
         if (context == null || game == null) return false;
 
         String gameData = game.pack();
         if (gameData == null || gameData.isEmpty()) return false;
 
-        byte[] bytes = getBytes(gameData);
+        byte[] bytes = getBytesFromString(gameData);
         if (bytes == null) return false;
 
+        // TODO: Name based on timestamp (remove comments and hardcode.
         /*Calendar calendar = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         String filename = sdf.format(calendar.getTime());*/
@@ -105,54 +119,40 @@ public class SavedGameManager {
         return true;
     }
 
-    public static boolean loadGame(Context context, String filename) {
+    private String getStringFromBytes(byte[] bytes) {
+        if (bytes == null) return null;
+
+        String string = null;
+        Charset charset = Charset.forName("US-ASCII");
+
+        try {
+            string = new String(bytes, charset);
+        } catch (Exception exception) {
+            Log.e("SavedGameManager", exception.toString());
+            string = null;
+        }
+
+        return string;
+    }
+
+    public boolean loadGame(Context context, String filename) {
         if (context == null || filename == null || filename.isEmpty()) return false;
         filename = "savedGame"; // TODO: Remove this.
 
         File file = getFile(filename, context);
         if (file == null) return false;
 
-        try {
-            int bufferSize = (int) file.length();
-            byte[] compressedGameData = new byte[bufferSize];
-            bufferedInputStream = new BufferedInputStream(new FileInputStream(file));
-            bufferedInputStream.read(compressedGameData, 0, compressedGameData.length);
+        byte[] bytes = readBytesFromFile(file);
+        if (bytes == null) return false;
 
-            byteArrayInputStream = new ByteArrayInputStream(compressedGameData);
-            gzipInputStream = new GZIPInputStream(byteArrayInputStream, bufferSize);
-            StringBuilder stringBuilder = new StringBuilder();
+        String gameData = getStringFromBytes(bytes);
+        if (gameData == null) return false;
 
-            byte[] gameDataBuffer = new byte[bufferSize];
-            int totalBytesRead = 0;
-            int bytesRead = 0;
-            while ((bytesRead = gzipInputStream.read(gameDataBuffer, totalBytesRead, bufferSize)) != -1) {
-                totalBytesRead = totalBytesRead + bytesRead;
-                stringBuilder.append(new String(gameDataBuffer, 0, bytesRead));
-            }
-            String gameData = stringBuilder.toString();
-            Log.d("SavedGameManager", gameData);
+        GameBoard gameBoard = new GameBoard();
+        boolean success = gameBoard.unpack(gameData);
+        if (!success) return false;
+        GameBoard.activeGameBoard = gameBoard;
 
-            GameBoard gameBoard = new GameBoard();
-            gameBoard.unpack(gameData);
-            GameBoard.activeGameBoard = gameBoard;
-
-            returnValue = true;
-        } catch (Exception exception) {
-            Log.e("SavedGameManager", exception.toString());
-        } finally {
-            if (bufferedInputStream != null) {
-                try { bufferedInputStream.close(); } catch (Exception e) { }
-            }
-
-            if (byteArrayInputStream != null) {
-                try { byteArrayInputStream.close(); } catch (Exception e) { }
-            }
-
-            if (gzipInputStream != null) {
-                try { gzipInputStream.close(); } catch (Exception e) { }
-            }
-        }
-
-        return returnValue;
+        return true;
     }
 }

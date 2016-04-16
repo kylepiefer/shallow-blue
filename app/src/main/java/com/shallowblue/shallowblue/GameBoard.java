@@ -340,8 +340,8 @@ public class GameBoard {
         return temp;
     }
 
-    public void unpack(String packedString){
-
+    public boolean unpack(String packedString){
+        return false;
     }
 
     public Map<Position, Piece> getGameBoard(){
