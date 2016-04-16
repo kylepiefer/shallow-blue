@@ -78,10 +78,10 @@ public class GameBoardActivity extends AppCompatActivity {
         refreshBoard(gameBoardPiecePositions);
 
         // TODO: This is just a test; remember to get rid of it.
-        boolean status = SavedGameManager.saveGame(getApplicationContext(), this.gameBoard);
+        /*boolean status = SavedGameManager.saveGame(getApplicationContext(), this.gameBoard);
         Log.d("GameBoardActivity", String.valueOf(status));
         status = SavedGameManager.loadGame(getApplicationContext(), "savedGame");
-        Log.d("GameBoardActivity", String.valueOf(status));
+        Log.d("GameBoardActivity", String.valueOf(status));*/
 
         if (this.playerColor == Color.BLACK) aiMove();
     }
@@ -327,6 +327,12 @@ public class GameBoardActivity extends AppCompatActivity {
                 imageCopy.clearAnimation();
                 animationLayer.removeView(imageCopy);
 
+                if (selectedSquare != null) {
+                    GameBoardActivitySquare temp = selectedSquare;
+                    removeAllSquareHighlights();
+                    onBoardTouched(temp.getSquareImage());
+                }
+
                 if (gameBoard.gameOver()) {
                     endGame();
                     return;
@@ -534,7 +540,7 @@ public class GameBoardActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(Move move) {
-            if (move == null) {
+            if (move == null || getGameBoard().playerToMove() == playerColor) {
                 return;
             }
             if (getGameBoard().move(move)) {
