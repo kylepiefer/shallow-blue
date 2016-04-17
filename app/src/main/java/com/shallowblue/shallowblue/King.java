@@ -5,17 +5,16 @@ import java.util.ArrayList;
 
 public class King extends Piece {
 
-	private Position initialPosition;
+	private final Position initialPosition;
 	
 	public King(Position argPosition, Color color) {
 		super(argPosition, color, color == Color.WHITE ? R.drawable.white_king : R.drawable.black_king);
 		initialPosition = argPosition;
-		
 	}
 
 	public King(King k) {
 		super(k.getPosition(), k.getColor(), k.getColor() == Color.WHITE ? R.drawable.white_king : R.drawable.black_king);
-		this.initialPosition = k.getPosition();
+		this.initialPosition = k.initialPosition;
 	}
 
 	@Override
@@ -45,7 +44,13 @@ public class King extends Piece {
 					if (j >= 0 && j <= 7) //column isn't out of bounds
 						if (!(i == pieceRow && j == pieceCol)) //we're not adding the current position
 							result.add(new Position(i,j));
-		
+
+		// if a King is in its initial position, it can potentially castle
+		if (getPosition().equals(initialPosition)) {
+			result.add(new Position(getPosition().getRow(), getPosition().getColumn() + 2));
+            result.add(new Position(getPosition().getRow(), getPosition().getColumn() - 2));
+        }
+
 		return result;
 	}
 

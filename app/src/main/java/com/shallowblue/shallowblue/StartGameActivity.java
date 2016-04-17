@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 
 public class StartGameActivity extends AppCompatActivity {
@@ -31,12 +32,18 @@ public class StartGameActivity extends AppCompatActivity {
 
     public void newGame(View button) {
         Intent newGameIntent = new Intent(getApplicationContext(), GameBoardActivity.class);
+
+        SeekBar difficultySeekBar = (SeekBar) findViewById(R.id.seek_bar_difficulty);
+        int difficulty = difficultySeekBar.getProgress();
+        newGameIntent.putExtra("Difficulty", difficulty);
+
         RadioButton radioButtonWhite = (RadioButton)this.findViewById(R.id.button_white);
         if (radioButtonWhite.isChecked())
             newGameIntent.putExtra("Color", "White");
         else
             newGameIntent.putExtra("Color", "Black");
         startActivity(newGameIntent);
+        finish();
     }
 
     public void createGame(View button){
@@ -45,6 +52,7 @@ public class StartGameActivity extends AppCompatActivity {
         playercount.putInt("players", 1);
         createGameIntent.putExtra("type",playercount);
         startActivity(createGameIntent);
+        finish();
     }
 
     public void loadGame(View button){

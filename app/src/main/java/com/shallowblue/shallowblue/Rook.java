@@ -5,10 +5,15 @@ import java.util.ArrayList;
 
 public class Rook extends Piece {
 
+
 	private Position initialPosition;
 	public boolean leftright(){   //true if on left side of board at beginning
 		return initialPosition.getColumn()==0;
 	}
+
+	//private final Position initialPosition;
+	
+
 	public Rook(Position argPosition, Color color) {
 		super(argPosition, color, color == Color.WHITE ? R.drawable.white_rook : R.drawable.black_rook);
 		initialPosition = argPosition;
@@ -17,7 +22,7 @@ public class Rook extends Piece {
 
 	public Rook(Rook r) {
 		super(r.getPosition(), r.getColor(), r.getColor() == Color.WHITE ? R.drawable.white_rook : R.drawable.black_rook);
-		this.initialPosition = r.getPosition();
+        this.initialPosition = r.initialPosition;
 	}
 
 	@Override

@@ -12,19 +12,27 @@ public class Position {
 	private final int row;
 	private final int column;
 
+	public static Position copy(Position p) {
+		if (p == null) return null;
+		Position copy = new Position(p.getRow(), p.getColumn());
+		return copy;
+	}
+
 	public Position(int row, int column) {
 		this.row = row;
 		this.column = column;
+	}
+
+	public Position(Position p) {
+		this.row = p.getRow();
+		this.column = p.getColumn();
 	}
 
 	public int getRow() {
 		return this.row;
 	}
 
-	public int getColumn() {
-
-		return this.column;
-	}
+	public int getColumn() { return this.column; }
 
 	@Override
 	public boolean equals(Object other) {
@@ -47,8 +55,10 @@ public class Position {
 	public String toString() {
 		return "(" + this.row + "," + this.column + ")";
 	}
+
 	public String toString(boolean x) {
 		return this.row + "" + this.column;
 	}
 	public String pack() {return this.row + "" + this.column;}
+
 }

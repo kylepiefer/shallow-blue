@@ -4,11 +4,9 @@ package com.shallowblue.shallowblue;
  * Created by peter on 3/14/2016.
  */
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -16,10 +14,12 @@ import java.util.Stack;
 public class GameBoard {
 
     public static GameBoard activeGameBoard;
+    public static Map<Position, Piece> customPositions;
     public Map<Position, Piece> gameBoard;
     public List<Move> gameHistory;
     private Color playerToMove;
     private Stack<Move> redoStack;
+    private String explanation;
 
     public GameBoard() {
         if (gameBoard == null) {
@@ -63,16 +63,27 @@ public class GameBoard {
         gameHistory = new ArrayList<Move>();
         redoStack = new Stack<Move>();
     }
+
     public GameBoard(GameBoard in) {
         gameBoard = new HashMap<Position,Piece>();
         for(Map.Entry<Position,Piece> e : in.gameBoard.entrySet())
-            gameBoard.put(e.getKey(),Piece.copy(e.getValue()));
-        gameHistory = new ArrayList<Move>(in.getGameHistory());
+            gameBoard.put(new Position(e.getKey()),Piece.copy(e.getValue()));
+        gameHistory = new ArrayList<Move>();
+        for (Move m : in.gameHistory) {
+            gameHistory.add(new Move(m));
+        }
         playerToMove = in.playerToMove();
         redoStack = new Stack<Move>();
     }
 
-    private void switchPlayerToMove() {
+    public GameBoard(Map<Position, Piece> map) {
+        gameBoard = map;
+        gameHistory = new ArrayList<Move>();
+        playerToMove = Color.WHITE;
+        redoStack = new Stack<Move>();
+    }
+
+    public void switchPlayerToMove() {
         this.playerToMove = (playerToMove == Color.WHITE) ? Color.BLACK : Color.WHITE;
     }
 
@@ -84,23 +95,42 @@ public class GameBoard {
         return ret;
     }
 
-    public boolean move(Move m){						//Returns true iff successful
-        redoStack.clear();
-        if(gameBoard.get(m.getFrom()) == null)
+    private boolean move(Move m, boolean clearRedoStack) {
+        // Check that the move is valid.
+        if (gameBoard.get(m.getFrom()) == null || !legalMove(m)) {
             return false;
-
-        if (gameBoard.get(m.getTo()) != null) {
-            m.setPieceCaptured(gameBoard.get(m.getTo()));
-            this.gameBoard.remove(m.getTo()).setPosition(null);
         }
 
+        // Clear the redo stack now since we know we are proceeding.
+        if (clearRedoStack) redoStack.clear();
+
+        // Handle capturing if necessary.
+        if (gameBoard.get(m.getTo()) != null) {
+            m.setPieceCaptured(gameBoard.get(m.getTo()));
+            this.gameBoard.remove(m.getTo());
+        } else if (isLegalEnPassant(m)) {
+            int direction = playerToMove == Color.WHITE ? -1 : 1;
+            Position capturedPosition = new Position(m.getTo().getRow() + direction, m.getTo().getColumn());
+            m.setPieceCaptured(gameBoard.get(capturedPosition));
+            this.gameBoard.remove(capturedPosition);
+        }
+
+        // Update the game board.
         gameBoard.put(m.getTo(), gameBoard.get(m.getFrom()));
         gameBoard.remove(m.getFrom());
+
+        // Update the piece's position in both places to be safe.
+        gameBoard.get(m.getTo()).setPosition(m.getTo());
         m.getPieceMoved().setPosition(m.getTo());
 
+        // Handle bookkeeping.
         gameHistory.add(m);
         switchPlayerToMove();
         return true;
+    }
+
+    public boolean move(Move m){						//Returns true iff successful
+        return move(m, true);
     }
 
     public void addMove(Move m){
@@ -121,8 +151,14 @@ public class GameBoard {
         if (gameHistory.isEmpty()) return false;
 
         Move m = gameHistory.get(gameHistory.size()-1);
+
+        gameBoard.remove(m.getTo());
         gameBoard.put(m.getFrom(), m.getPieceMoved());
-        gameBoard.put(m.getTo(), m.getPieceCaptured());
+        m.getPieceMoved().setPosition(m.getFrom());
+
+        if (m.getPieceCaptured() != null) {
+            gameBoard.put(m.getPieceCaptured().getPosition(), m.getPieceCaptured());
+        }
 
         gameHistory.remove(gameHistory.size() - 1);
         redoStack.push(m);
@@ -134,28 +170,76 @@ public class GameBoard {
             return false;
         }
         Move m = redoStack.pop();
-        this.move(m);
+        move(m, false);
+        return true;
+    }
+
+    public String getLastExplanation() {
+        if (this.explanation == null) return "";
+        return this.explanation;
+    }
+
+    private boolean isLegalEnPassant(Move m) {
+        if (!(m.getPieceMoved() instanceof Pawn)) return false; // must being moving a pawn
+        if (m.getFrom().getColumn() == m.getTo().getColumn()) return false; // must be moving diagonally
+
+        Move test = gameHistory.size() > 0 ? gameHistory.get(gameHistory.size() - 1) : null;
+        if (test == null) return false;// must have a move made
+        if (!(test.getPieceMoved() instanceof Pawn)) return false; // must be a pawn
+        if (test.getTo().getRow() != m.getFrom().getRow()) return false; // that is currently in the same row as us
+        if (Math.abs(test.getTo().getColumn() - m.getFrom().getColumn()) != 1) return false; // that is one column away
+        if (Math.abs(test.getFrom().getRow() - test.getTo().getRow()) != 2) return false; // that just performed a double jump
+        if (test.getTo().getColumn() != m.getTo().getColumn()) return false; // and we are moving toward their column.
+
+        // the move meets all the criteria to be a legal en passant
         return true;
     }
 
     public boolean legalMove(Move m) {
-        if(gameBoard.get(m.getTo()) != null && gameBoard.get(m.getFrom()) != null &&
-                gameBoard.get(m.getTo()).getColor() == gameBoard.get(m.getFrom()).getColor()){
+        // Check to make sure there is a piece in the square and that it belongs to the player
+        // whose turn it is.
+        if (gameBoard.get(m.getFrom()) == null) {
+            this.explanation = "You can only move from a square that contains a piece.";
             return false;
         }
-        if (gameBoard.get(m.getFrom()) == null ||
-                this.playerToMove != gameBoard.get(m.getFrom()).getColor()) return false; // THIS IS IMPORTANT.
-        if(m.getPieceMoved().toString().equals("p")){
-            if(m.getTo().getColumn() == m.getFrom().getColumn() && m.getPieceMoved().
-                    possibleMoves().contains(m.getTo()) && gameBoard.get(m.getTo()) == null){ //nothing is blocking the pawn
-                return true;
-            }
-            return ((m.getTo().getColumn() == m.getFrom().getColumn()+1 || m.getTo().getColumn() == m.getFrom().getColumn() -1 &&             //is in adjacent column
-                    m.getTo().getRow() == m.getFrom().getRow()+1 || m.getTo().getRow() == m.getFrom().getRow() -1) &&                         //is in adjacent row
-                    (m.getPieceMoved().possibleMoves().contains(new Position(m.getTo().getRow(),m.getTo().getColumn()+1)) ||                 //is in the same direction
-                    m.getPieceMoved().possibleMoves().contains(new Position(m.getTo().getRow(),m.getTo().getColumn()+-1))) &&
-                    gameBoard.get(m.getTo()) != null);
+
+        if (this.playerToMove != gameBoard.get(m.getFrom()).getColor()) {
+            this.explanation = "You can only move a piece that is your color.";
+            return false;
         }
+
+        // Check to make sure there is not a friendly piece in the square being moved to.
+        if (gameBoard.get(m.getTo()) != null &&
+                gameBoard.get(m.getTo()).getColor() == gameBoard.get(m.getFrom()).getColor()){
+            this.explanation = "You cannot capture your own piece.";
+            return false;
+        }
+
+        // Check to make sure the move is possible.
+        if (!gameBoard.get(m.getFrom()).possibleMoves().contains(m.getTo())) {
+            // TODO: Make each piece have a method to describe how it moves and call it here.
+            this.explanation = "This piece does not move this way!";
+            return false;
+        }
+
+        // Check to make sure a pawn isn't capturing forward or moving diagonally when not capturing.
+        if (m.getPieceMoved() instanceof Pawn) {
+            if (m.getFrom().getColumn() == m.getTo().getColumn() && gameBoard.get(m.getTo()) != null) {
+                this.explanation = "Pawns can only capture enemy pieces diagonally.";
+                return false;
+            }
+
+            // Check for En Passant.
+            if (m.getFrom().getColumn() != m.getTo().getColumn()) {
+                if (isLegalEnPassant(m)) {
+                    this.explanation = "This pawn can perform en Passant.";
+                } else if (gameBoard.get(m.getTo()) == null) { // otherwise the capture is illegal
+                    this.explanation = "Pawns can only move diagonally when capturing.";
+                    return false;
+                }
+            }
+        }
+
         boolean canmove = true;
         Position tempPos = m.getTo();
         /*if (m.getPieceMoved() instanceof Rook &&
@@ -199,7 +283,7 @@ public class GameBoard {
                 tempRow--;
             }
             tempPos = new Position(tempRow, tempCol);
-            if(m.getPieceMoved().possibleMoves().contains(tempPos) && gameBoard.get(tempPos) != null){
+            if(gameBoard.get(m.getFrom()).possibleMoves().contains(tempPos) && gameBoard.get(tempPos) != null){
                 canmove = false;
             }
 
@@ -215,28 +299,20 @@ public class GameBoard {
 
         return canmove;
     }
-
-
-
+    
     public List<Move> getLegalMoves(Position from){
-        List<Move> moveList = new ArrayList<Move>();
-        for(Position p : gameBoard.get(from).possibleMoves())
-            moveList.add(new Move(gameBoard.get(from), from, p));
-        List<Move> ret = new ArrayList<Move>();
-
         Piece piece = gameBoard.get(from);
-
         List<Position> possibleMoves = piece.possibleMoves();
-        List<Position> legalMoves = new ArrayList<Position>();
+        List<Move> legalMoves = new ArrayList<Move>();
         for (int p = possibleMoves.size() - 1; p >= 0; p--) {
             Position curr = possibleMoves.get(p);
             Move possible = new Move(piece, piece.getPosition(), curr);
             if (legalMove(possible)) {
                 possibleMoves.remove(p);
-                ret.add(possible);
+                legalMoves.add(possible);
             }
         }
-        return ret;
+        return legalMoves;
     }
 
     public String pack(){
@@ -292,6 +368,7 @@ public class GameBoard {
         }
         return temp;
     }
+
 
     public GameBoard unpack(String packedString){
         return new GameBoard(packedString);
@@ -404,7 +481,7 @@ public class GameBoard {
             }
             i+= 6;
         }
-        
+
     }
 
     public Map<Position, Piece> getGameBoard(){
@@ -431,8 +508,10 @@ public class GameBoard {
                     value = 10000;
                 else if(p instanceof Bishop)
                     value = 3;
-                else
+                else if (p instanceof Pawn)
                     value = 1;
+                else
+                    continue; // null
 
                 if(p.getColor() == Color.WHITE)
                     sum += value;
@@ -466,7 +545,7 @@ public class GameBoard {
                     whiteKing = true;
                 else
                     blackKing = true;
-        return whiteKing && blackKing;
+        return !(whiteKing && blackKing);
     }
 }
 

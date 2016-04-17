@@ -15,18 +15,26 @@ public class Move {
         this.to = to;
     }
 
+    /*
     @Override
     public String toString(){
         if (pieceCaptured == null) {
             return pieceMoved.toString() + from.toString(true) + "_" + to.toString(true);
         }
         return pieceMoved.toString() + from.toString(true) + pieceCaptured.toString() + to.toString(true);
-    }
-    public String toString(boolean x){
+    }*/
+    public String toString(boolean x) {
         if (pieceCaptured == null) {
             return pieceMoved.toString() + from.toString(true) + "_" + to.toString(true);
         }
         return pieceMoved.toString(true) + from.toString(true) + pieceCaptured.toString(true) + to.toString(true);
+    }
+    public Move(Move in) {
+        this.from = new Position(in.getFrom());
+        this.to = new Position(in.getTo());
+        this.pieceMoved = Piece.copy(in.getPieceMoved());
+        this.pieceCaptured = Piece.copy(in.getPieceCaptured());
+
     }
 
     public Position getFrom() {
@@ -59,5 +67,10 @@ public class Move {
         if (this.pieceMoved != other.pieceMoved) return false;
         if (this.pieceCaptured != other.pieceCaptured) return false;
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return this.getFrom().toString() + "->" + this.getTo().toString();
     }
 }

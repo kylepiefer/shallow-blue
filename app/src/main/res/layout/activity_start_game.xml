@@ -25,10 +25,11 @@
             android:textSize="35dp"/>
 
         <SeekBar
+            android:id="@+id/seek_bar_difficulty"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:max="10"
-            android:progress="5"
+            android:max="5"
+            android:progress="3"
             android:layout_gravity="center" />
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
