@@ -240,6 +240,7 @@ public class GameBoard {
     }
 
     public String pack(){
+        int value =0;
         String temp = "";
         try {
             Position p;
@@ -247,14 +248,42 @@ public class GameBoard {
                 for (int j = 0; j < 7; j++) {
                     p = new Position(i, j);
                     if (gameBoard.containsKey(p)) {
-                        temp += gameBoard.get(p).toString();
+                        temp += gameBoard.get(p).toString(true);
                     } else {
                         temp += "_";
                     }
                 }
             }
+            
+            String history = "";
+            if(gameHistory.size()==0){
+                
+            }
+            else if(gameHistory.size()==1){
+                history = gameHistory.get(0).toString(true);
+            }
+            else if(gameHistory.size()==2){
+                history = gameHistory.get(0).toString(true) + gameHistory.get(1).toString(true);
+            }
+            else if(gameHistory.size()>=3){
+                history = gameHistory.get(0).toString(true) + gameHistory.get(1).toString(true) + gameHistory.get(2).toString(true);
+            }
+            for(Piece piece : gameBoard.values()) {
 
-            temp += "+" + gameHistory.get(0).toString() + gameHistory.get(1).toString() + gameHistory.get(2).toString() + "+\n";
+                if(piece instanceof Rook) {
+                    if (piece.hasMoved()&&((Rook) piece).leftright()) {
+                        value += 2;
+                    }
+                    else if (piece.hasMoved()&&!((Rook) piece).leftright()){
+                        value += 3;
+                    }
+                }
+                else if(piece instanceof King)
+                    if(piece.hasMoved()) {
+                        value += 5;
+                    }
+            }
+            temp += "\n" + history + "\n" + value;
             return temp;
         }
         catch(Exception e)
@@ -264,8 +293,118 @@ public class GameBoard {
         return temp;
     }
 
-    public void unpack(String packedString){
+    public GameBoard unpack(String packedString){
+        return new GameBoard(packedString);
+    }
 
+    public GameBoard(String packedString){
+        gameBoard.clear();
+        gameHistory.clear();
+        int i = 0;
+        Position p;
+        int row = 0;
+        int column = 0;
+        while(packedString.charAt(i)!='\n'){
+            if(row == 8){
+                row = 0;
+                column++;
+            }
+            if (packedString.charAt(i)!='_'){
+                if(packedString.charAt(i)=='p'){
+                    gameBoard.put((p = new Position(row, column)), new Pawn(p, Color.WHITE));
+                }
+                else if(packedString.charAt(i)=='k'){
+                    gameBoard.put((p = new Position(row, column)), new King(p, Color.WHITE));
+                }
+                else if(packedString.charAt(i)=='n'){
+                    gameBoard.put((p = new Position(row, column)), new Knight(p, Color.WHITE));
+                }
+                else if(packedString.charAt(i)=='b'){
+                    gameBoard.put((p = new Position(row, column)), new Bishop(p, Color.WHITE));
+                }
+                else if(packedString.charAt(i)=='r'){
+                    gameBoard.put((p = new Position(row, column)), new Rook(p, Color.WHITE));
+                }
+                else if(packedString.charAt(i)=='q'){
+                    gameBoard.put((p = new Position(row, column)), new Queen(p, Color.WHITE));
+                }
+                else if(packedString.charAt(i)=='P'){
+                    gameBoard.put((p = new Position(row, column)), new Pawn(p, Color.BLACK));
+                }
+                else if(packedString.charAt(i)=='K'){
+                    gameBoard.put((p = new Position(row, column)), new King(p, Color.BLACK));
+                }
+                else if(packedString.charAt(i)=='N'){
+                    gameBoard.put((p = new Position(row, column)), new Knight(p, Color.BLACK));
+                }
+                else if(packedString.charAt(i)=='B'){
+                    gameBoard.put((p = new Position(row, column)), new Bishop(p, Color.BLACK));
+                }
+                else if(packedString.charAt(i)=='R'){
+                    gameBoard.put((p = new Position(row, column)), new Rook(p, Color.BLACK));
+                }
+                else if(packedString.charAt(i)=='Q'){
+                    gameBoard.put((p = new Position(row, column)), new Queen(p, Color.BLACK));
+                }
+
+            }
+            row++;
+            i++;
+        }
+        i++;
+        while(packedString.charAt(i)!='\n'){
+            Move m;
+            char movedPiece = packedString.charAt(i);
+            int fromRow =  Integer.parseInt(packedString.substring(i + 1, i + 2));
+            int fromColumn =  Integer.parseInt(packedString.substring(i + 2, i + 3));
+            char capturedPiece = packedString.charAt(i + 3);
+            int toRow =  Integer.parseInt(packedString.substring(i + 4, i + 5));
+            int toColumn =  Integer.parseInt(packedString.substring(i + 5, i + 6));
+            Position from = new Position(fromRow, fromColumn);
+            Position to = new Position(toRow, toColumn);
+            if (packedString.charAt(i)!='_'){
+                if(packedString.charAt(i)=='p'){
+
+                    gameHistory.add(m=new Move(new Pawn(from, Color.WHITE), from, to ));
+                }
+                else if(packedString.charAt(i)=='k'){
+                    gameHistory.add(m = new Move(new King(from, Color.WHITE), from, to));
+                }
+                else if(packedString.charAt(i)=='n'){
+                    gameHistory.add(m = new Move(new Knight(from, Color.WHITE), from, to));
+                }
+                else if(packedString.charAt(i)=='b'){
+                    gameHistory.add(m = new Move(new Bishop(from, Color.WHITE), from, to));
+                }
+                else if(packedString.charAt(i)=='r'){
+                    gameHistory.add(m = new Move(new Rook(from, Color.WHITE), from, to));
+                }
+                else if(packedString.charAt(i)=='q'){
+                    gameHistory.add(m = new Move(new Queen(from, Color.WHITE), from, to));
+                }
+                else if(packedString.charAt(i)=='P'){
+                    gameHistory.add(m = new Move(new Pawn(from, Color.BLACK), from, to));
+                }
+                else if(packedString.charAt(i)=='K'){
+                    gameHistory.add(m = new Move(new King(from, Color.BLACK), from, to));
+                }
+                else if(packedString.charAt(i)=='N'){
+                    gameHistory.add(m = new Move(new Knight(from, Color.BLACK), from, to));
+                }
+                else if(packedString.charAt(i)=='B'){
+                    gameHistory.add(m = new Move(new Bishop(from, Color.BLACK), from, to));
+                }
+                else if(packedString.charAt(i)=='R'){
+                    gameHistory.add(m = new Move(new Rook(from, Color.BLACK), from, to));
+                }
+                else if(packedString.charAt(i)=='Q'){
+                    gameHistory.add(m = new Move(new Queen(from, Color.BLACK), from, to));
+                }
+
+            }
+            i+= 6;
+        }
+        
     }
 
     public Map<Position, Piece> getGameBoard(){

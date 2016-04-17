@@ -79,6 +79,11 @@ public class Pawn extends Piece {
 		
 		return "p";
 	}
-
+	public String toString(boolean x) {
+		if(getColor()==Color.WHITE) {
+			return "p";
+		}
+		return "P";
+	}
 
 }

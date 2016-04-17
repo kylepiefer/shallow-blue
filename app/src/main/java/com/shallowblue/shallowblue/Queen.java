@@ -80,5 +80,11 @@ public class Queen extends Piece {
 		
 		return "q";
 	}
+	public String toString(boolean x) {
+		if(getColor()==Color.WHITE) {
+			return "q";
+		}
+		return "Q";
+	}
 
 }

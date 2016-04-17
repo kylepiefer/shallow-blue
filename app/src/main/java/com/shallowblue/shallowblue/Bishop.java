@@ -66,5 +66,11 @@ public class Bishop extends Piece {
 		
 		return "b";
 	}
+	public String toString(boolean x) {
+		if(getColor()==Color.WHITE) {
+			return "b";
+		}
+		return "B";
+	}
 
 }

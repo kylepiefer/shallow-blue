@@ -54,5 +54,10 @@ public class King extends Piece {
 		
 		return "k";
 	}
-
+	public String toString(boolean x) {
+		if(getColor()==Color.WHITE) {
+			return "k";
+		}
+		return "K";
+	}
 }

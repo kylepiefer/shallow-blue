@@ -47,5 +47,8 @@ public class Position {
 	public String toString() {
 		return "(" + this.row + "," + this.column + ")";
 	}
+	public String toString(boolean x) {
+		return this.row + "" + this.column;
+	}
 	public String pack() {return this.row + "" + this.column;}
 }

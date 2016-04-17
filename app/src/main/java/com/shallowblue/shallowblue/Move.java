@@ -7,12 +7,26 @@ public class Move {
     private final Position from;
     private final Position to;
     private final Piece pieceMoved;
-    private Piece pieceCaptured;
+    private Piece pieceCaptured = null;
 
     public Move(Piece pieceMoved, Position from, Position to) {
         this.pieceMoved = pieceMoved;
         this.from = from;
         this.to = to;
+    }
+
+    @Override
+    public String toString(){
+        if (pieceCaptured == null) {
+            return pieceMoved.toString() + from.toString(true) + "_" + to.toString(true);
+        }
+        return pieceMoved.toString() + from.toString(true) + pieceCaptured.toString() + to.toString(true);
+    }
+    public String toString(boolean x){
+        if (pieceCaptured == null) {
+            return pieceMoved.toString() + from.toString(true) + "_" + to.toString(true);
+        }
+        return pieceMoved.toString(true) + from.toString(true) + pieceCaptured.toString(true) + to.toString(true);
     }
 
     public Position getFrom() {

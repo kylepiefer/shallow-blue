@@ -58,5 +58,10 @@ public class Knight extends Piece {
 		
 		return "n";
 	}
-
+	public String toString(boolean x) {
+		if(getColor()==Color.WHITE) {
+			return "n";
+		}
+		return "N";
+	}
 }
