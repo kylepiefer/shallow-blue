@@ -45,7 +45,7 @@
                 android:value="com.shallowblue.shallowblue.MainMenuActivity" />
         </activity>
         <activity android:name=".MultiplayerSettings" />
-        <activity android:name=".loadgame" />
+        <activity android:name=".LoadGameActivity" />
         <activity android:name=".CustomGame" />
         <activity
             android:name=".OptionsPopUpWindow"

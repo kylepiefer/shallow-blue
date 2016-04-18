@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 
@@ -56,7 +55,7 @@ public class StartGameActivity extends AppCompatActivity {
     }
 
     public void loadGame(View button){
-        Intent loadGameIntent = new Intent(getApplicationContext(), loadgame.class);
+        Intent loadGameIntent = new Intent(getApplicationContext(), LoadGameActivity.class);
         Bundle game = new Bundle();
         game.putInt("game", 4);
         loadGameIntent.putExtra("start", game);

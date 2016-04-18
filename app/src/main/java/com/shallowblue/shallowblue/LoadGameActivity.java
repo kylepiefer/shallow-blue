@@ -5,15 +5,32 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
-public class loadgame extends AppCompatActivity {
+import java.util.List;
+
+public class LoadGameActivity extends AppCompatActivity {
+
+    private SavedGameManager savedGameManager;
 
     public Intent nextActivity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_loadgame);
+        setContentView(R.layout.activity_load_game);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        this.savedGameManager = new SavedGameManager();
+        List<String> savedGameFileNames = this.savedGameManager.getSavedGameFileNames(this);
+        ArrayAdapter<String> adapter =
+                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, savedGameFileNames);
+
+        ListView listView = (ListView) findViewById(R.id.listView);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(fileNameClickedHandler);
 
         Intent check = getIntent();
         if (check.hasExtra("next")){
@@ -45,4 +62,11 @@ public class loadgame extends AppCompatActivity {
     public void onBackPressed(){
         finish();
     }
+
+    private AdapterView.OnItemClickListener fileNameClickedHandler = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            // TODO: handle event
+        }
+    };
 }

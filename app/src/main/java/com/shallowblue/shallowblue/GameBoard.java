@@ -370,7 +370,7 @@ public class GameBoard {
     }
 
 
-    public GameBoard unpack(String packedString){
+    public static GameBoard unpack(String packedString){
         return new GameBoard(packedString);
     }
 
