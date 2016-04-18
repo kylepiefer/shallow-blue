@@ -112,6 +112,13 @@
                 </LinearLayout>
 
             </LinearLayout>
+
+            <ImageView
+                android:rotation="180"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/player2Check"
+                android:layout_gravity="center" />
         </FrameLayout>
 
         <FrameLayout
@@ -1259,8 +1266,7 @@
             <ImageView
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:id="@+id/imageView130"
-                android:src="@drawable/check_image2"
+                android:id="@+id/player1Check"
                 android:layout_gravity="center" />
         </FrameLayout>
 

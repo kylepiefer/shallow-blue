@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -38,6 +39,11 @@ public class PVPGameBoard extends AppCompatActivity {
     ImageView temp;
     boolean doneWithPrev;
     private List<Move> redoMoves;
+    private final int checkImage = R.drawable.check_image2;
+    private final int animationFadeIn = R.anim.fadein;
+    private final int animationFadeOut = R.anim.fadeout;
+    private ImageView checkWhite;
+    private ImageView checkBlack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +57,8 @@ public class PVPGameBoard extends AppCompatActivity {
         imagePositions = new HashMap<ImageView, Position>();
         doneWithPrev = true;
         redoMoves = new ArrayList<>();
+        checkWhite = (ImageView) findViewById(R.id.player1Check);
+        checkBlack = (ImageView) findViewById(R.id.player2Check);
 
         GameBoard.activeGameBoard = new GameBoard();
 
@@ -73,6 +81,7 @@ public class PVPGameBoard extends AppCompatActivity {
             addCustomSetup();
         }
         GameBoard.activeGameBoard.gameBoard = boardSetup;
+
     }
 
     private void createPositionArray() {
@@ -283,6 +292,13 @@ public class PVPGameBoard extends AppCompatActivity {
             int selMoveY = selMoves.get(i).getColumn();
             pvpGameboard[selMoveX][selMoveY].setBackgroundResource(0);
         }
+        if (checkBlack.getDrawable() != null || checkWhite.getDrawable() != null){
+            checkAnimationOut();
+        }
+
+        if (GameBoard.activeGameBoard.inCheck()){
+            checkAnimationIn();
+        }
 
     }
 
@@ -333,11 +349,18 @@ public class PVPGameBoard extends AppCompatActivity {
             GameBoard.activeGameBoard.switchPlayerToMove();
             redoMoves.add(prev);
             history.remove(last);
-        }
-        else {
+        } else {
             Toast.makeText(PVPGameBoard.this, "You can't undo your opponents last move.",
                     Toast.LENGTH_SHORT).show();
             return;
+        }
+
+        if (checkBlack.getDrawable() != null || checkWhite.getDrawable() != null){
+            checkAnimationOut();
+        }
+
+        if (GameBoard.activeGameBoard.inCheck()){
+            checkAnimationIn();
         }
     }
 
@@ -374,11 +397,18 @@ public class PVPGameBoard extends AppCompatActivity {
             GameBoard.activeGameBoard.switchPlayerToMove();
             redoMoves.add(prev);
             history.remove(last);
-        }
-        else {
+        } else {
             Toast.makeText(PVPGameBoard.this, "You can't undo your opponents last move.",
                     Toast.LENGTH_SHORT).show();
             return;
+        }
+
+        if (checkBlack.getDrawable() != null || checkWhite.getDrawable() != null){
+            checkAnimationOut();
+        }
+
+        if (GameBoard.activeGameBoard.inCheck()){
+            checkAnimationIn();
         }
     }
 
@@ -409,12 +439,19 @@ public class PVPGameBoard extends AppCompatActivity {
             GameBoard.activeGameBoard.addMove(prev);
             GameBoard.activeGameBoard.switchPlayerToMove();
             redoMoves.remove(last);
-        }
-        else {
+        } else {
             Toast.makeText(PVPGameBoard.this, "You can't redo your opponents last move.",
                     Toast.LENGTH_SHORT).show();
             return;
-    }
+        }
+
+        if (checkBlack.getDrawable() != null || checkWhite.getDrawable() != null){
+            checkAnimationOut();
+        }
+
+        if (GameBoard.activeGameBoard.inCheck()){
+            checkAnimationIn();
+        }
     }
 
     public void pvpredo2(View v){
@@ -443,11 +480,18 @@ public class PVPGameBoard extends AppCompatActivity {
             GameBoard.activeGameBoard.addMove(prev);
             GameBoard.activeGameBoard.switchPlayerToMove();
             redoMoves.remove(last);
-        }
-        else {
+        } else {
             Toast.makeText(PVPGameBoard.this, "You can't redo your opponents last move.",
                     Toast.LENGTH_SHORT).show();
             return;
+        }
+
+        if (checkBlack.getDrawable() != null || checkWhite.getDrawable() != null){
+            checkAnimationOut();
+        }
+
+        if (GameBoard.activeGameBoard.inCheck()){
+            checkAnimationIn();
         }
     }
 
@@ -654,5 +698,35 @@ public class PVPGameBoard extends AppCompatActivity {
             default:
                 break;
         }
+    }
+
+    public void checkAnimationIn(){
+        Color curr = GameBoard.activeGameBoard.playerToMove();
+        if (curr == Color.BLACK){
+            checkBlack.startAnimation(AnimationUtils.loadAnimation(this, animationFadeIn));
+
+            checkBlack.setImageResource(checkImage);
+        } else {
+            checkWhite.startAnimation(AnimationUtils.loadAnimation(this, animationFadeIn));
+            checkWhite.setImageResource(checkImage);
+        }
+    }
+
+    public void checkAnimationOut(){
+        if (checkBlack.getDrawable() != null){
+            checkBlack.startAnimation(AnimationUtils.loadAnimation(this, animationFadeOut));
+        } else {
+            checkWhite.startAnimation(AnimationUtils.loadAnimation(this, animationFadeOut));
+        }
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                checkBlack.setImageResource(0);
+                checkWhite.setImageResource(0);
+            }
+        }, 2000);
+
+
     }
 }
