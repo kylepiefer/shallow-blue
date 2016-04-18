@@ -172,6 +172,8 @@ public class CustomGame extends AppCompatActivity {
             return;
         }
 
+
+
         Intent startGame = new Intent(getApplicationContext(), GameBoardActivity.class);
         Intent startPvpGame = new Intent(getApplicationContext(), PVPGameBoard.class);
         Bundle game = new Bundle();
@@ -189,6 +191,21 @@ public class CustomGame extends AppCompatActivity {
 
         PVPGameBoard.boardSetup = boardSetup;
         PVPGameBoard.availPos = availPos;
+
+        GameBoard.activeGameBoard = new GameBoard();
+        GameBoard.activeGameBoard.gameBoard = boardSetup;
+        GameBoard.activeGameBoard.playerToMove = Color.WHITE;
+        if (GameBoard.activeGameBoard.inCheck()){
+            Toast.makeText(CustomGame.this,"You can't start a game with a king in check.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        GameBoard.activeGameBoard.switchPlayerToMove();
+        if (GameBoard.activeGameBoard.inCheck()){
+            Toast.makeText(CustomGame.this,"You can't start a game with a king in check.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         Intent gametype = getIntent();
         Bundle temp = new Bundle();

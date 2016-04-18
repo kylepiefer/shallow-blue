@@ -17,7 +17,7 @@ public class GameBoard {
     public static Map<Position, Piece> customPositions;
     public Map<Position, Piece> gameBoard;
     public List<Move> gameHistory;
-    private Color playerToMove;
+    public Color playerToMove;
     private Stack<Move> redoStack;
     private String explanation;
 
