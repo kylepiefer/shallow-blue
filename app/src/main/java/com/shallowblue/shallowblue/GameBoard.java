@@ -725,7 +725,7 @@ public class GameBoard {
         if (move.getFrom().getColumn() != move.getTo().getColumn())
             deltaColumn = move.getFrom().getColumn() > move.getTo().getColumn() ? -1 : 1;
 
-        Position curr = new Position(move.getFrom().getRow(), move.getFrom().getColumn());
+        Position curr = new Position(move.getFrom().getRow() + deltaRow, move.getFrom().getColumn() + deltaColumn);
         while (!curr.equals(move.getTo())) {
             if (gameBoard.get(curr) != null) return true;
             curr = new Position(curr.getRow() + deltaRow, curr.getColumn() + deltaColumn);
