@@ -368,7 +368,9 @@ public class GameBoardActivity extends AppCompatActivity {
             List<Move> legalAIMoves = this.gameBoard.getAllMoves();
             int moveNumber = (int)Math.floor(Math.random() * legalAIMoves.size());
             Move move = legalAIMoves.get(moveNumber);
-            getGameBoard().move(move);
+            synchronized (gameBoard) {
+                getGameBoard().move(move);
+            }
             updateGameboard(move, false);
         }
 
@@ -400,7 +402,12 @@ public class GameBoardActivity extends AppCompatActivity {
                                  this.selectedSquare.getBoardPosition(),
                                  gbas.getBoardPosition());
 
-            if (this.gameBoard.move(move)) {
+            boolean moveSucceeded = false;
+            synchronized (gameBoard) {
+                moveSucceeded = gameBoard.move(move);
+            }
+
+            if (moveSucceeded) {
                 this.updateGameboard(move, true);
                 removeAllSquareHighlights();
             } else {
@@ -467,7 +474,13 @@ public class GameBoardActivity extends AppCompatActivity {
         List<Move> gameHistory = this.gameBoard.getGameHistory();
         Move lastMove = null;
         if (!gameHistory.isEmpty()) lastMove = gameHistory.get(gameHistory.size() - 1);
-        if (this.gameBoard.undo()) {
+
+        boolean undoSucceeded = false;
+        synchronized (gameBoard) {
+            undoSucceeded = gameBoard.undo();
+        }
+
+        if (undoSucceeded) {
             removeAllSquareHighlights();
             Move reversedMove = new Move(lastMove.getPieceMoved(), lastMove.getTo(), lastMove.getFrom());
             updateGameboard(reversedMove, false);
@@ -488,7 +501,12 @@ public class GameBoardActivity extends AppCompatActivity {
     }
 
     private boolean redoMove() {
-        if (this.gameBoard.redo()) {
+        boolean redoSucceeded = false;
+        synchronized (gameBoard) {
+            redoSucceeded = gameBoard.redo();
+        }
+
+        if (redoSucceeded) {
             removeAllSquareHighlights();
             List<Move> gameHistory = this.gameBoard.getGameHistory();
             Move nextMove = gameHistory.get(gameHistory.size() - 1);
@@ -546,12 +564,19 @@ public class GameBoardActivity extends AppCompatActivity {
             if (move == null || getGameBoard().playerToMove() == playerColor) {
                 return;
             }
-            if (getGameBoard().move(move)) {
+
+            boolean moveSucceeded = false;
+            synchronized (gameBoard) {
+                moveSucceeded = gameBoard.move(move);
+            }
+
+            if (moveSucceeded) {
                 updateGameboard(move, false);
-                System.gc();
             } else {
                 Log.d("ShallowBlue", "AI move failed: " + move.toString() + " Reason: " + getGameBoard().getLastExplanation());
             }
+
+            System.gc();
         }
     }
 }
