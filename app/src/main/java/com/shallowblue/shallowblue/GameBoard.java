@@ -269,29 +269,15 @@ public class GameBoard {
             //return canmove;
         }*/
         tempPos = m.getTo();
-        //What is this while loop? This seems pointless
-        while (!m.getFrom().equals(tempPos)){ //naive evaluation of non-pawn pieces
-            int tempCol = tempPos.getColumn();
-            int tempRow = tempPos.getRow();
-            if(m.getFrom().getColumn() > tempPos.getColumn()){
-                tempCol++;
-            }
-            else if(m.getFrom().getColumn() < tempPos.getColumn()){
-                tempCol--;
-            }
 
-            if(m.getFrom().getRow() > tempPos.getRow()){
-                tempRow++;
+        // You cannot move through another piece unless you are a Knight.
+        if (!(gameBoard.get(m.getFrom()) instanceof Knight)) {
+            if (pieceInPath(m)) {
+                this.explanation = "Only a knight can move through pieces.";
+                return false;
             }
-            else if(m.getFrom().getRow() < tempPos.getRow()){
-                tempRow--;
-            }
-            tempPos = new Position(tempRow, tempCol);
-            if(gameBoard.get(m.getFrom()).possibleMoves().contains(tempPos) && gameBoard.get(tempPos) != null){
-                canmove = false;
-            }
-
         }
+
         if(false){ //skewer
             move(m);
             if(false){ //king is threatned
@@ -707,29 +693,15 @@ public class GameBoard {
             //return canmove;
         }*/
         tempPos = m.getTo();
-        //What is this while loop? This seems pointless
-        while (!m.getFrom().equals(tempPos)){ //naive evaluation of non-pawn pieces
-            int tempCol = tempPos.getColumn();
-            int tempRow = tempPos.getRow();
-            if(m.getFrom().getColumn() > tempPos.getColumn()){
-                tempCol++;
-            }
-            else if(m.getFrom().getColumn() < tempPos.getColumn()){
-                tempCol--;
-            }
 
-            if(m.getFrom().getRow() > tempPos.getRow()){
-                tempRow++;
+        // You cannot move through another piece unless you are a Knight.
+        if (!(gameBoard.get(m.getFrom()) instanceof Knight)) {
+            if (pieceInPath(m)) {
+                this.explanation = "Only a knight can move through pieces.";
+                return false;
             }
-            else if(m.getFrom().getRow() < tempPos.getRow()){
-                tempRow--;
-            }
-            tempPos = new Position(tempRow, tempCol);
-            if(gameBoard.get(m.getFrom()).possibleMoves().contains(tempPos) && gameBoard.get(tempPos) != null){
-                canmove = false;
-            }
-
         }
+
         if(false){ //skewer
             move(m);
             if(false){ //king is threatned
@@ -740,6 +712,26 @@ public class GameBoard {
         }
 
         return canmove;
+    }
+
+    private boolean pieceInPath(Move move) {
+        if (move == null) return false;
+
+        int deltaRow = 0;
+        int deltaColumn = 0;
+
+        if (move.getFrom().getRow() != move.getTo().getRow())
+            deltaRow = move.getFrom().getRow() > move.getTo().getRow() ? -1 : 1;
+        if (move.getFrom().getColumn() != move.getTo().getColumn())
+            deltaColumn = move.getFrom().getColumn() > move.getTo().getColumn() ? -1 : 1;
+
+        Position curr = new Position(move.getFrom().getRow() + deltaRow, move.getFrom().getColumn() + deltaColumn);
+        while (!curr.equals(move.getTo())) {
+            if (gameBoard.get(curr) != null) return true;
+            curr = new Position(curr.getRow() + deltaRow, curr.getColumn() + deltaColumn);
+        }
+
+        return false;
     }
 
     public boolean inCheckMate(){
