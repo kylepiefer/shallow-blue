@@ -310,8 +310,12 @@ public class GameBoard {
     
     public List<Move> getLegalMoves(Position from){
         Piece piece = gameBoard.get(from);
-        List<Position> possibleMoves = piece.possibleMoves();
+
         List<Move> legalMoves = new ArrayList<Move>();
+        if (piece == null){
+            return legalMoves;
+        }
+        List<Position> possibleMoves = piece.possibleMoves();
         for (int p = possibleMoves.size() - 1; p >= 0; p--) {
             Position curr = possibleMoves.get(p);
             Move possible = new Move(piece, piece.getPosition(), curr);
@@ -736,6 +740,27 @@ public class GameBoard {
         }
 
         return canmove;
+    }
+
+    public boolean inCheckMate(){
+        boolean checkmate = false;
+        ArrayList<Piece> currPlayerPieces = new ArrayList<Piece>();
+        Piece currKing = null;
+        ArrayList<Piece> oppPlayerPieces = new ArrayList<Piece>();
+        if (inCheck()){
+            for (int x = 0; x < 8; x++){
+                for (int y = 0; y < 8; y ++){
+                    Position pos = new Position(x,y);
+                    List<Move> movesExist = getLegalMoves(pos);
+                    if (!movesExist.isEmpty()){
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        return checkmate;
     }
 }
 
