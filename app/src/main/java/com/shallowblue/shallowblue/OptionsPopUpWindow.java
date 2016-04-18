@@ -41,7 +41,7 @@ public class OptionsPopUpWindow extends AppCompatActivity {
     }
 
     public void opLoadGame(View v){
-        Intent loadcheck = new Intent(getApplicationContext(),loadgame.class);
+        Intent loadcheck = new Intent(getApplicationContext(),LoadGameActivity.class);
         Bundle nextactivity = new Bundle();
         nextactivity.putString("activity","load");
         loadcheck.putExtra("next",nextactivity);

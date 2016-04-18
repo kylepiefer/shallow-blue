@@ -10,6 +10,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Kyle on 4/14/2016.
@@ -148,11 +150,28 @@ public class SavedGameManager {
         String gameData = getStringFromBytes(bytes);
         if (gameData == null) return false;
 
-        GameBoard gameBoard = new GameBoard();
-        boolean success = gameBoard.unpack(gameData);
-        if (!success) return false;
-        GameBoard.activeGameBoard = gameBoard;
+        GameBoard gameBoard = null;
+        try {
+            gameBoard = GameBoard.unpack(gameData);
+        } catch (Exception exception) {
+            return false;
+        }
 
+        GameBoard.activeGameBoard = gameBoard;
         return true;
+    }
+
+    public List<String> getSavedGameFileNames(Context context) {
+        if (context == null) return null;
+
+        File[] savedGameFiles = context.getFilesDir().listFiles();
+        if (savedGameFiles == null) return null;
+
+        List<String> savedGameFileNames = new ArrayList<String>();
+        for (File savedGameFile : savedGameFiles) {
+            savedGameFileNames.add(savedGameFile.getName());
+        }
+
+        return savedGameFileNames;
     }
 }

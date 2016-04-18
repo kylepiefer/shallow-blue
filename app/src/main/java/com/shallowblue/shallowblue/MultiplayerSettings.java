@@ -22,7 +22,7 @@ public class MultiplayerSettings extends AppCompatActivity {
         startActivity(startGameIntent);
     }
     public void loadinggame(View button){
-        Intent loadgameIntent = new Intent(getApplicationContext(),loadgame.class);
+        Intent loadgameIntent = new Intent(getApplicationContext(),LoadGameActivity.class);
         Bundle game = new Bundle();
         game.putInt("game", 3);
         loadgameIntent.putExtra("start", game);
