@@ -97,7 +97,7 @@ public class GameBoard {
 
     private boolean move(Move m, boolean clearRedoStack) {
         // Check that the move is valid.
-        if (gameBoard.get(m.getFrom()) == null || !legalMove(m)) {
+        if (gameBoard.get(m.getFrom()) == null ) {
             return false;
         }
 
@@ -198,6 +198,8 @@ public class GameBoard {
     public boolean legalMove(Move m) {
         // Check to make sure there is a piece in the square and that it belongs to the player
         // whose turn it is.
+
+
         if (gameBoard.get(m.getFrom()) == null) {
             this.explanation = "You can only move from a square that contains a piece.";
             return false;
@@ -207,6 +209,7 @@ public class GameBoard {
             this.explanation = "You can only move a piece that is your color.";
             return false;
         }
+
 
         // Check to make sure there is not a friendly piece in the square being moved to.
         if (gameBoard.get(m.getTo()) != null &&
@@ -266,6 +269,7 @@ public class GameBoard {
             //return canmove;
         }*/
         tempPos = m.getTo();
+        //What is this while loop? This seems pointless
         while (!m.getFrom().equals(tempPos)){ //naive evaluation of non-pawn pieces
             int tempCol = tempPos.getColumn();
             int tempRow = tempPos.getRow();
@@ -295,6 +299,10 @@ public class GameBoard {
             }
             this.undo();
             redoStack.pop();
+        }
+
+        if (movePutsPlayerInCheck(m)){
+            canmove = false;
         }
 
         return canmove;
@@ -546,6 +554,188 @@ public class GameBoard {
                 else
                     blackKing = true;
         return !(whiteKing && blackKing);
+    }
+
+    public boolean inCheck(){
+        return inCheck(playerToMove, true);
+    }
+
+    public boolean inCheck(Color curr, boolean check){
+        boolean answer = false;
+        Color currPlayer = curr;
+        ArrayList<Piece> currPlayerPieces = new ArrayList<Piece>();
+        Piece currKing = null;
+        ArrayList<Piece> oppPlayerPieces = new ArrayList<Piece>();
+        for (int x = 0; x < 8; x++){
+            for (int y =0; y < 8; y++){
+                Position pos = new Position(x,y);
+                Piece piece = gameBoard.get(pos);
+                if (piece != null) {
+                    if (currPlayer == piece.getColor()) {
+                        if (piece instanceof King){
+                            currKing = piece;
+                        } else {
+                            currPlayerPieces.add(piece);
+                        }
+                    } else {
+                        oppPlayerPieces.add(piece);
+                    }
+                }
+            }
+        }
+
+        ArrayList<Move> oppMoves = new ArrayList<Move>();
+
+        if (check){
+            switchPlayerToMove();
+        }
+        for (Piece p : oppPlayerPieces){
+            ArrayList<Position> possible = p.possibleMoves();
+            for (Position pos : possible){
+                Move temp = new Move(p,p.getPosition(),pos);
+                if (legalMoveThatThrreatens(temp)){
+                    oppMoves.add(temp);
+                }
+            }
+        }
+        if (check){
+            switchPlayerToMove();
+        }
+
+
+        for (Move m : oppMoves){
+            if (m.getTo().getRow() == currKing.getPosition().getRow() &&
+                    m.getTo().getColumn() == currKing.getPosition().getColumn()){
+                answer = true;
+                break;
+            }
+        }
+        gameBoard.put(currKing.getPosition(),currKing);
+
+        return answer;
+    }
+
+    public boolean movePutsPlayerInCheck(Move m){
+        boolean answer = false;
+
+        move(m);
+        Color curr = m.getPieceMoved().getColor();
+        if (inCheck(curr, false)){
+            answer = true;
+        }
+        undo();
+        redoStack.pop();
+
+        return answer;
+    }
+
+    public boolean legalMoveThatThrreatens(Move m) {
+        // Check to make sure there is a piece in the square and that it belongs to the player
+        // whose turn it is.
+
+
+        if (gameBoard.get(m.getFrom()) == null) {
+            this.explanation = "You can only move from a square that contains a piece.";
+            return false;
+        }
+
+        if (this.playerToMove != gameBoard.get(m.getFrom()).getColor()) {
+            this.explanation = "You can only move a piece that is your color.";
+            return false;
+        }
+
+
+        // Check to make sure there is not a friendly piece in the square being moved to.
+        if (gameBoard.get(m.getTo()) != null &&
+                gameBoard.get(m.getTo()).getColor() == gameBoard.get(m.getFrom()).getColor()){
+            this.explanation = "You cannot capture your own piece.";
+            return false;
+        }
+
+        // Check to make sure the move is possible.
+        if (!gameBoard.get(m.getFrom()).possibleMoves().contains(m.getTo())) {
+            // TODO: Make each piece have a method to describe how it moves and call it here.
+            this.explanation = "This piece does not move this way!";
+            return false;
+        }
+
+        // Check to make sure a pawn isn't capturing forward or moving diagonally when not capturing.
+        if (m.getPieceMoved() instanceof Pawn) {
+            if (m.getFrom().getColumn() == m.getTo().getColumn() && gameBoard.get(m.getTo()) != null) {
+                this.explanation = "Pawns can only capture enemy pieces diagonally.";
+                return false;
+            }
+
+            // Check for En Passant.
+            if (m.getFrom().getColumn() != m.getTo().getColumn()) {
+                if (isLegalEnPassant(m)) {
+                    this.explanation = "This pawn can perform en Passant.";
+                } else if (gameBoard.get(m.getTo()) == null) { // otherwise the capture is illegal
+                    this.explanation = "Pawns can only move diagonally when capturing.";
+                    return false;
+                }
+            }
+        }
+
+        boolean canmove = true;
+        Position tempPos = m.getTo();
+        /*if (m.getPieceMoved() instanceof Rook &&
+                gameBoard.get(m.getTo()) instanceof King &&
+                !m.getPieceMoved().hasMoved()&&!gameBoard.get(m.getTo()).hasMoved()) { //castle
+
+            tempPos = m.getTo();
+            while (m.getFrom().getColumn() != tempPos.getColumn()){ //checks if anything is between the castling pieces
+                int tempCol = tempPos.getColumn();
+
+                if(m.getFrom().getColumn() > tempPos.getColumn()){
+                    tempCol++;
+                }
+                else if(m.getFrom().getColumn() < tempPos.getColumn()){
+                    tempCol--;
+                }
+
+                tempPos = new Position(m.getFrom().getRow(), tempCol);
+                if(m.getPieceMoved().possibleMoves().contains(tempPos)&&gameBoard.containsKey(tempPos)){
+                    canmove = false;
+                }
+
+            }
+            //return canmove;
+        }*/
+        tempPos = m.getTo();
+        //What is this while loop? This seems pointless
+        while (!m.getFrom().equals(tempPos)){ //naive evaluation of non-pawn pieces
+            int tempCol = tempPos.getColumn();
+            int tempRow = tempPos.getRow();
+            if(m.getFrom().getColumn() > tempPos.getColumn()){
+                tempCol++;
+            }
+            else if(m.getFrom().getColumn() < tempPos.getColumn()){
+                tempCol--;
+            }
+
+            if(m.getFrom().getRow() > tempPos.getRow()){
+                tempRow++;
+            }
+            else if(m.getFrom().getRow() < tempPos.getRow()){
+                tempRow--;
+            }
+            tempPos = new Position(tempRow, tempCol);
+            if(gameBoard.get(m.getFrom()).possibleMoves().contains(tempPos) && gameBoard.get(tempPos) != null){
+                canmove = false;
+            }
+
+        }
+        if(false){ //skewer
+            move(m);
+            if(false){ //king is threatned
+                return false;
+            }
+            this.undo();
+            redoStack.pop();
+        }
+
+        return canmove;
     }
 }
 
