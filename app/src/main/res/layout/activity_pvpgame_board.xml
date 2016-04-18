@@ -17,94 +17,102 @@
         android:padding="0dp"
         android:orientation="vertical" >
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:rotation="180"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="17.5"
-            android:weightSum="2"
-            android:padding="0dp"
-            android:orientation="horizontal"
-            android:id="@+id/Player2Buttons">
+            android:layout_weight="17.5">
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:weightSum="3"
+                android:rotation="180"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="17.5"
+                android:weightSum="2"
                 android:padding="0dp"
-                android:orientation="vertical" >
+                android:orientation="horizontal"
+                android:id="@+id/Player2Buttons">
 
                 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:weightSum="3"
                     android:padding="0dp"
-                    android:orientation="horizontal" >
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
+
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:padding="0dp"
+                        android:orientation="horizontal" >
 
 
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:id="@+id/undo2"
+                            android:src="@drawable/sp_undo_move"
+                            android:layout_gravity="center_horizontal"
+                            android:onClick="pvpundo2" />
+
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:id="@+id/redo2"
+                            android:src="@drawable/sp_redo_move"
+                            android:layout_gravity="left"
+                            android:onClick="pvpredo2" />
+
+                    </LinearLayout>
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:id="@+id/undo2"
-                        android:src="@drawable/sp_undo_move"
+                        android:id="@+id/helper2"
+                        android:src="@drawable/sp_start_helper"
                         android:layout_gravity="center_horizontal"
-                        android:onClick="pvpundo2" />
-
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:id="@+id/redo2"
-                        android:src="@drawable/sp_redo_move"
-                        android:layout_gravity="left"
-                        android:onClick="pvpredo2" />
+                        android:layout_marginTop="3dp"
+                        android:onClick="pvpstarthelp2" />
 
                 </LinearLayout>
 
-                <ImageView
-                    android:layout_width="wrap_content"
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:id="@+id/helper2"
-                    android:src="@drawable/sp_start_helper"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="3dp"
-                    android:onClick="pvpstarthelp2" />
+                    android:weightSum="2"
+                    android:padding="0dp"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:id="@+id/options2"
+                        android:onClick = "pvpoptionsScreen2"
+                        android:src="@drawable/sp_options" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:id="@+id/suggestalternate2"
+                        android:src="@drawable/sp_suggest_alt_move"
+                        android:layout_marginTop="3dp"
+                        android:onClick="pvpsuggalt2" />
+
+                </LinearLayout>
 
             </LinearLayout>
-
-            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:weightSum="2"
-                android:padding="0dp"
-                android:orientation="vertical" >
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:id="@+id/options2"
-                    android:onClick = "pvpoptionsScreen2"
-                    android:src="@drawable/sp_options" />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:id="@+id/suggestalternate2"
-                    android:src="@drawable/sp_suggest_alt_move"
-                    android:layout_marginTop="3dp"
-                    android:onClick="pvpsuggalt2" />
-
-            </LinearLayout>
-
-        </LinearLayout>
+        </FrameLayout>
 
         <FrameLayout
             android:layout_width="wrap_content"
@@ -1158,88 +1166,103 @@
 
         </FrameLayout>
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="17.5"
-            android:weightSum="2"
-            android:padding="0dp"
-            android:orientation="horizontal"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:id="@+id/Player1Buttons">
+            android:layout_weight="17.5">
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:weightSum="3"
-                android:padding="0dp"
-                android:orientation="vertical" >
-
-                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:padding="0dp"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:id="@+id/undo1"
-                        android:src="@drawable/sp_undo_move"
-                        android:onClick="pvpundo1" />
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:id="@+id/redo1"
-                        android:src="@drawable/sp_redo_move"
-                        android:onClick="pvpredo1" />
-                </LinearLayout>
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:id="@+id/helper1"
-                    android:src="@drawable/sp_start_helper"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="3dp"
-                    android:onClick="pvpstarthelp1" />
-            </LinearLayout>
-
-            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="17.5"
                 android:weightSum="2"
                 android:padding="0dp"
-                android:orientation="vertical" >
+                android:orientation="horizontal"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:id="@+id/Player1Buttons">
 
-                <ImageView
-                    android:layout_width="wrap_content"
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:id="@+id/options1"
-                    android:onClick = "pvpoptionsScreen1"
-                    android:src="@drawable/sp_options" />
+                    android:weightSum="3"
+                    android:padding="0dp"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
 
-                <ImageView
-                    android:layout_width="wrap_content"
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:padding="0dp"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:id="@+id/undo1"
+                            android:src="@drawable/sp_undo_move"
+                            android:onClick="pvpundo1" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:id="@+id/redo1"
+                            android:src="@drawable/sp_redo_move"
+                            android:onClick="pvpredo1" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:id="@+id/helper1"
+                        android:src="@drawable/sp_start_helper"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="3dp"
+                        android:onClick="pvpstarthelp1" />
+                </LinearLayout>
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:id="@+id/suggestalternate1"
-                    android:src="@drawable/sp_suggest_alt_move"
-                    android:layout_marginTop="3dp"
-                    android:onClick="pvpsuggalt1"
-                    android:nestedScrollingEnabled="false" />
+                    android:weightSum="2"
+                    android:padding="0dp"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:id="@+id/options1"
+                        android:onClick = "pvpoptionsScreen1"
+                        android:src="@drawable/sp_options" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:id="@+id/suggestalternate1"
+                        android:src="@drawable/sp_suggest_alt_move"
+                        android:layout_marginTop="3dp"
+                        android:onClick="pvpsuggalt1"
+                        android:nestedScrollingEnabled="false" />
+                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/imageView130"
+                android:src="@drawable/check_image2"
+                android:layout_gravity="center" />
+        </FrameLayout>
 
     </LinearLayout>
 
