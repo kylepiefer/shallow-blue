@@ -89,9 +89,12 @@ public class GameBoard {
 
     public List<Move> getAllMoves(){
         List<Move> ret = new ArrayList<Move>();
-        for(Map.Entry<Position,Piece> e : gameBoard.entrySet())
-            if(e.getValue() != null && e.getValue().getColor() == playerToMove)
-                ret.addAll(getLegalMoves(e.getKey()));
+        ArrayList<Position> allPosition = getAllPosition();
+        for(Position p : allPosition){
+            if(gameBoard.get(p) != null && gameBoard.get(p).getColor() == playerToMove)
+                ret.addAll(getLegalMoves(p));
+        }
+
         return ret;
     }
 
@@ -547,7 +550,7 @@ public class GameBoard {
     }
 
     public boolean inCheck(){
-        return inCheck(playerToMove, true);
+        return inCheck(playerToMove, false);
     }
 
     public boolean inCheck(Color curr, boolean check){
@@ -753,6 +756,17 @@ public class GameBoard {
         }
 
         return checkmate;
+    }
+
+    private ArrayList<Position> getAllPosition(){
+        ArrayList<Position> allPositions = new ArrayList<Position>();
+        for (int x = 0; x < 8; x++){
+            for (int y = 0; y < 8; y++){
+                Position pos = new Position(x,y);
+                allPositions.add(pos);
+            }
+        }
+        return allPositions;
     }
 }
 
