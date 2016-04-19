@@ -12,9 +12,20 @@ import android.os.AsyncTask;
 
 
 public class UrlConnection {
-    static String URLPath="http://www.google.com";
+    static String URLPath="http://25.7.195.234:8070";
     static URL url;
     static HttpURLConnection connection;
+    String res;
+
+    public UrlConnection(String... args)
+    {
+        new Connection().execute(args);
+    }
+    public String UrlRequest(String... args)
+    {
+        new Request().execute(args);
+        return "";
+    }
 
     class Connection extends AsyncTask<String, String, String> {
 
@@ -49,13 +60,18 @@ public class UrlConnection {
                     connection.setDoOutput(true);
                     connection.setDoInput(true);
                     connection.setUseCaches(false);
-                    connection.setRequestMethod("POST");
+                    connection.setRequestMethod("GET");
                     connection.setRequestProperty("connection", "Keep-Alive");
-                    //connection.connect();
+                    /*
+                    connection.connect();
+                    */
+                    System.out.println("start connecting");
                     if (connection.getResponseCode() != 200)
                     {
                         throw new RuntimeException("failed to request url");
                     }
+                    //connection.getResponseCode() != 200
+
                 }
                 catch (Exception e) {
                     e.printStackTrace();
@@ -90,6 +106,7 @@ public class UrlConnection {
                 }
                 else
                 {
+                    System.out.println("requesting");
                     OutputStream out = connection.getOutputStream();
                     String entry=strs[0];
                     out.write(entry.getBytes());
