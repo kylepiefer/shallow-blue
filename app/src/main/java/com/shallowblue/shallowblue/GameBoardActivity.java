@@ -553,7 +553,7 @@ public class GameBoardActivity extends AppCompatActivity {
     private class AIMoveTask extends AsyncTask<GameBoard, Integer, Move> {
         protected Move doInBackground(GameBoard... gameBoards) {
             GameBoard gameBoard = gameBoards[0];
-            AIMove ai = new AIMove();
+            AIMove ai = AIMoveFactory.newAIMove();
             List<Move> moves = ai.move(gameBoard, difficulty);
             if (moves.isEmpty()) return null;
             Move move = moves.get(0);
