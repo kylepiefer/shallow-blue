@@ -17,10 +17,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 
 public class GameBoardActivity extends AppCompatActivity {
 
@@ -554,14 +552,16 @@ public class GameBoardActivity extends AppCompatActivity {
         protected Move doInBackground(GameBoard... gameBoards) {
             GameBoard gameBoard = gameBoards[0];
             AIMove ai = new AIMove();
-            List<Move> moves = ai.move(gameBoard, difficulty);
+            /*List<Move> moves = ai.randomMove(gameBoard, difficulty);
             if (moves.isEmpty()) return null;
-            Move move = moves.get(0);
+            Move move = moves.get(0);*/
+            Move move = ai.randomMove(gameBoard);
             return move;
         }
 
         protected void onPostExecute(Move move) {
             if (move == null || getGameBoard().playerToMove() == playerColor) {
+                endGame();
                 return;
             }
 

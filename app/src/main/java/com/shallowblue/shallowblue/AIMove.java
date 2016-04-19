@@ -29,6 +29,14 @@ public class AIMove {
 
     private static int positionsExamined = 0;
 
+    public Move randomMove(GameBoard current) {
+        current = new GameBoard(current);
+        List<Move> moves = current.getAllMoves();
+        if (moves == null || moves.isEmpty()) return null;
+        Move random = moves.get((int) Math.floor(Math.random() * moves.size()));
+        return random;
+    }
+
     public List<Move> move(GameBoard current, int depth) {
         positionsExamined = 0;
         long startTime = System.currentTimeMillis();

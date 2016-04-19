@@ -51,91 +51,145 @@
 
         </FrameLayout>
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:weightSum="2"
-            android:padding="5dp"
-            android:orientation="horizontal" >
+            android:layout_height="match_parent"
+            android:weightSum="4">
 
-            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:padding="0dp"
-                android:orientation="vertical"
-                android:layout_marginRight="5dp">
-
-                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="2"
-                    android:transitionGroup="false">
-
-                    <ImageView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/undo"
-                        android:src="@drawable/sp_undo_move"
-                        android:layout_weight="1"
-                        android:scaleType="fitXY"
-                        android:onClick = "undoMove"/>
-
-                    <ImageView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/redo"
-                        android:src="@drawable/sp_redo_move"
-                        android:layout_weight="1"
-                        android:scaleType="fitXY"
-                        android:onClick = "redoMove"/>
-
-                </LinearLayout>
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/alternatemove"
-                    android:src="@drawable/sp_suggest_alt_move"
-                    android:scaleType="fitXY"
-                    android:onClick = "altMove"/>
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/starthelper"
-                    android:src="@drawable/sp_start_helper"
-                    android:scaleType="fitXY"
-                    android:onClick = "startingHelper"/>
-
-            </LinearLayout>
-
-            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="0dp"
+            <FrameLayout
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:weightSum="3"
-                android:padding="0dp"
-                android:orientation="vertical">
+                android:layout_weight="3">
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:text="@string/GameBoardActivity_help_text_default"
                     android:padding="5dp"
                     android:textSize="10dp"
                     android:textAlignment="center"/>
+            </FrameLayout>
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/options"
-                    android:src="@drawable/sp_options"
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:weightSum="2"
+                android:padding="5dp"
+                android:orientation="horizontal"
+                android:layout_weight="1">
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
                     android:layout_weight="1"
-                    android:scaleType="fitXY"
-                    android:onClick = "optionsScreen"/>
+                    android:padding="0dp"
+                    android:orientation="vertical"
+                    android:layout_marginRight="5dp"
+                    android:weightSum="4">
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:layout_marginBottom="5dp">
+
+                        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="2"
+                            android:transitionGroup="false"
+                            android:layout_weight="1.5"
+                            android:gravity="center_vertical"
+                            android:layout_gravity="bottom">
+
+                            <ImageView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/undo"
+                                android:src="@drawable/sp_undo_move"
+                                android:layout_weight="1"
+                                android:onClick = "undoMove"
+                                android:scaleType="fitXY" />
+
+                            <ImageView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/redo"
+                                android:src="@drawable/sp_redo_move"
+                                android:layout_weight="1"
+                                android:onClick = "redoMove"
+                                android:scaleType="fitXY" />
+
+                        </LinearLayout>
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:layout_gravity="top">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/starthelper"
+                            android:src="@drawable/sp_start_helper"
+                            android:onClick = "startingHelper"
+                            android:layout_weight="1.5"
+                            android:scaleType="fitXY" />
+                    </FrameLayout>
+
+                </LinearLayout>
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:weightSum="4"
+                    android:padding="0dp"
+                    android:orientation="vertical">
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="2"
+                        android:layout_gravity="bottom"
+                        android:layout_marginBottom="5dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/options"
+                            android:src="@drawable/sp_options"
+                            android:layout_weight="1"
+                            android:scaleType="fitXY"
+                            android:onClick="optionsScreen"
+                            android:layout_gravity="bottom" />
+
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="2"
+                        android:layout_gravity="top">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/suggestAltMove"
+                            android:src="@drawable/sp_suggest_alt_move"
+                            android:onClick="altMove"
+                            android:layout_weight="1.5"
+                            android:layout_gravity="top"
+                            android:scaleType="fitXY" />
+
+                    </FrameLayout>
+
+                </LinearLayout>
 
             </LinearLayout>
 
