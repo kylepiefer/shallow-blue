@@ -562,6 +562,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
         protected void onPostExecute(Move move) {
             if (move == null || getGameBoard().playerToMove() == playerColor) {
+                endGame();
                 return;
             }
 

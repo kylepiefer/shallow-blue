@@ -54,7 +54,11 @@
             android:name=".SaveGame"
             android:theme="@style/AppTheme.customThemePopUp" />
         <activity android:name=".LeaveGameVerify"
-            android:theme="@style/AppTheme.customThemePopUp"></activity>
+            android:theme="@style/AppTheme.customThemePopUp"/>
+        <activity android:name=".EndOfGameActivity"
+            android:theme="@style/AppTheme.customThemePopUp">
+        </activity>
+
     </application>
 
 </manifest>
