@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.TextView;
 
 public class EndOfGameActivity extends AppCompatActivity {
 
@@ -21,7 +22,18 @@ public class EndOfGameActivity extends AppCompatActivity {
         int width = dm.widthPixels;
         int height = dm.heightPixels;
 
+        TextView reason = (TextView) findViewById(R.id.reason);
+
         getWindow().setLayout((int) (width * 0.7), (int) (height * 0.2));
+
+        Intent called = getIntent();
+        Bundle check = called.getBundleExtra("text");
+        int winner = check.getInt("winner");
+        if (winner == 0){
+            reason.setText("Black Wins!");
+        } else {
+            reason.setText("White Wins!");
+        }
 
     }
 

@@ -550,7 +550,7 @@ public class GameBoard {
     }
 
     public boolean inCheck(){
-        return inCheck(playerToMove, false);
+        return inCheck(playerToMove, true);
     }
 
     public boolean inCheck(Color curr, boolean check){
