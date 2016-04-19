@@ -36,6 +36,8 @@ public class GameBoardActivity extends AppCompatActivity {
     private SavedGameManager savedGameManager;
     private int movesToUndo = 0;
     private int movesToRedo = 0;
+    private List<Move> suggestedMoves = null;
+    private int suggestedMoveIndex = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -326,6 +328,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
             @Override
             public void onAnimationEnd(Animation animation) {
+                suggestedMoves = null;
                 gameBoardActivity.refreshBoard(gameBoardActivity.gameBoard.getGameBoard());
                 imageCopy.clearAnimation();
                 animationLayer.removeView(imageCopy);
@@ -460,14 +463,28 @@ public class GameBoardActivity extends AppCompatActivity {
     }
 
     public void startingHelper(View v) {
-        showToast("The Helper is not currently available."); // TODO
-        new UrlConnection().new Connection().execute("connect");
+        //showToast("The Helper is not currently available."); // TODO
+        //new UrlConnection().new Connection().execute("connect");
     }
 
     public void altMove(View v ) {
-        showToast("An alternate move is not currently available.");// TODO
-        new UrlConnection().new Request().execute(gameBoard.pack());
+        //showToast("An alternate move is not currently available.");// TODO
+        //new UrlConnection().new Request().execute(gameBoard.pack());
+        if(suggestedMoves == null) {
+            suggestedMoves = AIMoveFactory.newAIMove().move(gameBoard, difficulty);
+            suggestedMoveIndex = 0;
+        }
 
+        removeAllSquareHighlights();
+        this.selectedSquare = getGBASForPosition(suggestedMoves.get(suggestedMoveIndex).getFrom());
+        drawBoardSquareHighlight(
+                this.selectedSquare,
+                R.drawable.board_square_outline);
+
+        drawBoardSquareHighlight(
+                getGBASForPosition(suggestedMoves.get(suggestedMoveIndex).getTo()),
+                R.drawable.board_square_highlight_legal);
+        suggestedMoveIndex = (suggestedMoveIndex+1)%suggestedMoves.size();
     }
 
     private boolean undoMove() {

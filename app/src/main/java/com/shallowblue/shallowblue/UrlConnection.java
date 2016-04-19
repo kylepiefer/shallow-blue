@@ -70,7 +70,10 @@ public class UrlConnection {
                     {
                         throw new RuntimeException("failed to request url");
                     }
-                    //connection.getResponseCode() != 200
+                    if(connection.getResponseCode() != 200)
+                    {
+                        System.out.println("connected");
+                    }
 
                 }
                 catch (Exception e) {
