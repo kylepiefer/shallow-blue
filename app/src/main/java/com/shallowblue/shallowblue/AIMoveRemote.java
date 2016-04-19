@@ -6,13 +6,16 @@ import java.util.List;
  * Created by FU on 4/18/2016.
  */
 public class AIMoveRemote extends AIMove {
-
+    UrlConnection conn;
     public AIMoveRemote() {
-
+        conn = new UrlConnection("","","");
     }
 
     public List<Move> move(GameBoard current, int depth) {
         String packedGameBoard = current.pack();
-        return null;
+        conn.UrlRequest(packedGameBoard,"","");
+
+
+        return AIMoveFactory.newAIMove(false).move(current,depth);
     }
 }
