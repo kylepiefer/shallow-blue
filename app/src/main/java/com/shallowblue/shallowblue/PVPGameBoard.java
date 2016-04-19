@@ -289,8 +289,7 @@ public class PVPGameBoard extends AppCompatActivity {
                 }
 
                 if (GameBoard.activeGameBoard.inCheckMate()){
-                    //gameOver();
-                    Toast.makeText(PVPGameBoard.this, "CheckMate!!!", Toast.LENGTH_SHORT).show();
+                    gameOver();
                     return;
                 }
 
@@ -300,6 +299,7 @@ public class PVPGameBoard extends AppCompatActivity {
                 return;
             }
         }, 1000);
+
 
         for (int i = 0; i < selMoves.size(); i++) {
             int selMoveX = selMoves.get(i).getRow();
@@ -321,14 +321,17 @@ public class PVPGameBoard extends AppCompatActivity {
     }
 
     public void pvpundo1(View v){
+        undoWhite();
+    }
 
+    public void undoWhite(){
         List<Move> history = GameBoard.activeGameBoard.getGameHistory();
         Move lastMove = null;
         Color currTurn = GameBoard.activeGameBoard.playerToMove();
 
         if (history.isEmpty()){
             Toast.makeText(PVPGameBoard.this, "Sorry, you can't undo a move when one doesn't" +
-                            " exist.", Toast.LENGTH_SHORT).show();
+                    " exist.", Toast.LENGTH_SHORT).show();
             return;
         }
         int last = history.size() - 1;
@@ -373,6 +376,10 @@ public class PVPGameBoard extends AppCompatActivity {
     }
 
     public void pvpundo2(View v){
+        undoBlack();
+    }
+
+    public void undoBlack(){
         List<Move> history = GameBoard.activeGameBoard.getGameHistory();
         if (history.isEmpty()){
             Toast.makeText(PVPGameBoard.this, "Sorry, you can't undo a move when one doesn't" +
@@ -741,9 +748,17 @@ public class PVPGameBoard extends AppCompatActivity {
     private void gameOver(){
         Intent endGame = new Intent(getApplicationContext(), EndOfGameActivity.class);
         Bundle params = new Bundle();
-        // TODO: Add parameters to the bundle.
-        endGame.putExtras(params);
-        startActivity(endGame);
+        Color curr = GameBoard.activeGameBoard.playerToMove;
+        int color = 0;
+        if (curr == Color.WHITE){
+            color = 0;
+        }
+        else {
+            color = 1;
+        }
+        params.putInt("winner", color);
+        endGame.putExtra("text",params);
+        startActivityForResult(endGame, END_OF_GAME_REQUEST);
     }
 
     @Override
@@ -754,7 +769,11 @@ public class PVPGameBoard extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 String action = data.getStringExtra("Action");
                 if (action.equalsIgnoreCase("Undo")) {
-                    GameBoard.activeGameBoard.undo();
+                    if (GameBoard.activeGameBoard.playerToMove == Color.WHITE){
+                        undoBlack();
+                    } else {
+                        undoWhite();
+                    }
                 } else if (action.equalsIgnoreCase("Quit")) {
                     Intent quit = new Intent(getApplicationContext(), MainMenuActivity.class);
                     startActivity(quit);

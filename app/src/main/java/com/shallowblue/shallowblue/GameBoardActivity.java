@@ -562,8 +562,16 @@ public class GameBoardActivity extends AppCompatActivity {
         movesToUndo = 0;
         Intent endGame = new Intent(this, EndOfGameActivity.class);
         Bundle params = new Bundle();
-        // TODO: Add parameters to the bundle.
-        endGame.putExtras(params);
+        Color curr = GameBoard.activeGameBoard.playerToMove;
+        int color = 0;
+        if (curr == Color.WHITE){
+            color = 0;
+        }
+        else {
+            color = 1;
+        }
+        params.putInt("winner", color);
+        endGame.putExtra("text",params);
         startActivityForResult(endGame, END_OF_GAME_REQUEST);
     }
 
