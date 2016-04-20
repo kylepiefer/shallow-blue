@@ -5,7 +5,6 @@ import android.util.Log;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -40,7 +39,7 @@ public class AIMoveLocal extends AIMove {
     private List<Move> maxAction(GameBoard current, int depth) {
         List<Entry<Double,Move>> moveGoodness = new ArrayList<Entry<Double,Move>>();
         double best = Double.NEGATIVE_INFINITY;
-        List<Move> moves = current.getAllMoves();
+        List<Move> moves = current.getAllLegalMoves();
         Collections.shuffle(moves);
         for (Move m : moves) {
             current.move(m);
@@ -63,7 +62,7 @@ public class AIMoveLocal extends AIMove {
     private List<Move> minAction(GameBoard current, int depth) {
         List<Entry<Double,Move>> moveGoodness = new ArrayList<Entry<Double,Move>>();
         double best = Double.POSITIVE_INFINITY;
-        List<Move> moves = current.getAllMoves();
+        List<Move> moves = current.getAllLegalMoves();
         Collections.shuffle(moves);
         for (Move m : moves) {
             current.move(m);
@@ -88,7 +87,7 @@ public class AIMoveLocal extends AIMove {
             return current.sbe();
 
         double v = Double.NEGATIVE_INFINITY;
-        for (Move m : current.getAllMoves()) {
+        for (Move m : current.getAllLegalMoves()) {
             current.move(m);
             double nextV = minAction(current, depth-1, alpha, beta);
 
@@ -109,7 +108,7 @@ public class AIMoveLocal extends AIMove {
             return current.sbe();
 
         double v = Double.NEGATIVE_INFINITY;
-        for (Move m : current.getAllMoves()) {
+        for (Move m : current.getAllLegalMoves()) {
             current.move(m);
             double nextV = maxAction(current, depth-1, alpha, beta);
 
