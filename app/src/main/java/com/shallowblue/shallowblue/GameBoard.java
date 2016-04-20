@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 public class GameBoard {
@@ -25,6 +26,8 @@ public class GameBoard {
 
     // Caches to speed up calculations. Only calculate the legal moves for a given position ONCE!
     private List<Move> legalMovesCache;
+    private King whiteKing;
+    private King blackKing;
 
     public GameBoard() {
         if (gameBoard == null) {
@@ -65,10 +68,20 @@ public class GameBoard {
             gameBoard.put((p = new Position(7, 7)), new Rook(p, Color.BLACK));
         }
 
+        findKings();
         playerToMove = Color.WHITE;
         gameHistory = new ArrayList<Move>();
         redoStack = new Stack<Move>();
         legalMovesCache = null;
+    }
+
+    private void findKings() {
+        for (Piece piece : gameBoard.values()) {
+            if (piece instanceof King) {
+                if (piece.getColor() == Color.WHITE) whiteKing = (King) piece;
+                else blackKing = (King) piece;
+            }
+        }
     }
 
     public GameBoard(GameBoard in) {
@@ -79,6 +92,7 @@ public class GameBoard {
         for (Move m : in.gameHistory) {
             gameHistory.add(new Move(m));
         }
+        findKings();
         playerToMove = in.playerToMove();
         redoStack = new Stack<Move>();
         legalMovesCache = null;
@@ -90,6 +104,7 @@ public class GameBoard {
         playerToMove = Color.WHITE;
         redoStack = new Stack<Move>();
         legalMovesCache = null;
+        findKings();
     }
 
     public void switchPlayerToMove() {
@@ -107,7 +122,11 @@ public class GameBoard {
         long startTime = System.currentTimeMillis();
 
         List<Move> legalMoves = new ArrayList<Move>();
+        List<Piece> pieces = new ArrayList<Piece>();
         for (Piece piece : gameBoard.values()) {
+            pieces.add(piece);
+        }
+        for (Piece piece : pieces) {
             if (piece.getColor() == playerToMove) {
                 List<Position> possibleMoves = piece.possibleMoves();
                 for (Position position : possibleMoves) {
@@ -289,7 +308,7 @@ public class GameBoard {
 
         // You cannot move through another piece unless you are a Knight.
         if (!(gameBoard.get(m.getFrom()) instanceof Knight)) {
-            if (pieceInPath(m)) {
+            if (pieceInPath(m) != null) {
                 this.explanation = "Only a knight can move through pieces.";
                 return false;
             }
@@ -449,7 +468,7 @@ public class GameBoard {
             }
             i += 6;
         }
-
+        findKings();
     }
 
     public Map<Position, Piece> getGameBoard() {
@@ -523,135 +542,47 @@ public class GameBoard {
     }
 
     public boolean inCheck(Color curr, boolean check) {
-        boolean answer = false;
-        Color currPlayer = curr;
-        ArrayList<Piece> currPlayerPieces = new ArrayList<Piece>();
-        Piece currKing = null;
-        ArrayList<Piece> oppPlayerPieces = new ArrayList<Piece>();
-        for (int x = 0; x < 8; x++) {
-            for (int y = 0; y < 8; y++) {
-                Position pos = new Position(x, y);
-                Piece piece = gameBoard.get(pos);
-                if (piece != null) {
-                    if (currPlayer == piece.getColor()) {
-                        if (piece instanceof King) {
-                            currKing = piece;
-                        } else {
-                            currPlayerPieces.add(piece);
-                        }
-                    } else {
-                        oppPlayerPieces.add(piece);
-                    }
-                }
-            }
-        }
-
-        ArrayList<Move> oppMoves = new ArrayList<Move>();
-
-        if (check) {
-            switchPlayerToMove();
-        }
-        for (Piece p : oppPlayerPieces) {
-            ArrayList<Position> possible = p.possibleMoves();
-            for (Position pos : possible) {
-                Move temp = new Move(p, p.getPosition(), pos);
-                if (legalMoveThatThrreatens(temp)) {
-                    oppMoves.add(temp);
-                }
-            }
-        }
-        if (check) {
-            switchPlayerToMove();
-        }
-
-
-        for (Move m : oppMoves) {
-            if (m.getTo().getRow() == currKing.getPosition().getRow() &&
-                    m.getTo().getColumn() == currKing.getPosition().getColumn()) {
-                answer = true;
-                break;
-            }
-        }
-        gameBoard.put(currKing.getPosition(), currKing);
-
-        return answer;
+        King king = curr == Color.WHITE ? whiteKing : blackKing;
+        return isThreatened(king.getPosition());
     }
 
     public boolean movePutsPlayerInCheck(Move m) {
         boolean answer = false;
 
-        /*move(m);
-        Color curr = m.getPieceMoved().getColor();
-        if (inCheck(curr, false)) {
-            answer = true;
+        // Handle capturing if necessary.
+        Piece captured = null;
+        if (gameBoard.get(m.getTo()) != null) {
+            captured = gameBoard.get(m.getTo());
+            gameBoard.remove(m.getTo());
+        } else if (isLegalEnPassant(m)) {
+            int direction = playerToMove == Color.WHITE ? -1 : 1;
+            Position capturedPosition = new Position(m.getTo().getRow() + direction, m.getTo().getColumn());
+            captured = gameBoard.get(capturedPosition);
+            gameBoard.remove(capturedPosition);
         }
-        undo();
-        redoStack.pop();*/
+
+        // simulate making the move
+        Piece moved = gameBoard.get(m.getFrom());
+        gameBoard.remove(m.getFrom());
+        gameBoard.put(m.getTo(), moved);
+        moved.setPosition(m.getTo());
+
+        // check if the king is threatened
+        King king = playerToMove == Color.WHITE ? whiteKing : blackKing;
+        if (inCheck()) answer = true;
+
+        // undo the simulated move
+        gameBoard.remove(m.getTo());
+        gameBoard.put(m.getFrom(), moved);
+        moved.setPosition(m.getFrom());
+
+        if (captured != null) gameBoard.put(captured.getPosition(), captured);
 
         return answer;
     }
 
-    public boolean legalMoveThatThrreatens(Move m) {
-        // Check to make sure there is a piece in the square and that it belongs to the player
-        // whose turn it is.
-
-
-        if (gameBoard.get(m.getFrom()) == null) {
-            this.explanation = "You can only move from a square that contains a piece.";
-            return false;
-        }
-
-        if (this.playerToMove != gameBoard.get(m.getFrom()).getColor()) {
-            this.explanation = "You can only move a piece that is your color.";
-            return false;
-        }
-
-
-        // Check to make sure there is not a friendly piece in the square being moved to.
-        if (gameBoard.get(m.getTo()) != null &&
-                gameBoard.get(m.getTo()).getColor() == gameBoard.get(m.getFrom()).getColor()) {
-            this.explanation = "You cannot capture your own piece.";
-            return false;
-        }
-
-        // Check to make sure the move is possible.
-        if (!gameBoard.get(m.getFrom()).possibleMoves().contains(m.getTo())) {
-            // TODO: Make each piece have a method to describe how it moves and call it here.
-            this.explanation = "This piece does not move this way!";
-            return false;
-        }
-
-        // Check to make sure a pawn isn't capturing forward or moving diagonally when not capturing.
-        if (m.getPieceMoved() instanceof Pawn) {
-            if (m.getFrom().getColumn() == m.getTo().getColumn() && gameBoard.get(m.getTo()) != null) {
-                this.explanation = "Pawns can only capture enemy pieces diagonally.";
-                return false;
-            }
-
-            // Check for En Passant.
-            if (m.getFrom().getColumn() != m.getTo().getColumn()) {
-                if (isLegalEnPassant(m)) {
-                    this.explanation = "This pawn can perform en Passant.";
-                } else if (gameBoard.get(m.getTo()) == null) { // otherwise the capture is illegal
-                    this.explanation = "Pawns can only move diagonally when capturing.";
-                    return false;
-                }
-            }
-        }
-
-        // You cannot move through another piece unless you are a Knight.
-        if (!(gameBoard.get(m.getFrom()) instanceof Knight)) {
-            if (pieceInPath(m)) {
-                this.explanation = "Only a knight can move through pieces.";
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private boolean pieceInPath(Move move) {
-        if (move == null) return false;
+    private Piece pieceInPath(Move move) {
+        if (move == null) return null;
 
         int deltaRow = 0;
         int deltaColumn = 0;
@@ -663,11 +594,11 @@ public class GameBoard {
 
         Position curr = new Position(move.getFrom().getRow() + deltaRow, move.getFrom().getColumn() + deltaColumn);
         while (!curr.equals(move.getTo())) {
-            if (gameBoard.get(curr) != null) return true;
+            if (gameBoard.get(curr) != null) return gameBoard.get(curr);
             curr = new Position(curr.getRow() + deltaRow, curr.getColumn() + deltaColumn);
         }
 
-        return false;
+        return null;
     }
 
     public boolean inCheckMate() {
@@ -675,69 +606,136 @@ public class GameBoard {
         return legalMoves.isEmpty() && inCheck();
     }
 
-    private static final List<Position> allPositions = Arrays.asList(
-            new Position(0, 0),
-            new Position(0, 1),
-            new Position(0, 2),
-            new Position(0, 3),
-            new Position(0, 4),
-            new Position(0, 5),
-            new Position(0, 6),
-            new Position(0, 7),
-            new Position(1, 0),
-            new Position(1, 1),
-            new Position(1, 2),
-            new Position(1, 3),
-            new Position(1, 4),
-            new Position(1, 5),
-            new Position(1, 6),
-            new Position(1, 7),
-            new Position(2, 0),
-            new Position(2, 1),
-            new Position(2, 2),
-            new Position(2, 3),
-            new Position(2, 4),
-            new Position(2, 5),
-            new Position(2, 6),
-            new Position(2, 7),
-            new Position(3, 0),
-            new Position(3, 1),
-            new Position(3, 2),
-            new Position(3, 3),
-            new Position(3, 4),
-            new Position(3, 5),
-            new Position(3, 6),
-            new Position(3, 7),
-            new Position(4, 0),
-            new Position(4, 1),
-            new Position(4, 2),
-            new Position(4, 3),
-            new Position(4, 4),
-            new Position(4, 5),
-            new Position(4, 6),
-            new Position(4, 7),
-            new Position(5, 0),
-            new Position(5, 1),
-            new Position(5, 2),
-            new Position(5, 3),
-            new Position(5, 4),
-            new Position(5, 5),
-            new Position(5, 6),
-            new Position(5, 7),
-            new Position(6, 0),
-            new Position(6, 1),
-            new Position(6, 2),
-            new Position(6, 3),
-            new Position(6, 4),
-            new Position(6, 5),
-            new Position(6, 6),
-            new Position(6, 7),
-            new Position(7, 0),
-            new Position(7, 1),
-            new Position(7, 2),
-            new Position(7, 3),
-            new Position(7, 4),
-            new Position(7, 5),
-            new Position(7, 6),
-            new Position(7, 7));
+    private boolean isThreatened(Position position) {
+        Color byPlayer = playerToMove == Color.WHITE ? Color.BLACK : Color.WHITE;
+        return isThreatenedByPlayer(position, byPlayer);
+    }
+
+    private boolean isThreatenedByPlayer(Position position, Color byPlayer) {
+        // In this function, we try to short circuit at quickly as possible.
+        // First check for knights. They are always legal to attack their possible moves.
+        for (Piece piece : gameBoard.values()) {
+            if (piece instanceof Knight && piece.getColor() == byPlayer) {
+                if (piece.possibleMoves().contains(position)) return true; // Quit as fast as possible!
+            }
+        }
+
+        // Now check each of the directions (row, column, diagonal) for an attacking piece.
+        // We give up when we find any piece because only knight can go through other pieces.
+        // To facilitate code reuse, we will use the pieceInPath function with
+        // fake moves that go to a nonexistent square (kinda hacky, I know).
+        Move fakeMove = null;
+        Piece threat = null;
+
+        // Start with the row (going up). We only care about kings, rooks, and queens.
+        if (position.getRow() < 7) {
+            fakeMove = new Move(null, position, new Position(8, position.getColumn()));
+            threat = pieceInPath(fakeMove);
+            if (threat != null) {
+                // We aren't threatened by our own color.
+                if (threat.getColor() == byPlayer &&
+                // We don't care about pieces that can't move to us.
+                        !(threat instanceof Pawn || threat instanceof Bishop || threat instanceof Knight) &&
+                // We don't care about Kings if they are more than one square away.
+                        !(threat instanceof King && Math.abs(position.getRow() - threat.getPosition().getRow()) > 1)) {
+                    // If we made it here, the closest piece is threatening. Stop and return true.
+                    return true;
+                }
+            }
+        }
+
+        // Now do the same thing, but in the row going down.
+        if (position.getRow() > 0) {
+            fakeMove = new Move(null, position, new Position(-1, position.getColumn()));
+            threat = pieceInPath(fakeMove);
+            if (threat != null) {
+                // We aren't threatened by our own color.
+                if (threat.getColor() == byPlayer &&
+                        // We don't care about pieces that can't move to us.
+                        !(threat instanceof Pawn || threat instanceof Bishop || threat instanceof Knight) &&
+                        // We don't care about Kings if they are more than one square away.
+                        !(threat instanceof King && Math.abs(position.getRow() - threat.getPosition().getRow()) > 1)) {
+                    // If we made it here, the closest piece is threatening. Stop and return true.
+                    return true;
+                }
+            }
+        }
+
+        // Now do the same thing but for the column going right.
+        if (position.getColumn() < 7) {
+            fakeMove = new Move(null, position, new Position(position.getRow(), 8));
+            threat = pieceInPath(fakeMove);
+            if (threat != null) {
+                // We aren't threatened by our own color.
+                if (threat.getColor() == byPlayer &&
+                        // We don't care about pieces that can't move to us.
+                        !(threat instanceof Pawn || threat instanceof Bishop || threat instanceof Knight) &&
+                        // We don't care about Kings if they are more than one square away.
+                        !(threat instanceof King && Math.abs(position.getRow() - threat.getPosition().getRow()) > 1)) {
+                    // If we made it here, the closest piece is threatening. Stop and return true.
+                    return true;
+                }
+            }
+        }
+
+        // Now the column going left.
+        if (position.getColumn() > 0) {
+            fakeMove = new Move(null, position, new Position(position.getRow(), -1));
+            threat = pieceInPath(fakeMove);
+            if (threat != null) {
+                // We aren't threatened by our own color.
+                if (threat.getColor() == byPlayer &&
+                        // We don't care about pieces that can't move to us.
+                        !(threat instanceof Pawn || threat instanceof Bishop || threat instanceof Knight) &&
+                        // We don't care about Kings if they are more than one square away.
+                        !(threat instanceof King && Math.abs(position.getRow() - threat.getPosition().getRow()) > 1)) {
+                    // If we made it here, the closest piece is threatening. Stop and return true.
+                    return true;
+                }
+            }
+        }
+
+        // Now we check the diagonals. We care about pawns and kings one square away, bishops, and queens.
+        for (Position diagonal : getDiagonals(position)) {
+            fakeMove = new Move(null, position, diagonal);
+            threat = pieceInPath(fakeMove);
+            if (threat == null) threat = gameBoard.get(diagonal);
+            if (threat != null) {
+                // We aren't threatened by our own color.
+                if (threat.getColor() == byPlayer && !(threat instanceof Rook || threat instanceof Knight)) {
+                    boolean oneAway = Math.abs(threat.getPosition().getRow() - position.getRow()) == 1 &&
+                            Math.abs(threat.getPosition().getColumn() - position.getColumn()) == 1;
+                    if (threat instanceof Queen || threat instanceof Bishop ||
+                            (oneAway && (threat instanceof Pawn || threat instanceof King))) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        // We've checked everything; I suppose it's safe.
+        return false;
+    }
+
+    private List<Position> getDiagonals(Position position) {
+        List<Position> diagonals = new ArrayList<Position>(4);
+        int difference;
+        if (position.getRow() != 0 && position.getColumn() != 0) { // Down and to the left
+            difference = position.getRow() < position.getColumn() ? position.getRow() : position.getColumn();
+            diagonals.add(new Position(position.getRow() - difference, position.getColumn() - difference));
+        }
+        if (position.getRow() != 7 && position.getColumn() != 0) { // Up and to the left
+            difference = 7 - position.getRow() < position.getColumn() ? 7 - position.getRow() : position.getColumn();
+            diagonals.add(new Position(position.getRow() + difference, position.getColumn() - difference));
+        }
+        if (position.getRow() != 7 && position.getColumn() != 7) { // Up and to the right
+            difference = 7 - position.getRow() < 7 - position.getColumn() ? 7 - position.getRow() : 7 - position.getColumn();
+            diagonals.add(new Position(position.getRow() + difference, position.getColumn() + difference));
+        }
+        if (position.getRow() != 0 && position.getColumn() != 7) { // Down and to the right
+            difference = position.getRow() < 7 - position.getColumn() ? position.getRow() : 7 - position.getColumn();
+            diagonals.add(new Position(position.getRow() - difference, position.getColumn() + difference));
+        }
+        return diagonals;
+    }
 }
