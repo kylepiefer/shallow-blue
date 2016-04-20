@@ -7,7 +7,7 @@ public class AIMoveFactory {
     public static AIMove newAIMove(boolean remote) {
         if(remote)
             return new AIMoveRemote();
-        return new AIMoveRandom();
+        return new AIMoveLocal();
     }
 
     public static AIMove newAIMove() {

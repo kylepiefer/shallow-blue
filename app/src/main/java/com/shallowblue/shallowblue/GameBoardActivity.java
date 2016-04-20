@@ -563,7 +563,7 @@ public class GameBoardActivity extends AppCompatActivity {
         movesToUndo = 0;
         Intent endGame = new Intent(this, EndOfGameActivity.class);
         Bundle params = new Bundle();
-        Color curr = GameBoard.activeGameBoard.playerToMove;
+        Color curr = gameBoard.playerToMove;
         int color = 0;
         if (curr == Color.WHITE){
             color = 0;
@@ -583,6 +583,7 @@ public class GameBoardActivity extends AppCompatActivity {
             List<Move> moves = ai.move(gameBoard, difficulty);
             if (moves.isEmpty()) return null;
             Move move = moves.get(0);
+            move = new Move(gameBoard.getGameBoard().get(move.getFrom()), move.getFrom(), move.getTo());
             return move;
         }
 

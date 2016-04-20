@@ -85,17 +85,19 @@ public class GameBoard {
     }
 
     public GameBoard(GameBoard in) {
-        gameBoard = new HashMap<Position, Piece>();
-        for (Map.Entry<Position, Piece> e : in.gameBoard.entrySet())
-            gameBoard.put(new Position(e.getKey()), Piece.copy(e.getValue()));
-        gameHistory = new ArrayList<Move>();
-        for (Move m : in.gameHistory) {
-            gameHistory.add(new Move(m));
+        synchronized (GameBoard.class) {
+            gameBoard = new HashMap<Position, Piece>();
+            for (Map.Entry<Position, Piece> e : in.gameBoard.entrySet())
+                gameBoard.put(new Position(e.getKey()), Piece.copy(e.getValue()));
+            gameHistory = new ArrayList<Move>();
+            for (Move m : in.gameHistory) {
+                gameHistory.add(new Move(m));
+            }
+            findKings();
+            playerToMove = in.playerToMove();
+            redoStack = new Stack<Move>();
+            legalMovesCache = null;
         }
-        findKings();
-        playerToMove = in.playerToMove();
-        redoStack = new Stack<Move>();
-        legalMovesCache = null;
     }
 
     public GameBoard(Map<Position, Piece> map) {
@@ -114,34 +116,36 @@ public class GameBoard {
 
     public static int cacheHits = 0;
     public List<Move> getAllLegalMoves() {
-        if (legalMovesCache != null) {
-            cacheHits++;
-            return legalMovesCache;
-        }
+        synchronized (GameBoard.class) {
+            if (legalMovesCache != null) {
+                cacheHits++;
+                return legalMovesCache;
+            }
 
-        long startTime = System.currentTimeMillis();
+            long startTime = System.currentTimeMillis();
 
-        List<Move> legalMoves = new ArrayList<Move>();
-        List<Piece> pieces = new ArrayList<Piece>();
-        for (Piece piece : gameBoard.values()) {
-            pieces.add(piece);
-        }
-        for (Piece piece : pieces) {
-            if (piece.getColor() == playerToMove) {
-                List<Position> possibleMoves = piece.possibleMoves();
-                for (Position position : possibleMoves) {
-                    Move move = new Move(piece, piece.getPosition(), position);
-                    if (legalMove(move)) legalMoves.add(move);
+            List<Move> legalMoves = new ArrayList<Move>();
+            List<Piece> pieces = new ArrayList<Piece>();
+            for (Piece piece : gameBoard.values()) {
+                pieces.add(piece);
+            }
+            for (Piece piece : pieces) {
+                if (piece.getColor() == playerToMove) {
+                    List<Position> possibleMoves = piece.possibleMoves();
+                    for (Position position : possibleMoves) {
+                        Move move = new Move(piece, piece.getPosition(), position);
+                        if (legalMove(move)) legalMoves.add(move);
+                    }
                 }
             }
+
+            long stopTime = System.currentTimeMillis();
+            float elapsedTime = (float) ((stopTime - startTime) / 1000.0);
+            Log.i("GameBoard", "Legal Moves Time Taken: " + String.format("%.3f", elapsedTime) + " seconds.");
+
+            legalMovesCache = legalMoves;
+            return legalMoves;
         }
-
-        long stopTime = System.currentTimeMillis();
-        float elapsedTime = (float) ((stopTime - startTime) / 1000.0);
-        Log.i("GameBoard", "Legal Moves Time Taken: " + String.format("%.3f", elapsedTime) + " seconds.");
-
-        legalMovesCache = legalMoves;
-        return legalMoves;
     }
 
     private boolean move(Move m, boolean clearRedoStack) {
@@ -153,29 +157,67 @@ public class GameBoard {
         // Clear the redo stack now since we know we are proceeding.
         if (clearRedoStack) redoStack.clear();
 
-        // Handle capturing if necessary.
-        if (gameBoard.get(m.getTo()) != null) {
-            m.setPieceCaptured(gameBoard.get(m.getTo()));
-            this.gameBoard.remove(m.getTo());
-        } else if (isLegalEnPassant(m)) {
-            int direction = playerToMove == Color.WHITE ? -1 : 1;
-            Position capturedPosition = new Position(m.getTo().getRow() + direction, m.getTo().getColumn());
-            m.setPieceCaptured(gameBoard.get(capturedPosition));
-            this.gameBoard.remove(capturedPosition);
+        // Handle the GameBoard
+        Piece moved = gameBoard.get(m.getFrom());
+        executeMoveOnBoard(m);
+
+        if (isCastle(m)) {
+            boolean movingToHigherColumn = (m.getFrom().getColumn() < m.getTo().getColumn()) ? true : false;
+            Position currentRookPosition = movingToHigherColumn ? new Position(m.getFrom().getRow(), 7) :
+                    new Position(m.getFrom().getRow(), 0);
+            Position newRookPosition = movingToHigherColumn ? new Position(m.getTo().getRow(), m.getTo().getColumn() - 1)
+                    : new Position(m.getTo().getRow(), m.getTo().getColumn() + 1);
+            Rook rook = (Rook) gameBoard.get(currentRookPosition);
+            if (rook != null) {
+                gameBoard.remove(currentRookPosition);
+                gameBoard.put(newRookPosition, rook);
+                rook.setPosition(newRookPosition);
+                rook.setFirstMove(m);
+            } else {
+                Log.i("ShallowBlue", "Test");
+            }
         }
 
-        // Update the game board.
-        gameBoard.put(m.getTo(), gameBoard.get(m.getFrom()));
-        gameBoard.remove(m.getFrom());
-
-        // Update the piece's position in both places to be safe.
-        gameBoard.get(m.getTo()).setPosition(m.getTo());
-        m.getPieceMoved().setPosition(m.getTo());
+        // Make sure we note that they have moved
+        if (moved instanceof King) {
+            ((King) m.getPieceMoved()).setFirstMove(m);
+        } else if (moved instanceof Rook) {
+            ((Rook) m.getPieceMoved()).setFirstMove(m);
+        }
 
         // Handle bookkeeping.
         gameHistory.add(m);
         switchPlayerToMove();
         return true;
+    }
+
+    private void executeMoveOnBoard(Move m) {
+        // Handle capturing if necessary.
+        if (gameBoard.get(m.getTo()) != null) {
+            Piece captured = gameBoard.get(m.getTo());
+            m.setPieceCaptured(captured);
+            gameBoard.remove(m.getTo());
+        } else if (isLegalEnPassant(m)) {
+            int direction = playerToMove == Color.WHITE ? -1 : 1;
+            Position capturedPosition = new Position(m.getTo().getRow() + direction, m.getTo().getColumn());
+            Piece captured = gameBoard.get(capturedPosition);
+            m.setPieceCaptured(captured);
+            gameBoard.remove(capturedPosition);
+        }
+
+        // Update the game board.
+        Piece moved = gameBoard.get(m.getFrom());
+        gameBoard.put(m.getTo(), moved);
+        gameBoard.remove(m.getFrom());
+
+        // Update the piece's position
+        m.getPieceMoved().setPosition(m.getTo());
+    }
+
+    private boolean isCastle(Move m) {
+        return m.getPieceMoved() instanceof King &&
+                m.getFrom().getRow() - m.getTo().getRow() == 0 &&
+                Math.abs(m.getFrom().getColumn() - m.getTo().getColumn()) > 1;
     }
 
     public boolean move(Move m) {
@@ -202,19 +244,44 @@ public class GameBoard {
         if (gameHistory.isEmpty()) return false;
 
         Move m = gameHistory.get(gameHistory.size() - 1);
+        executeUndoOnBoard(m);
 
-        gameBoard.remove(m.getTo());
-        gameBoard.put(m.getFrom(), m.getPieceMoved());
-        m.getPieceMoved().setPosition(m.getFrom());
-
-        if (m.getPieceCaptured() != null) {
-            gameBoard.put(m.getPieceCaptured().getPosition(), m.getPieceCaptured());
+        if (isCastle(m)) {
+            boolean movingToHigherColumn = (m.getFrom().getColumn() < m.getTo().getColumn()) ? true : false;
+            Position currentRookPosition = movingToHigherColumn ? new Position(m.getTo().getRow(), m.getTo().getColumn() - 1) :
+                    new Position(m.getTo().getRow(), m.getTo().getColumn() + 1);
+            Rook rook = (Rook) gameBoard.get(currentRookPosition);
+            Position oldRookPosition = movingToHigherColumn ? new Position(m.getFrom().getRow(), 7) :
+                    new Position(m.getFrom().getRow(), 0);
+            gameBoard.remove(currentRookPosition);
+            gameBoard.put(oldRookPosition, rook);
+            rook.setPosition(oldRookPosition);
         }
 
         gameHistory.remove(gameHistory.size() - 1);
         redoStack.push(m);
         switchPlayerToMove();
         return true;
+    }
+
+    private void executeUndoOnBoard(Move m) {
+        Piece moved = gameBoard.get(m.getTo());
+        gameBoard.remove(m.getTo());
+        gameBoard.put(m.getFrom(), moved);
+        moved.setPosition(m.getFrom());
+        m.getPieceMoved().setPosition(m.getFrom());
+
+        if (m.getPieceCaptured() != null) {
+            gameBoard.put(m.getPieceCaptured().getPosition(), m.getPieceCaptured());
+        }
+
+        if (moved instanceof Rook) {
+            Rook rook = (Rook) moved;
+            if (m.equals(rook.getFirstMove())) rook.setFirstMove(null);
+        } else if (moved instanceof King) {
+            King king = (King) moved;
+            if (m.equals(king.getFirstMove())) king.setFirstMove(null);
+        }
     }
 
     public boolean redo() {
@@ -311,6 +378,33 @@ public class GameBoard {
             if (pieceInPath(m) != null) {
                 this.explanation = "Only a knight can move through pieces.";
                 return false;
+            }
+        }
+
+        // Handle castling.
+        if (isCastle(m)) {
+            if (gameBoard.get(m.getFrom()).hasMoved()) {
+                this.explanation = "You cannot castle because your king has previously moved.";
+                return false;
+            }
+            boolean movingToHigherColumn = (m.getFrom().getColumn() < m.getTo().getColumn()) ? true : false;
+            Position rookPosition = movingToHigherColumn ? new Position(m.getFrom().getRow(), 7) :
+                    new Position(m.getFrom().getRow(), 0);
+            Piece rook = gameBoard.get(rookPosition);
+            if (rook == null || !(rook instanceof Rook) || rook.hasMoved()) {
+                this.explanation = "You cannot castle because your rook has previously moved.";
+                return false;
+            }
+            Move rookMove = new Move(rook, rookPosition, m.getFrom());
+            if (!movingToHigherColumn && pieceInPath(rookMove) != null) {
+                this.explanation = "You cannot castle if there are pieces between your rook and your king.";
+                return false;
+            } else if ((movingToHigherColumn && isThreatened(new Position(m.getFrom().getRow(), m.getFrom().getColumn() + 1))) ||
+                    (!movingToHigherColumn && isThreatened(new Position(m.getFrom().getRow(), m.getFrom().getColumn() - 1)))) {
+                this.explanation = "You can castle if you would be moving through a square in which you would be in check.";
+                return false;
+            } else {
+                this.explanation = "You can legally castle.";
             }
         }
 
@@ -511,20 +605,6 @@ public class GameBoard {
         return sum;
     }
 
-    public List<Move> isThreatened(Piece p) {
-        List<Move> ret = new ArrayList<Move>();
-        for (Map.Entry<Position, Piece> e : gameBoard.entrySet()) {
-            if (!(e.getValue().getColor() == playerToMove))
-                ret.addAll(getLegalMoves(e.getKey()));
-        }
-        for (Move e : ret) {
-            if (e.getTo() != p.getPosition()) {
-                ret.remove(e);
-            }
-        }
-        return ret;
-    }
-
     //TODO Add 50 move/replay/other ties
     public boolean gameOver() {
         List<Move> legalMoves = getAllLegalMoves();
@@ -549,34 +629,15 @@ public class GameBoard {
     public boolean movePutsPlayerInCheck(Move m) {
         boolean answer = false;
 
-        // Handle capturing if necessary.
-        Piece captured = null;
-        if (gameBoard.get(m.getTo()) != null) {
-            captured = gameBoard.get(m.getTo());
-            gameBoard.remove(m.getTo());
-        } else if (isLegalEnPassant(m)) {
-            int direction = playerToMove == Color.WHITE ? -1 : 1;
-            Position capturedPosition = new Position(m.getTo().getRow() + direction, m.getTo().getColumn());
-            captured = gameBoard.get(capturedPosition);
-            gameBoard.remove(capturedPosition);
-        }
-
-        // simulate making the move
-        Piece moved = gameBoard.get(m.getFrom());
-        gameBoard.remove(m.getFrom());
-        gameBoard.put(m.getTo(), moved);
-        moved.setPosition(m.getTo());
+        // Simulate making the move
+        executeMoveOnBoard(m);
 
         // check if the king is threatened
         King king = playerToMove == Color.WHITE ? whiteKing : blackKing;
         if (inCheck()) answer = true;
 
         // undo the simulated move
-        gameBoard.remove(m.getTo());
-        gameBoard.put(m.getFrom(), moved);
-        moved.setPosition(m.getFrom());
-
-        if (captured != null) gameBoard.put(captured.getPosition(), captured);
+        executeUndoOnBoard(m);
 
         return answer;
     }
