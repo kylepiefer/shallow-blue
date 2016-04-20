@@ -10,7 +10,7 @@ public class AIMoveRandom extends AIMove {
 
     @Override
     public List<Move> move(GameBoard current, int depth) {
-        List<Move> moves = current.getAllMoves();
+        List<Move> moves = current.getAllLegalMoves();
         Collections.shuffle(moves);
         return moves;
     }

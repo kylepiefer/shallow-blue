@@ -17,10 +17,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 
 public class GameBoardActivity extends AppCompatActivity {
 
@@ -368,7 +366,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
     private void aiMove() {
         if (false) {
-            List<Move> legalAIMoves = this.gameBoard.getAllMoves();
+            List<Move> legalAIMoves = this.gameBoard.getAllLegalMoves();
             int moveNumber = (int)Math.floor(Math.random() * legalAIMoves.size());
             Move move = legalAIMoves.get(moveNumber);
             synchronized (gameBoard) {
@@ -382,6 +380,9 @@ public class GameBoardActivity extends AppCompatActivity {
 
     private void updateGameboard(Move move, boolean advanceTurn) {
         synchronized (this.gameBoardActivitySquares) {
+            Log.d("GameBoardActivity", "Cache Hits: " + gameBoard.cacheHits);
+            gameBoard.cacheHits = 0;
+
             GameBoardActivitySquare from = getGBASForPosition(move.getFrom());
             GameBoardActivitySquare to = getGBASForPosition(move.getTo());
             animateMove(from, to, advanceTurn);
@@ -562,7 +563,7 @@ public class GameBoardActivity extends AppCompatActivity {
         movesToUndo = 0;
         Intent endGame = new Intent(this, EndOfGameActivity.class);
         Bundle params = new Bundle();
-        Color curr = GameBoard.activeGameBoard.playerToMove;
+        Color curr = gameBoard.playerToMove;
         int color = 0;
         if (curr == Color.WHITE){
             color = 0;
@@ -582,6 +583,7 @@ public class GameBoardActivity extends AppCompatActivity {
             List<Move> moves = ai.move(gameBoard, difficulty);
             if (moves.isEmpty()) return null;
             Move move = moves.get(0);
+            move = new Move(gameBoard.getGameBoard().get(move.getFrom()), move.getFrom(), move.getTo());
             return move;
         }
 
