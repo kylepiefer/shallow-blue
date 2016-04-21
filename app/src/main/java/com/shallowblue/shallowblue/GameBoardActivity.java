@@ -5,7 +5,6 @@ import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Animation;
@@ -48,7 +47,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
         // use intent extras
         if (getIntent().hasExtra("Difficulty")) {
-            this.difficulty = getIntent().getIntExtra("Difficulty", 3);
+            this.difficulty = getIntent().getIntExtra("Difficulty", 1);
         } else {
             this.difficulty = 0;
         }
@@ -380,7 +379,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
     private void updateGameboard(Move move, boolean advanceTurn) {
         synchronized (this.gameBoardActivitySquares) {
-            Log.d("GameBoardActivity", "Cache Hits: " + gameBoard.cacheHits);
+            //Log.d("GameBoardActivity", "Cache Hits: " + gameBoard.cacheHits);
             gameBoard.cacheHits = 0;
 
             GameBoardActivitySquare from = getGBASForPosition(move.getFrom());
@@ -415,7 +414,7 @@ public class GameBoardActivity extends AppCompatActivity {
                 this.updateGameboard(move, true);
                 removeAllSquareHighlights();
             } else {
-                Log.d("ShallowBlue", "Player move failed: " + move.toString() + " Reason: " + getGameBoard().getLastExplanation());
+                //Log.d("ShallowBlue", "Player move failed: " + move.toString() + " Reason: " + getGameBoard().getLastExplanation());
             }
         }
 
@@ -601,7 +600,7 @@ public class GameBoardActivity extends AppCompatActivity {
             if (moveSucceeded) {
                 updateGameboard(move, false);
             } else {
-                Log.d("ShallowBlue", "AI move failed: " + move.toString() + " Reason: " + getGameBoard().getLastExplanation());
+                //Log.d("ShallowBlue", "AI move failed: " + move.toString() + " Reason: " + getGameBoard().getLastExplanation());
             }
 
             System.gc();

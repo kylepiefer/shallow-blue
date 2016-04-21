@@ -68,4 +68,8 @@ public class King extends Piece {
 		}
 		return "K";
 	}
+
+	public Position getInitialPosition(){
+		return initialPosition;
+	}
 }

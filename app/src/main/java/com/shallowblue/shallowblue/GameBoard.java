@@ -4,14 +4,11 @@ package com.shallowblue.shallowblue;
  * Created by peter on 3/14/2016.
  */
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Stack;
 
 public class GameBoard {
@@ -124,6 +121,7 @@ public class GameBoard {
 
             long startTime = System.currentTimeMillis();
 
+
             List<Move> legalMoves = new ArrayList<Move>();
             List<Piece> pieces = new ArrayList<Piece>();
             for (Piece piece : gameBoard.values()) {
@@ -141,7 +139,7 @@ public class GameBoard {
 
             long stopTime = System.currentTimeMillis();
             float elapsedTime = (float) ((stopTime - startTime) / 1000.0);
-            Log.i("GameBoard", "Legal Moves Time Taken: " + String.format("%.3f", elapsedTime) + " seconds.");
+            //Log.i("GameBoard", "Legal Moves Time Taken: " + String.format("%.3f", elapsedTime) + " seconds.");
 
             legalMovesCache = legalMoves;
             return legalMoves;
@@ -158,7 +156,8 @@ public class GameBoard {
         if (clearRedoStack) redoStack.clear();
 
         // Handle the GameBoard
-        Piece moved = gameBoard.get(m.getFrom());
+        //Piece moved = gameBoard.get(m.getFrom());
+        Piece moved = m.getPieceMoved();
         executeMoveOnBoard(m);
 
         if (isCastle(m)) {
@@ -174,7 +173,7 @@ public class GameBoard {
                 rook.setPosition(newRookPosition);
                 rook.setFirstMove(m);
             } else {
-                Log.i("ShallowBlue", "Test");
+                //Log.i("ShallowBlue", "Test");
             }
         }
 
@@ -577,33 +576,82 @@ public class GameBoard {
         return playerToMove;
     }
 
+    /*
     public double sbe() {
-        double sum = 0.0;
-        for (Piece p : gameBoard.values()) {
-            double value;
-            if (p instanceof Rook)
-                value = 5;
-            else if (p instanceof Queen)
-                value = 9;
-            else if (p instanceof Knight)
-                value = 3;
-            else if (p instanceof King)
-                value = 10000;
-            else if (p instanceof Bishop)
-                value = 3;
-            else if (p instanceof Pawn)
-                value = 1;
-            else
-                continue; // null
+        int wrookC = 0;
+        int wqueenC = 0;
+        int wknightC = 0;
+        int wbishopC = 0;
+        int wpawnC = 0;
+        int wkingC = 0;
 
-            if (p.getColor() == Color.WHITE)
-                sum += value;
-            else
-                sum -= value;
+        int brookC = 0;
+        int bqueenC = 0;
+        int bknightC = 0;
+        int bbishopC = 0;
+        int bpawnC = 0;
+        int bkingC = 0;
+
+        List<Piece> allPiecesOnBoard = new ArrayList<>();
+        List<Piece> whitePieces = new ArrayList<>();
+        List<Piece> blackPieces = new ArrayList<>();
+
+        double sum = 0.0;
+        for (Position p : gameBoard.keySet()){
+            allPiecesOnBoard.add(gameBoard.get(p));
+            if (gameBoard.get(p).getColor() == Color.WHITE){
+                whitePieces.add(gameBoard.get(p));
+            } else {
+                blackPieces.add(gameBoard.get(p));
+            }
         }
 
-        return sum;
+        for (Piece p : whitePieces) {
+            if (p instanceof Rook)
+                wrookC++;
+            else if (p instanceof Queen)
+                wqueenC++;
+            else if (p instanceof Knight)
+                wknightC++;
+            else if (p instanceof King)
+                wkingC++;
+            else if (p instanceof Bishop)
+                wbishopC++;
+            else if (p instanceof Pawn)
+                wpawnC++;
+            else
+                continue; // null
+        }
+
+        for (Piece p : blackPieces){
+            if (p instanceof Rook)
+                brookC++;
+            else if (p instanceof Queen)
+                bqueenC++;
+            else if (p instanceof Knight)
+                bknightC++;
+            else if (p instanceof King)
+                bkingC++;
+            else if (p instanceof Bishop)
+                bbishopC++;
+            else if (p instanceof Pawn)
+                bpawnC++;
+            else
+                continue; // null
+        }
+        int playerEval = 0;
+        if (playerToMove == Color.WHITE){
+            playerEval = -1;
+        } else {
+            playerEval = 1;
+        }
+
+
+        return sum = playerEval * (1000000*(wkingC - bkingC) + 9*(wqueenC - bqueenC) +
+                5*(wrookC - brookC) + 3*(wbishopC - bbishopC + wknightC - bknightC) +
+                0.5*(wpawnC - bpawnC));
     }
+    */
 
     //TODO Add 50 move/replay/other ties
     public boolean gameOver() {
@@ -799,4 +847,5 @@ public class GameBoard {
         }
         return diagonals;
     }
+
 }
