@@ -15,6 +15,15 @@ public class Move {
         this.to = to;
     }
 
+    public Move(Piece pieceMoved, Position from, Piece pieceCaptured, Position to) {
+        this.pieceMoved = pieceMoved;
+        this.from = from;
+        this.to = to;
+        this.pieceCaptured = pieceCaptured;
+    }
+
+
+
     /*
     @Override
     public String toString(){

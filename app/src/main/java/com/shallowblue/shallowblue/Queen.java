@@ -13,11 +13,11 @@ public class Queen extends Piece {
 		super(q.getPosition(), q.getColor(), q.getColor() == Color.WHITE ? R.drawable.white_queen : R.drawable.black_queen);
 	}
 
-	@Override
+	/*@Override
 	public boolean hasMoved() {
 		// Unused
 		return false;
-	}
+	}*/
 
 	@Override
 	public boolean isPromoting() {

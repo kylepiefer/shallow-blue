@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class King extends Piece {
 
 	private final Position initialPosition;
-	private Move firstMove = null;
+	//private Move firstMove = null;
 	
 	public King(Position argPosition, Color color) {
 		super(argPosition, color, color == Color.WHITE ? R.drawable.white_king : R.drawable.black_king);
@@ -16,16 +16,16 @@ public class King extends Piece {
 	public King(King k) {
 		super(k.getPosition(), k.getColor(), k.getColor() == Color.WHITE ? R.drawable.white_king : R.drawable.black_king);
 		this.initialPosition = k.initialPosition;
-        this.firstMove = k.firstMove;
+        //this.firstMove = k.firstMove;
 	}
 
-	@Override
+	/*@Override
 	public boolean hasMoved() {
 		return !(firstMove == null);
-	}
+	}*/
 
-    public Move getFirstMove() { return this.firstMove; }
-    public void setFirstMove(Move m) { this.firstMove = null; }
+    //public Move getFirstMove() { return this.firstMove; }
+    //public void setFirstMove(Move m) { this.firstMove = null; }
 
     @Override
 	public boolean isPromoting() {

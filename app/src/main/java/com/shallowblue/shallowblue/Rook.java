@@ -7,7 +7,7 @@ public class Rook extends Piece {
 
 
 	private Position initialPosition;
-	private Move firstMove = null;
+	//private Move firstMove = null;
 
 	public boolean leftright(){   //true if on left side of board at beginning
 		return initialPosition.getColumn()==0;
@@ -25,16 +25,16 @@ public class Rook extends Piece {
 	public Rook(Rook r) {
 		super(r.getPosition(), r.getColor(), r.getColor() == Color.WHITE ? R.drawable.white_rook : R.drawable.black_rook);
         this.initialPosition = r.initialPosition;
-        this.firstMove = r.firstMove;
+        //this.firstMove = r.firstMove;
 	}
 
-    @Override
+    /*@Override
     public boolean hasMoved() {
         return !(firstMove == null);
-    }
+    }*/
 
-    public Move getFirstMove() { return this.firstMove; }
-    public void setFirstMove(Move m) { this.firstMove = null; }
+    //public Move getFirstMove() { return this.firstMove; }
+    //public void setFirstMove(Move m) { this.firstMove = null; }
 
     @Override
 	public boolean isPromoting() {

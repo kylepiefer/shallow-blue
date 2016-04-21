@@ -17,12 +17,12 @@ public class Pawn extends Piece {
         this.initialPosition = p.initialPosition;
 	}
 
-	@Override
+	/*@Override
 	public boolean hasMoved() {
 		
 		  return (!(initialPosition.getRow() == getPosition().getRow()
 		  		&& initialPosition.getColumn() == getPosition().getColumn()));
-	}
+	}*/
 
 	@Override
 	public boolean isPromoting() {

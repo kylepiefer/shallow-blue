@@ -14,7 +14,7 @@ public abstract class Piece {
 	private Position position; //See Position.java
 	private final Color color; //See Color.java
 	private int drawableId;
-
+	private int numMoves = 0;
 	public Piece(Position argPosition, Color color, int drawableId) {
 		this.position = argPosition;
 		this.color = color;
@@ -35,7 +35,7 @@ public abstract class Piece {
 	 * NOTE: Does not detect when the piece "returns" to its starting location
 	 * 			(i.e. would return that it hasn't moved)
 	 */
-	public abstract boolean hasMoved();
+	public boolean hasMoved() {return (getNumMoves() != 0);}
 			
 	
 	/**
@@ -84,4 +84,9 @@ public abstract class Piece {
 		if (p instanceof Bishop) return new Bishop((Bishop)p);
 		return null;
 	}
+
+
+	public int getNumMoves() {return numMoves;}
+	public void incrementNumMoves(int i) {numMoves += i;}
+
 }

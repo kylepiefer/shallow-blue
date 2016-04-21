@@ -148,6 +148,7 @@ public class GameBoard {
 
     private boolean move(Move m, boolean clearRedoStack) {
         // Check that the move is valid.
+        if (m == null) return false;
         if (gameBoard.get(m.getFrom()) == null) {
             return false;
         }
@@ -171,22 +172,25 @@ public class GameBoard {
                 gameBoard.remove(currentRookPosition);
                 gameBoard.put(newRookPosition, rook);
                 rook.setPosition(newRookPosition);
-                rook.setFirstMove(m);
+                rook.incrementNumMoves(1);//rook.setFirstMove(m);
             } else {
                 //Log.i("ShallowBlue", "Test");
             }
         }
 
+        /*
         // Make sure we note that they have moved
         if (moved instanceof King) {
             ((King) m.getPieceMoved()).setFirstMove(m);
         } else if (moved instanceof Rook) {
             ((Rook) m.getPieceMoved()).setFirstMove(m);
         }
+        */
 
         // Handle bookkeeping.
         gameHistory.add(m);
         switchPlayerToMove();
+        m.getPieceMoved().incrementNumMoves(1);
         return true;
     }
 
@@ -255,11 +259,13 @@ public class GameBoard {
             gameBoard.remove(currentRookPosition);
             gameBoard.put(oldRookPosition, rook);
             rook.setPosition(oldRookPosition);
+            rook.incrementNumMoves(-1);
         }
 
         gameHistory.remove(gameHistory.size() - 1);
         redoStack.push(m);
         switchPlayerToMove();
+        m.getPieceMoved().incrementNumMoves(-1);
         return true;
     }
 
@@ -274,13 +280,14 @@ public class GameBoard {
             gameBoard.put(m.getPieceCaptured().getPosition(), m.getPieceCaptured());
         }
 
+        /*
         if (moved instanceof Rook) {
             Rook rook = (Rook) moved;
             if (m.equals(rook.getFirstMove())) rook.setFirstMove(null);
         } else if (moved instanceof King) {
             King king = (King) moved;
             if (m.equals(king.getFirstMove())) king.setFirstMove(null);
-        }
+        }*/
     }
 
     public boolean redo() {

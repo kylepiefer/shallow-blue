@@ -15,11 +15,11 @@ public class Bishop extends Piece {
 		super(b.getPosition(), b.getColor(), b.getColor() == Color.WHITE ? R.drawable.white_bishop : R.drawable.black_bishop);
 	}
 
-	@Override
+	/*@Override
 	public boolean hasMoved() {
 		// UNUSED
 		return false;
-	}
+	}*/
 
 	@Override
 	public boolean isPromoting() {

@@ -13,11 +13,11 @@ public class Knight extends Piece {
 		super(k.getPosition(), k.getColor(), k.getColor() == Color.WHITE ? R.drawable.white_knight : R.drawable.black_knight);
 	}
 
-	@Override
+	/*@Override
 	public boolean hasMoved() {
 		//UNUSED
 		return false;
-	}
+	}*/
 
 	@Override
 	public boolean isPromoting() {
