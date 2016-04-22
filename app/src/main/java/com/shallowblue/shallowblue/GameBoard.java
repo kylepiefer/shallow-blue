@@ -119,13 +119,11 @@ public class GameBoard {
                 return legalMovesCache;
             }
 
-            long startTime = System.currentTimeMillis();
-
-
             List<Move> legalMoves = new ArrayList<Move>();
             List<Piece> pieces = new ArrayList<Piece>();
             for (Piece piece : gameBoard.values()) {
-                pieces.add(piece);
+                if (piece != null)
+                    pieces.add(piece);
             }
             for (Piece piece : pieces) {
                 if (piece.getColor() == playerToMove) {
@@ -136,10 +134,6 @@ public class GameBoard {
                     }
                 }
             }
-
-            long stopTime = System.currentTimeMillis();
-            float elapsedTime = (float) ((stopTime - startTime) / 1000.0);
-            //Log.i("GameBoard", "Legal Moves Time Taken: " + String.format("%.3f", elapsedTime) + " seconds.");
 
             legalMovesCache = legalMoves;
             return legalMoves;
@@ -424,7 +418,7 @@ public class GameBoard {
     public List<Move> getLegalMoves(Position from) {
         List<Move> allLegalMoves = getAllLegalMoves();
         List<Move> legalMoves = new ArrayList<Move>();
-        for (Move legal : legalMoves) {
+        for (Move legal : allLegalMoves) {
             if (legal.getFrom().equals(from)) legalMoves.add(legal);
         }
         return legalMoves;
