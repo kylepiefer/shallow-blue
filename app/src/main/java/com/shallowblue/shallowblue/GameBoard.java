@@ -211,7 +211,7 @@ public class GameBoard {
         m.getPieceMoved().setPosition(m.getTo());
     }
 
-    private boolean isCastle(Move m) {
+    public boolean isCastle(Move m) {
         return m.getPieceMoved() instanceof King &&
                 m.getFrom().getRow() - m.getTo().getRow() == 0 &&
                 Math.abs(m.getFrom().getColumn() - m.getTo().getColumn()) > 1;
