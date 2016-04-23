@@ -8,11 +8,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.ExecutionException;
+
 import android.os.AsyncTask;
 
 
 public class UrlConnection {
-    static String URLPath="http://25.7.195.234:8070";
+    static String URLPath="http://104.154.22.179/MyFirstServlet";
     static URL url;
     static HttpURLConnection connection;
     String res;
@@ -23,8 +25,15 @@ public class UrlConnection {
     }
     public String UrlRequest(String... args)
     {
-        new Request().execute(args);
-        return "";
+        //new Request().execute(args);
+        try {
+            return new Request().execute(args).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return "lalalalalalallalalalalalalalal";
     }
 
     class Connection extends AsyncTask<String, String, String> {
@@ -62,18 +71,20 @@ public class UrlConnection {
                     connection.setUseCaches(false);
                     connection.setRequestMethod("GET");
                     connection.setRequestProperty("connection", "Keep-Alive");
-                    /*
+
                     connection.connect();
-                    */
+
+                    /*
                     System.out.println("start connecting");
                     if (connection.getResponseCode() != 200)
                     {
                         throw new RuntimeException("failed to request url");
                     }
-                    if(connection.getResponseCode() != 200)
+                    if(connection.getResponseCode() == 200)
                     {
                         System.out.println("connected");
                     }
+                    */
 
                 }
                 catch (Exception e) {
@@ -103,7 +114,7 @@ public class UrlConnection {
             try
             {
 
-                if (connection.getResponseCode() != 200)
+                if (connection.getResponseCode() == 200)
                 {
                     throw new RuntimeException("failed to request url");
                 }
