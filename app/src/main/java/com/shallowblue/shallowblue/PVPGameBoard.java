@@ -95,25 +95,25 @@ public class PVPGameBoard extends AppCompatActivity {
 
     public void startNewPvpGame(){
         for (int y = 0; y < 8; y++){
-            Pawn start = new Pawn(availPos[1][y], Color.BLACK);
-            flipBlackPieces(start);
+            Pawn start = new Pawn(availPos[1][y], Color.WHITE);
             pvpGameboard[1][y].setImageResource(start.getDrawableId());
             boardSetup.put(availPos[1][y], start);
 
-            Pawn begin = new Pawn(availPos[6][y], Color.WHITE);
+            Pawn begin = new Pawn(availPos[6][y], Color.BLACK);
+            flipBlackPieces(begin);
             pvpGameboard[6][y].setImageResource(begin.getDrawableId());
             boardSetup.put(availPos[6][y], begin);
         }
 
-        Rook setup = new Rook(availPos[0][0], Color.BLACK);
-        flipBlackPieces(setup);
+        Rook setup = new Rook(availPos[0][0], Color.WHITE);
         pvpGameboard[0][0].setImageResource(setup.getDrawableId());
-        Rook setup1 = new Rook(availPos[0][7], Color.BLACK);
-        flipBlackPieces(setup1);
+        Rook setup1 = new Rook(availPos[0][7], Color.WHITE);
         pvpGameboard[0][7].setImageResource(setup1.getDrawableId());
-        Rook setup2 = new Rook(availPos[7][0], Color.WHITE);
+        Rook setup2 = new Rook(availPos[7][0], Color.BLACK);
+        flipBlackPieces(setup2);
         pvpGameboard[7][0].setImageResource(setup2.getDrawableId());
-        Rook setup3 = new Rook(availPos[7][7], Color.WHITE);
+        Rook setup3 = new Rook(availPos[7][7], Color.BLACK);
+        flipBlackPieces(setup3);
         pvpGameboard[7][7].setImageResource(setup3.getDrawableId());
 
         boardSetup.put(availPos[0][0], setup);
@@ -121,15 +121,15 @@ public class PVPGameBoard extends AppCompatActivity {
         boardSetup.put(availPos[7][0], setup2);
         boardSetup.put(availPos[7][7], setup3);
 
-        Knight setup4 = new Knight(availPos[0][1], Color.BLACK);
-        flipBlackPieces(setup4);
+        Knight setup4 = new Knight(availPos[0][1], Color.WHITE);
         pvpGameboard[0][1].setImageResource(setup4.getDrawableId());
-        Knight setup5 = new Knight(availPos[0][6], Color.BLACK);
-        flipBlackPieces(setup5);
+        Knight setup5 = new Knight(availPos[0][6], Color.WHITE);
         pvpGameboard[0][6].setImageResource(setup5.getDrawableId());
-        Knight setup6 = new Knight(availPos[7][1], Color.WHITE);
+        Knight setup6 = new Knight(availPos[7][1], Color.BLACK);
+        flipBlackPieces(setup6);
         pvpGameboard[7][1].setImageResource(setup6.getDrawableId());
-        Knight setup7 = new Knight(availPos[7][6], Color.WHITE);
+        Knight setup7 = new Knight(availPos[7][6], Color.BLACK);
+        flipBlackPieces(setup7);
         pvpGameboard[7][6].setImageResource(setup7.getDrawableId());
 
         boardSetup.put(availPos[0][1], setup4);
@@ -137,15 +137,15 @@ public class PVPGameBoard extends AppCompatActivity {
         boardSetup.put(availPos[7][1], setup6);
         boardSetup.put(availPos[7][6], setup7);
 
-        Bishop setup8 = new Bishop(availPos[0][2], Color.BLACK);
-        flipBlackPieces(setup8);
+        Bishop setup8 = new Bishop(availPos[0][2], Color.WHITE);
         pvpGameboard[0][2].setImageResource(setup8.getDrawableId());
-        Bishop setup9 = new Bishop(availPos[0][5], Color.BLACK);
-        flipBlackPieces(setup9);
+        Bishop setup9 = new Bishop(availPos[0][5], Color.WHITE);
         pvpGameboard[0][5].setImageResource(setup9.getDrawableId());
-        Bishop setup10 = new Bishop(availPos[7][2], Color.WHITE);
+        Bishop setup10 = new Bishop(availPos[7][2], Color.BLACK);
+        flipBlackPieces(setup10);
         pvpGameboard[7][2].setImageResource(setup10.getDrawableId());
-        Bishop setup11 = new Bishop(availPos[7][5], Color.WHITE);
+        Bishop setup11 = new Bishop(availPos[7][5], Color.BLACK);
+        flipBlackPieces(setup11);
         pvpGameboard[7][5].setImageResource(setup11.getDrawableId());
 
         boardSetup.put(availPos[0][2], setup8);
@@ -153,19 +153,19 @@ public class PVPGameBoard extends AppCompatActivity {
         boardSetup.put(availPos[7][2], setup10);
         boardSetup.put(availPos[7][5], setup11);
 
-        Queen setup12 = new Queen(availPos[0][3], Color.BLACK);
-        flipBlackPieces(setup12);
+        Queen setup12 = new Queen(availPos[0][3], Color.WHITE);
         pvpGameboard[0][3].setImageResource(setup12.getDrawableId());
-        Queen setup13 = new Queen(availPos[7][3], Color.WHITE);
+        Queen setup13 = new Queen(availPos[7][3], Color.BLACK);
+        flipBlackPieces(setup13);
         pvpGameboard[7][3].setImageResource(setup13.getDrawableId());
 
         boardSetup.put(availPos[0][3], setup12);
         boardSetup.put(availPos[7][3], setup13);
 
-        King setup14 = new King(availPos[0][4], Color.BLACK);
-        flipBlackPieces(setup14);
+        King setup14 = new King(availPos[0][4], Color.WHITE);
         pvpGameboard[0][4].setImageResource(setup14.getDrawableId());
-        King setup15 = new King(availPos[7][4], Color.WHITE);
+        King setup15 = new King(availPos[7][4], Color.BLACK);
+        flipBlackPieces(setup15);
         pvpGameboard[7][4].setImageResource(setup15.getDrawableId());
 
         boardSetup.put(availPos[0][4], setup14);
@@ -262,7 +262,7 @@ public class PVPGameBoard extends AppCompatActivity {
 
         int multiplier = this.getResources().getDimensionPixelSize(R.dimen.game_board_activity_square_width);
 
-        int moveY = tempPos.getRow() - selPosition.getRow();
+        int moveY = selPosition.getRow() - tempPos.getRow();
         int moveX = tempPos.getColumn() - selPosition.getColumn();
 
         TranslateAnimation mAnimation = new TranslateAnimation(0, moveX * multiplier, 0, moveY * multiplier);
@@ -270,6 +270,7 @@ public class PVPGameBoard extends AppCompatActivity {
         mAnimation.setFillAfter(false);
         selImage.setAnimation(mAnimation);
         selImage.setBackgroundResource(0);
+
 
         Move move = new Move(selPiece, selPosition, tempPos );
         move.setPieceCaptured(tempPiece);
@@ -299,6 +300,7 @@ public class PVPGameBoard extends AppCompatActivity {
                 return;
             }
         }, 1000);
+
 
 
         for (int i = 0; i < selMoves.size(); i++) {
@@ -510,30 +512,40 @@ public class PVPGameBoard extends AppCompatActivity {
         }
     }
 
-    public void animate(Move move){
-        final Piece pMoved = move.getPieceMoved();
-        final Piece pTaken = move.getPieceCaptured();
-        final Position to = move.getFrom();
-        final Position from = move.getTo();
+    public void animate(Position tempPos){
         int multiplier = this.getResources().getDimensionPixelSize(R.dimen.game_board_activity_square_width);
 
-        int moveY = to.getRow() -from.getRow();
-        int moveX = to.getColumn() - from.getColumn();
+        int moveY = selPosition.getRow() - tempPos.getRow();
+        int moveX = tempPos.getColumn() - selPosition.getColumn();
 
         TranslateAnimation mAnimation = new TranslateAnimation(0, moveX * multiplier, 0, moveY * multiplier);
-        mAnimation.setDuration(400);
+        mAnimation.setDuration(1000);
         mAnimation.setFillAfter(false);
-        pvpGameboard[from.getRow()][from.getColumn()].setAnimation(mAnimation);
+        selImage.setAnimation(mAnimation);
+        selImage.setBackgroundResource(0);
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
-                pvpGameboard[from.getRow()][from.getColumn()].setImageResource(0);
-                pvpGameboard[to.getRow()][to.getColumn()].setImageResource(pMoved.getDrawableId());
+                selImage.setImageResource(0);
+                temp.setImageResource(selPiece.getDrawableId());
+                selImage = null;
                 doneWithPrev = true;
+                if (checkBlack.getDrawable() != null || checkWhite.getDrawable() != null){
+                    checkAnimationOut();
+                }
+
+                if (GameBoard.activeGameBoard.inCheckMate()){
+                    gameOver();
+                    return;
+                }
+
+                if (GameBoard.activeGameBoard.inCheck()){
+                    checkAnimationIn();
+                }
                 return;
             }
-        }, 400);
+        }, 1000);
     }
 
     public void pvpsuggalt1(View v){
@@ -594,77 +606,77 @@ public class PVPGameBoard extends AppCompatActivity {
     }
 
     public void initializeBoard(){
-        pvpGameboard[0][0] = (ImageView) findViewById(R.id.pvpgame00);
-        pvpGameboard[0][1] = (ImageView) findViewById(R.id.pvpgame01);
-        pvpGameboard[0][2] = (ImageView) findViewById(R.id.pvpgame02);
-        pvpGameboard[0][3] = (ImageView) findViewById(R.id.pvpgame03);
-        pvpGameboard[0][4] = (ImageView) findViewById(R.id.pvpgame04);
-        pvpGameboard[0][5] = (ImageView) findViewById(R.id.pvpgame05);
-        pvpGameboard[0][6] = (ImageView) findViewById(R.id.pvpgame06);
-        pvpGameboard[0][7] = (ImageView) findViewById(R.id.pvpgame07);
+        pvpGameboard[7][0] = (ImageView) findViewById(R.id.pvpgame00);
+        pvpGameboard[7][1] = (ImageView) findViewById(R.id.pvpgame01);
+        pvpGameboard[7][2] = (ImageView) findViewById(R.id.pvpgame02);
+        pvpGameboard[7][3] = (ImageView) findViewById(R.id.pvpgame03);
+        pvpGameboard[7][4] = (ImageView) findViewById(R.id.pvpgame04);
+        pvpGameboard[7][5] = (ImageView) findViewById(R.id.pvpgame05);
+        pvpGameboard[7][6] = (ImageView) findViewById(R.id.pvpgame06);
+        pvpGameboard[7][7] = (ImageView) findViewById(R.id.pvpgame07);
 
-        pvpGameboard[1][0] = (ImageView) findViewById(R.id.pvpgame10);
-        pvpGameboard[1][1] = (ImageView) findViewById(R.id.pvpgame11);
-        pvpGameboard[1][2] = (ImageView) findViewById(R.id.pvpgame12);
-        pvpGameboard[1][3] = (ImageView) findViewById(R.id.pvpgame13);
-        pvpGameboard[1][4] = (ImageView) findViewById(R.id.pvpgame14);
-        pvpGameboard[1][5] = (ImageView) findViewById(R.id.pvpgame15);
-        pvpGameboard[1][6] = (ImageView) findViewById(R.id.pvpgame16);
-        pvpGameboard[1][7] = (ImageView) findViewById(R.id.pvpgame17);
+        pvpGameboard[6][0] = (ImageView) findViewById(R.id.pvpgame10);
+        pvpGameboard[6][1] = (ImageView) findViewById(R.id.pvpgame11);
+        pvpGameboard[6][2] = (ImageView) findViewById(R.id.pvpgame12);
+        pvpGameboard[6][3] = (ImageView) findViewById(R.id.pvpgame13);
+        pvpGameboard[6][4] = (ImageView) findViewById(R.id.pvpgame14);
+        pvpGameboard[6][5] = (ImageView) findViewById(R.id.pvpgame15);
+        pvpGameboard[6][6] = (ImageView) findViewById(R.id.pvpgame16);
+        pvpGameboard[6][7] = (ImageView) findViewById(R.id.pvpgame17);
 
-        pvpGameboard[2][0] = (ImageView) findViewById(R.id.pvpgame20);
-        pvpGameboard[2][1] = (ImageView) findViewById(R.id.pvpgame21);
-        pvpGameboard[2][2] = (ImageView) findViewById(R.id.pvpgame22);
-        pvpGameboard[2][3] = (ImageView) findViewById(R.id.pvpgame23);
-        pvpGameboard[2][4] = (ImageView) findViewById(R.id.pvpgame24);
-        pvpGameboard[2][5] = (ImageView) findViewById(R.id.pvpgame25);
-        pvpGameboard[2][6] = (ImageView) findViewById(R.id.pvpgame26);
-        pvpGameboard[2][7] = (ImageView) findViewById(R.id.pvpgame27);
+        pvpGameboard[5][0] = (ImageView) findViewById(R.id.pvpgame20);
+        pvpGameboard[5][1] = (ImageView) findViewById(R.id.pvpgame21);
+        pvpGameboard[5][2] = (ImageView) findViewById(R.id.pvpgame22);
+        pvpGameboard[5][3] = (ImageView) findViewById(R.id.pvpgame23);
+        pvpGameboard[5][4] = (ImageView) findViewById(R.id.pvpgame24);
+        pvpGameboard[5][5] = (ImageView) findViewById(R.id.pvpgame25);
+        pvpGameboard[5][6] = (ImageView) findViewById(R.id.pvpgame26);
+        pvpGameboard[5][7] = (ImageView) findViewById(R.id.pvpgame27);
 
-        pvpGameboard[3][0] = (ImageView) findViewById(R.id.pvpgame30);
-        pvpGameboard[3][1] = (ImageView) findViewById(R.id.pvpgame31);
-        pvpGameboard[3][2] = (ImageView) findViewById(R.id.pvpgame32);
-        pvpGameboard[3][3] = (ImageView) findViewById(R.id.pvpgame33);
-        pvpGameboard[3][4] = (ImageView) findViewById(R.id.pvpgame34);
-        pvpGameboard[3][5] = (ImageView) findViewById(R.id.pvpgame35);
-        pvpGameboard[3][6] = (ImageView) findViewById(R.id.pvpgame36);
-        pvpGameboard[3][7] = (ImageView) findViewById(R.id.pvpgame37);
+        pvpGameboard[4][0] = (ImageView) findViewById(R.id.pvpgame30);
+        pvpGameboard[4][1] = (ImageView) findViewById(R.id.pvpgame31);
+        pvpGameboard[4][2] = (ImageView) findViewById(R.id.pvpgame32);
+        pvpGameboard[4][3] = (ImageView) findViewById(R.id.pvpgame33);
+        pvpGameboard[4][4] = (ImageView) findViewById(R.id.pvpgame34);
+        pvpGameboard[4][5] = (ImageView) findViewById(R.id.pvpgame35);
+        pvpGameboard[4][6] = (ImageView) findViewById(R.id.pvpgame36);
+        pvpGameboard[4][7] = (ImageView) findViewById(R.id.pvpgame37);
 
-        pvpGameboard[4][0] = (ImageView) findViewById(R.id.pvpgame40);
-        pvpGameboard[4][1] = (ImageView) findViewById(R.id.pvpgame41);
-        pvpGameboard[4][2] = (ImageView) findViewById(R.id.pvpgame42);
-        pvpGameboard[4][3] = (ImageView) findViewById(R.id.pvpgame43);
-        pvpGameboard[4][4] = (ImageView) findViewById(R.id.pvpgame44);
-        pvpGameboard[4][5] = (ImageView) findViewById(R.id.pvpgame45);
-        pvpGameboard[4][6] = (ImageView) findViewById(R.id.pvpgame46);
-        pvpGameboard[4][7] = (ImageView) findViewById(R.id.pvpgame47);
+        pvpGameboard[3][0] = (ImageView) findViewById(R.id.pvpgame40);
+        pvpGameboard[3][1] = (ImageView) findViewById(R.id.pvpgame41);
+        pvpGameboard[3][2] = (ImageView) findViewById(R.id.pvpgame42);
+        pvpGameboard[3][3] = (ImageView) findViewById(R.id.pvpgame43);
+        pvpGameboard[3][4] = (ImageView) findViewById(R.id.pvpgame44);
+        pvpGameboard[3][5] = (ImageView) findViewById(R.id.pvpgame45);
+        pvpGameboard[3][6] = (ImageView) findViewById(R.id.pvpgame46);
+        pvpGameboard[3][7] = (ImageView) findViewById(R.id.pvpgame47);
 
-        pvpGameboard[5][0] = (ImageView) findViewById(R.id.pvpgame50);
-        pvpGameboard[5][1] = (ImageView) findViewById(R.id.pvpgame51);
-        pvpGameboard[5][2] = (ImageView) findViewById(R.id.pvpgame52);
-        pvpGameboard[5][3] = (ImageView) findViewById(R.id.pvpgame53);
-        pvpGameboard[5][4] = (ImageView) findViewById(R.id.pvpgame54);
-        pvpGameboard[5][5] = (ImageView) findViewById(R.id.pvpgame55);
-        pvpGameboard[5][6] = (ImageView) findViewById(R.id.pvpgame56);
-        pvpGameboard[5][7] = (ImageView) findViewById(R.id.pvpgame57);
+        pvpGameboard[2][0] = (ImageView) findViewById(R.id.pvpgame50);
+        pvpGameboard[2][1] = (ImageView) findViewById(R.id.pvpgame51);
+        pvpGameboard[2][2] = (ImageView) findViewById(R.id.pvpgame52);
+        pvpGameboard[2][3] = (ImageView) findViewById(R.id.pvpgame53);
+        pvpGameboard[2][4] = (ImageView) findViewById(R.id.pvpgame54);
+        pvpGameboard[2][5] = (ImageView) findViewById(R.id.pvpgame55);
+        pvpGameboard[2][6] = (ImageView) findViewById(R.id.pvpgame56);
+        pvpGameboard[2][7] = (ImageView) findViewById(R.id.pvpgame57);
 
-        pvpGameboard[6][0] = (ImageView) findViewById(R.id.pvpgame60);
-        pvpGameboard[6][1] = (ImageView) findViewById(R.id.pvpgame61);
-        pvpGameboard[6][2] = (ImageView) findViewById(R.id.pvpgame62);
-        pvpGameboard[6][3] = (ImageView) findViewById(R.id.pvpgame63);
-        pvpGameboard[6][4] = (ImageView) findViewById(R.id.pvpgame64);
-        pvpGameboard[6][5] = (ImageView) findViewById(R.id.pvpgame65);
-        pvpGameboard[6][6] = (ImageView) findViewById(R.id.pvpgame66);
-        pvpGameboard[6][7] = (ImageView) findViewById(R.id.pvpgame67);
+        pvpGameboard[1][0] = (ImageView) findViewById(R.id.pvpgame60);
+        pvpGameboard[1][1] = (ImageView) findViewById(R.id.pvpgame61);
+        pvpGameboard[1][2] = (ImageView) findViewById(R.id.pvpgame62);
+        pvpGameboard[1][3] = (ImageView) findViewById(R.id.pvpgame63);
+        pvpGameboard[1][4] = (ImageView) findViewById(R.id.pvpgame64);
+        pvpGameboard[1][5] = (ImageView) findViewById(R.id.pvpgame65);
+        pvpGameboard[1][6] = (ImageView) findViewById(R.id.pvpgame66);
+        pvpGameboard[1][7] = (ImageView) findViewById(R.id.pvpgame67);
 
-        pvpGameboard[7][0] = (ImageView) findViewById(R.id.pvpgame70);
-        pvpGameboard[7][1] = (ImageView) findViewById(R.id.pvpgame71);
-        pvpGameboard[7][2] = (ImageView) findViewById(R.id.pvpgame72);
-        pvpGameboard[7][3] = (ImageView) findViewById(R.id.pvpgame73);
-        pvpGameboard[7][4] = (ImageView) findViewById(R.id.pvpgame74);
-        pvpGameboard[7][5] = (ImageView) findViewById(R.id.pvpgame75);
-        pvpGameboard[7][6] = (ImageView) findViewById(R.id.pvpgame76);
-        pvpGameboard[7][7] = (ImageView) findViewById(R.id.pvpgame77);
+        pvpGameboard[0][0] = (ImageView) findViewById(R.id.pvpgame70);
+        pvpGameboard[0][1] = (ImageView) findViewById(R.id.pvpgame71);
+        pvpGameboard[0][2] = (ImageView) findViewById(R.id.pvpgame72);
+        pvpGameboard[0][3] = (ImageView) findViewById(R.id.pvpgame73);
+        pvpGameboard[0][4] = (ImageView) findViewById(R.id.pvpgame74);
+        pvpGameboard[0][5] = (ImageView) findViewById(R.id.pvpgame75);
+        pvpGameboard[0][6] = (ImageView) findViewById(R.id.pvpgame76);
+        pvpGameboard[0][7] = (ImageView) findViewById(R.id.pvpgame77);
 
         for (int x = 0; x < 8; x++){
             for (int y = 0; y < 8; y++){
