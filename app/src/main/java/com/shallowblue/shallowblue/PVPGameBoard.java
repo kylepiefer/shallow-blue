@@ -2,6 +2,7 @@ package com.shallowblue.shallowblue;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -796,13 +797,7 @@ public class PVPGameBoard extends AppCompatActivity {
     }
 
     public void pvpsuggalt1(View v){
-        if (GameBoard.activeGameBoard.inCheck(Color.BLACK,true)){
-            Toast.makeText(PVPGameBoard.this, "Yay!! It works!",
-                    Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(PVPGameBoard.this, "Damn...",
-                    Toast.LENGTH_SHORT).show();
-        }
+
         //Intent openPawnPromotion = new Intent(getApplicationContext(),PawnPromotion.class);
         //startActivity(openPawnPromotion);
         //new UrlConnection().new Request().execute(GameBoard.activeGameBoard.pack());
@@ -820,6 +815,9 @@ public class PVPGameBoard extends AppCompatActivity {
 
     public void pvpstarthelp1(View v){
         //new UrlConnection().new Connection().execute("connect");
+
+        AsyncTask task = new AIMoveTask().execute(GameBoard.activeGameBoard);
+
         Toast.makeText(PVPGameBoard.this, "Sorry, this function is still being worked on.",
                 Toast.LENGTH_SHORT).show();
 
@@ -828,6 +826,8 @@ public class PVPGameBoard extends AppCompatActivity {
 
     public void pvpstarthelp2(View v){
         //new UrlConnection().new Connection().execute("connect");
+
+
         Toast.makeText(PVPGameBoard.this, "Sorry, this function is still being worked on.",
                 Toast.LENGTH_SHORT).show();
         return;
@@ -1039,6 +1039,22 @@ public class PVPGameBoard extends AppCompatActivity {
                     finish();
                 }
             }
+        }
+    }
+
+    private class AIMoveTask extends AsyncTask<GameBoard, Integer, Move> {
+        protected Move doInBackground(GameBoard... gameBoards) {
+            GameBoard gameBoard = gameBoards[0];
+            AIMove ai = AIMoveFactory.newAIMove();
+            List<Move> moves = ai.move(gameBoard, 3);
+            if (moves.isEmpty()) return null;
+            Move move = moves.get(0);
+            move = new Move(gameBoard.getGameBoard().get(move.getFrom()), move.getFrom(), move.getTo());
+            return move;
+        }
+
+        protected void onPostExecute(Move move) {
+
         }
     }
 }
