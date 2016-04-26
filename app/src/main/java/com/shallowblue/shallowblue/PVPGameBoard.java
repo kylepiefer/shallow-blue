@@ -37,6 +37,7 @@ public class PVPGameBoard extends AppCompatActivity {
     public final int redHighlight = R.drawable.board_square_highlight_possible;
     public final int greenHighlight = R.drawable.board_square_highlight_legal;
     public final int yellowBoardSelection = R.drawable.board_square_outline;
+    public Move castle;
     ImageView temp;
     boolean doneWithPrev;
     private List<Move> redoMoves;
@@ -272,8 +273,17 @@ public class PVPGameBoard extends AppCompatActivity {
         selImage.setBackgroundResource(0);
 
 
-        Move move = new Move(selPiece, selPosition, tempPos );
+        Move move = new Move(selPiece, selPosition, tempPos);
+
+        if (GameBoard.activeGameBoard.isCastle(move)){
+            castle = move;
+        } else {
+            castle = null;
+        }
+
         move.setPieceCaptured(tempPiece);
+
+
         GameBoard.activeGameBoard.move(move);
         GameBoard.activeGameBoard.addMove(move);
         GameBoard.activeGameBoard.switchPlayerToMove();
@@ -297,7 +307,34 @@ public class PVPGameBoard extends AppCompatActivity {
                 if (GameBoard.activeGameBoard.inCheck()){
                     checkAnimationIn();
                 }
+
+                if (castle != null){
+                    if (castle.getTo().getColumn() > 4){
+                        Position pastRook = new Position(castle.getTo().getRow(),7);
+                        Position newRook = new Position(castle.getTo().getRow(),5);
+                        Piece rook = boardSetup.get(pastRook);
+                        castle.setPieceCaptured(rook);
+                        rook.setPosition(newRook);
+                        boardSetup.put(pastRook,null);
+                        boardSetup.put(newRook,rook);
+                        pvpGameboard[castle.getTo().getRow()][7].setImageResource(0);
+                        pvpGameboard[castle.getTo().getRow()][5].
+                                setImageResource(rook.getDrawableId());
+                    } else {
+                        Position pastRook = new Position(castle.getTo().getRow(),0);
+                        Position newRook = new Position(castle.getTo().getRow(),3);
+                        Piece rook = boardSetup.get(pastRook);
+                        castle.setPieceCaptured(rook);
+                        rook.setPosition(newRook);
+                        boardSetup.put(pastRook,null);
+                        boardSetup.put(newRook,rook);
+                        pvpGameboard[castle.getTo().getRow()][0].setImageResource(0);
+                        pvpGameboard[castle.getTo().getRow()][3].
+                                setImageResource(rook.getDrawableId());
+                    }
+                }
                 return;
+
             }
         }, 1000);
 
