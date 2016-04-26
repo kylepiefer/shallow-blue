@@ -45,21 +45,21 @@ public class GameBoardActivity extends AppCompatActivity {
         this.toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
         this.savedGameManager = new SavedGameManager();
 
-        // use intent extras
-        if (getIntent().hasExtra("Difficulty")) {
-            this.difficulty = getIntent().getIntExtra("Difficulty", 1);
+        Intent settings = getIntent();
+        if (settings.hasExtra("Difficulty")) {
+            this.difficulty = settings.getIntExtra("Difficulty", 1);
         } else {
             this.difficulty = 0;
         }
 
-        String colorString = getIntent().getStringExtra("Color");
+        String colorString = settings.getStringExtra("Color");
         if (colorString.equalsIgnoreCase("White"))
             this.playerColor = Color.WHITE;
         else
             this.playerColor = Color.BLACK;
 
         // this is needed to handle the game logic
-        String gameType = getIntent().getStringExtra("Type");
+        String gameType = settings.getStringExtra("Type");
         if (gameType != null && gameType.equalsIgnoreCase("Custom")) {
             // Hack to make this work with the wrong positions from CustomGame activity.
             // Correct the positions.
@@ -71,11 +71,13 @@ public class GameBoardActivity extends AppCompatActivity {
                 correctedBoard.put(corrected, piece);
             }
             this.gameBoard = new GameBoard(correctedBoard);
-            GameBoard.customPositions = null;
-            GameBoard.activeGameBoard = null;
+        } else if (gameType != null && gameType.equalsIgnoreCase("Load Game")){
+            this.gameBoard = new GameBoard(GameBoard.activeGameBoard);
         } else {
             this.gameBoard = new GameBoard();
         }
+        GameBoard.customPositions = null;
+        GameBoard.activeGameBoard = null;
 
         // this is needed to map logical squares to images on the screen
         createGameBoardActivitySquareArray(this.playerColor);
@@ -545,7 +547,9 @@ public class GameBoardActivity extends AppCompatActivity {
     }
 
     public void optionsScreen(View v){
+        GameBoard.activeGameBoard = this.getGameBoard();
         Intent openOptions = new Intent(getApplicationContext(),OptionsPopUpWindow.class);
+        openOptions.putExtra("Game Mode", "PVC");
         startActivity(openOptions);
     }
 

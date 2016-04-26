@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -12,10 +13,13 @@ import android.widget.ListView;
 import java.util.List;
 
 public class LoadGameActivity extends AppCompatActivity {
+    private String gameMode;
 
     private SavedGameManager savedGameManager;
 
     public Intent nextActivity;
+
+    private LoadGameActivity loadGameActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +58,33 @@ public class LoadGameActivity extends AppCompatActivity {
                 nextActivity = new Intent(getApplicationContext(), GameBoardActivity.class);
             }
         }
+
+        if (check.hasExtra("Game Mode")) {
+            String type = check.getStringExtra("Game Mode");
+            this.gameMode = type;
+        }
+
+        loadGameActivity = this;
     }
+
+    public void startGame() {
+        Intent startGame;
+        if (gameMode.equals("PVC")) {
+            startGame = new Intent(getApplicationContext(), GameBoardActivity.class);
+            startGame.putExtra("Game Mode", "PVC");
+        } else if (gameMode.equals("PVP")) {
+            startGame = new Intent(getApplicationContext(), PVPGameBoard.class);
+            startGame.putExtra("Game Mode", "PVP");
+        } else {
+            startGame = new Intent(getApplicationContext(), GameBoardActivity.class);
+            startGame.putExtra("Game Mode", "CVC");
+        }
+
+        startGame.putExtra("Type", "Load Game");
+        startActivity(startGame);
+        finish();
+    }
+
     public void loadSavedGame(View button) {
         startActivity(nextActivity);
     }
@@ -66,7 +96,10 @@ public class LoadGameActivity extends AppCompatActivity {
     private AdapterView.OnItemClickListener fileNameClickedHandler = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            // TODO: handle event
+            Log.d("ShallowBlue", "touched!");
+            String fileName = (String) parent.getItemAtPosition(position);
+            boolean result = savedGameManager.loadGame(loadGameActivity, fileName);
+            if (result) startGame();
         }
     };
 }

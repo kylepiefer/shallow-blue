@@ -1,5 +1,6 @@
 package com.shallowblue.shallowblue;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -17,7 +18,9 @@ import java.util.Map;
 
 public class SaveGame extends AppCompatActivity {
 
-    EditText saveText;
+    private String gameMode;
+    private EditText saveText;
+    private SavedGameManager savedGameManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,16 +36,33 @@ public class SaveGame extends AppCompatActivity {
 
         getWindow().setLayout((int) (width * 0.8), (int) (height * 0.3));
         saveText = (EditText) findViewById(R.id.savename);
+
+        Intent intent = getIntent();
+        if (intent.hasExtra("Game Mode")) {
+            this.gameMode = intent.getStringExtra("Game Mode");
+        } else {
+            this.gameMode = null;
+        }
+
+        this.savedGameManager = new SavedGameManager();
     }
 
     public void sgSaveClicked (View v){
         String filename = saveText.getText().toString();
+
+        if (this.gameMode != null && this.gameMode.equals("PVC")) {
+            boolean result = savedGameManager.saveGame(this, filename, GameBoard.activeGameBoard);
+            GameBoard.activeGameBoard = null;
+            if (result) finish();
+            return;
+        }
         File path = getFilesDir();
         if (filename.length() < 5){
             Toast.makeText(SaveGame.this, "Please enter a name more than 5 characters.",
                     Toast.LENGTH_SHORT).show();
             return;
         }
+
         File[] allfiles = path.listFiles();
         for (int i = 0; i < allfiles.length; i++){
             if (allfiles[i].getName().equals(filename)){
