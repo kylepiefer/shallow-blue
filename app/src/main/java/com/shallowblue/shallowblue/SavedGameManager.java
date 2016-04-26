@@ -10,7 +10,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -100,25 +102,11 @@ public class SavedGameManager {
     public boolean saveGame(Context context, GameBoard game) {
         if (context == null || game == null) return false;
 
-        String gameData = game.pack();
-        if (gameData == null || gameData.isEmpty()) return false;
-
-        byte[] bytes = getBytesFromString(gameData);
-        if (bytes == null) return false;
-
-        // TODO: Name based on timestamp (remove comments and hardcode.
-        /*Calendar calendar = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-        String filename = sdf.format(calendar.getTime());*/
-        String filename = "savedGame";
+        String filename = sdf.format(calendar.getTime());
 
-        File file = getFile(filename, context);
-        if (file == null) return false;
-
-        boolean success = writeBytesToFile(bytes, file);
-        if (!success) return false;
-
-        return true;
+        return saveGame(context, filename, game);
     }
 
     private String getStringFromBytes(byte[] bytes) {
@@ -139,7 +127,6 @@ public class SavedGameManager {
 
     public boolean loadGame(Context context, String filename) {
         if (context == null || filename == null || filename.isEmpty()) return false;
-        filename = "savedGame"; // TODO: Remove this.
 
         File file = getFile(filename, context);
         if (file == null) return false;
@@ -158,6 +145,24 @@ public class SavedGameManager {
         }
 
         GameBoard.activeGameBoard = gameBoard;
+        return true;
+    }
+
+    public boolean saveGame(Context context, String filename, GameBoard game) {
+        if (context == null || game == null || filename == null || filename.isEmpty()) return false;
+
+        String gameData = game.pack();
+        if (gameData == null || gameData.isEmpty()) return false;
+
+        byte[] bytes = getBytesFromString(gameData);
+        if (bytes == null) return false;
+
+        File file = getFile(filename, context);
+        if (file == null) return false;
+
+        boolean success = writeBytesToFile(bytes, file);
+        if (!success) return false;
+
         return true;
     }
 

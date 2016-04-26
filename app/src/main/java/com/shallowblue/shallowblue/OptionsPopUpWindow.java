@@ -11,6 +11,8 @@ import android.widget.Spinner;
 
 public class OptionsPopUpWindow extends AppCompatActivity {
 
+    private String gameMode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,10 +35,17 @@ public class OptionsPopUpWindow extends AppCompatActivity {
         opponentSpinner.setAdapter(adapter);
         suggestionSpinner.setAdapter(adapter);
 
+        Intent intent = getIntent();
+        if (intent.hasExtra("Game Mode")) {
+            this.gameMode = intent.getStringExtra("Game Mode");
+        } else {
+            this.gameMode = null;
+        }
     }
 
     public void opSaveGame(View v){
         Intent openSaveWindow = new Intent(getApplicationContext(), SaveGame.class);
+        if (this.gameMode != null) openSaveWindow.putExtra("Game Mode", this.gameMode);
         startActivity(openSaveWindow);
     }
 
