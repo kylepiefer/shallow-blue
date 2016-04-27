@@ -58,19 +58,9 @@ public class GameBoardActivity extends AppCompatActivity {
         else
             this.playerColor = Color.WHITE;
 
-        // this is needed to handle the game logic
         String gameType = settings.getStringExtra("Type");
         if (gameType != null && gameType.equalsIgnoreCase("Custom")) {
-            // Hack to make this work with the wrong positions from CustomGame activity.
-            // Correct the positions.
-            Map<Position, Piece> correctedBoard = new HashMap<Position, Piece>();
-            for (Position original : GameBoard.customPositions.keySet()) {
-                Position corrected = new Position(7 - original.getRow(), original.getColumn());
-                Piece piece = GameBoard.customPositions.get(original);
-                piece.setPosition(corrected);
-                correctedBoard.put(corrected, piece);
-            }
-            this.gameBoard = new GameBoard(correctedBoard);
+            this.gameBoard = new GameBoard(GameBoard.customPositions);
         } else if (gameType != null && gameType.equalsIgnoreCase("Load Game")){
             this.gameBoard = new GameBoard(GameBoard.activeGameBoard);
         } else {
