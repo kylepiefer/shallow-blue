@@ -29,7 +29,7 @@ public class GameBoardActivity extends AppCompatActivity {
     private ArrayList<GameBoardActivitySquare> highlightedSquares;
     private Color playerColor;
     private int difficulty = 0;
-    private Toast toast;
+    private Toast toast = null;
     private SavedGameManager savedGameManager;
     private int movesToUndo = 0;
     private int movesToRedo = 0;
@@ -42,7 +42,6 @@ public class GameBoardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game_board);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        this.toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
         this.savedGameManager = new SavedGameManager();
 
         Intent settings = getIntent();
@@ -447,6 +446,7 @@ public class GameBoardActivity extends AppCompatActivity {
     }
 
     private void showToast(String message) {
+        if (this.toast == null) this.toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
         CharSequence text = (CharSequence)message;
         this.toast.setText(text);
         this.toast.setGravity(Gravity.BOTTOM, 0, 0);
