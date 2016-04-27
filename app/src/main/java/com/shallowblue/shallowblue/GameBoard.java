@@ -298,7 +298,7 @@ public class GameBoard {
         return this.explanation;
     }
 
-    private boolean isLegalEnPassant(Move m) {
+    public boolean isLegalEnPassant(Move m) {
         if (!(m.getPieceMoved() instanceof Pawn)) return false; // must being moving a pawn
         if (m.getFrom().getColumn() == m.getTo().getColumn())
             return false; // must be moving diagonally

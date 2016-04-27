@@ -2,6 +2,7 @@ package com.shallowblue.shallowblue;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -38,6 +39,7 @@ public class PVPGameBoard extends AppCompatActivity {
     public final int greenHighlight = R.drawable.board_square_highlight_legal;
     public final int yellowBoardSelection = R.drawable.board_square_outline;
     public Move castle;
+    public Move passant;
     ImageView temp;
     boolean doneWithPrev;
     private List<Move> redoMoves;
@@ -281,6 +283,12 @@ public class PVPGameBoard extends AppCompatActivity {
             castle = null;
         }
 
+        if (GameBoard.activeGameBoard.isLegalEnPassant(move)){
+            passant = move;
+        } else {
+            passant = null;
+        }
+
         move.setPieceCaptured(tempPiece);
 
 
@@ -332,6 +340,17 @@ public class PVPGameBoard extends AppCompatActivity {
                         pvpGameboard[castle.getTo().getRow()][3].
                                 setImageResource(rook.getDrawableId());
                     }
+                }
+
+                if (passant != null){
+                    Position toPos = passant.getTo();
+                    Position fromPos = passant.getFrom();
+                    Position takenPawnPos;
+                    takenPawnPos = new Position(fromPos.getRow(), toPos.getColumn());
+                    Piece takenPawn = boardSetup.get(takenPawnPos);
+                    passant.setPieceCaptured(takenPawn);
+                    boardSetup.put(takenPawnPos,null);
+                    pvpGameboard[takenPawnPos.getRow()][takenPawnPos.getColumn()].setImageResource(0);
                 }
                 return;
 
@@ -386,7 +405,16 @@ public class PVPGameBoard extends AppCompatActivity {
             from.setImageResource(moved.getDrawableId());
             moved.setPosition(fromPos);
             boardSetup.put(fromPos,moved);
-            if (taken != null && !GameBoard.activeGameBoard.isCastle(prev)) {
+            boolean enPassantcheck = false;
+            if (moved instanceof Pawn){
+                if (taken instanceof Pawn){
+                    if (toPos != taken.getPosition()){
+                        enPassantcheck = true;
+                    }
+                }
+            }
+
+            if (taken != null && !GameBoard.activeGameBoard.isCastle(prev) && !enPassantcheck) {
                 to.setImageResource(taken.getDrawableId());
                 taken.setPosition(toPos);
                 boardSetup.put(toPos, taken);
@@ -417,8 +445,16 @@ public class PVPGameBoard extends AppCompatActivity {
                     ImageView rook = pvpGameboard[toPos.getRow()][0];
                     rook.setImageResource(taken.getDrawableId());
                 }
-            }
-            else {
+            } else if(enPassantcheck) {
+                Position takenPawnPos;
+                takenPawnPos = new Position(fromPos.getRow(),toPos.getColumn());
+                boardSetup.put(takenPawnPos,taken);
+                taken.setPosition(takenPawnPos);
+                pvpGameboard[takenPawnPos.getRow()][takenPawnPos.getColumn()].
+                        setImageResource(taken.getDrawableId());
+                pvpGameboard[toPos.getRow()][toPos.getColumn()].setImageResource(0);
+                boardSetup.put(toPos, null);
+            } else {
                 to.setImageResource(0);
                 boardSetup.put(toPos,null);
             }
@@ -465,7 +501,17 @@ public class PVPGameBoard extends AppCompatActivity {
             from.setImageResource(moved.getDrawableId());
             moved.setPosition(fromPos);
             boardSetup.put(fromPos, moved);
-            if (taken != null && !GameBoard.activeGameBoard.isCastle(prev)) {
+            boolean enPassantcheck = false;
+
+            if (moved instanceof Pawn){
+                if (taken instanceof Pawn){
+                    if (toPos != taken.getPosition()){
+                        enPassantcheck = true;
+                    }
+                }
+            }
+
+            if (taken != null && !GameBoard.activeGameBoard.isCastle(prev) && !enPassantcheck) {
                 to.setImageResource(taken.getDrawableId());
                 taken.setPosition(toPos);
                 boardSetup.put(toPos, taken);
@@ -495,8 +541,16 @@ public class PVPGameBoard extends AppCompatActivity {
                     ImageView rook = pvpGameboard[toPos.getRow()][0];
                     rook.setImageResource(taken.getDrawableId());
                 }
-            }
-            else {
+            } else if(enPassantcheck) {
+                Position takenPawnPos;
+                takenPawnPos = new Position(fromPos.getRow(), toPos.getColumn());
+                boardSetup.put(takenPawnPos, taken);
+                taken.setPosition(takenPawnPos);
+                pvpGameboard[takenPawnPos.getRow()][takenPawnPos.getColumn()].
+                        setImageResource(taken.getDrawableId());
+                pvpGameboard[toPos.getRow()][toPos.getColumn()].setImageResource(0);
+                boardSetup.put(toPos, null);
+            } else {
                 to.setImageResource(0);
                 boardSetup.put(toPos,null);
             }
@@ -536,7 +590,18 @@ public class PVPGameBoard extends AppCompatActivity {
             ImageView from = pvpGameboard[toPos.getRow()][toPos.getColumn()];
             Piece moved = prev.getPieceMoved();
             Piece taken = prev.getPieceCaptured();
-            if (taken != null && !GameBoard.activeGameBoard.isCastle(prev)){
+
+            boolean enPassantcheck = false;
+
+            if (moved instanceof Pawn){
+                if (taken instanceof Pawn){
+                    if (toPos != taken.getPosition()){
+                        enPassantcheck = true;
+                    }
+                }
+            }
+
+            if (taken != null && !GameBoard.activeGameBoard.isCastle(prev) && !enPassantcheck){
                 from.setImageResource(moved.getDrawableId());
                 moved.setPosition(toPos);
                 boardSetup.put(toPos,moved);
@@ -570,6 +635,15 @@ public class PVPGameBoard extends AppCompatActivity {
                     boardSetup.put(rookSpot, null);
                     taken.setPosition(newRookSpot);
                 }
+            } else if(enPassantcheck){
+                from.setImageResource(moved.getDrawableId());
+                to.setImageResource(0);
+                boardSetup.put(fromPos,null);
+                boardSetup.put(toPos,moved);
+                moved.setPosition(toPos);
+                Position pawnTaken = new Position(fromPos.getRow(),toPos.getColumn());
+                boardSetup.put(pawnTaken,null);
+                pvpGameboard[fromPos.getRow()][toPos.getColumn()].setImageResource(0);
             }
 
             turn = Color.BLACK;
@@ -607,7 +681,17 @@ public class PVPGameBoard extends AppCompatActivity {
             ImageView from = pvpGameboard[toPos.getRow()][toPos.getColumn()];
             Piece moved = prev.getPieceMoved();
             Piece taken = prev.getPieceCaptured();
-            if (taken != null && !GameBoard.activeGameBoard.isCastle(prev)){
+
+            boolean enPassantcheck = false;
+            if (moved instanceof Pawn){
+                if (taken instanceof Pawn){
+                    if (toPos != taken.getPosition()){
+                        enPassantcheck = true;
+                    }
+                }
+            }
+
+            if (taken != null && !GameBoard.activeGameBoard.isCastle(prev) && !enPassantcheck){
                 from.setImageResource(moved.getDrawableId());
                 moved.setPosition(toPos);
                 boardSetup.put(toPos,moved);
@@ -642,6 +726,19 @@ public class PVPGameBoard extends AppCompatActivity {
                     boardSetup.put(rookSpot, null);
                     taken.setPosition(newRookSpot);
                 }
+            } else if(enPassantcheck){
+                from.setImageResource(moved.getDrawableId());
+                to.setImageResource(0);
+                boardSetup.put(fromPos,null);
+                boardSetup.put(toPos,moved);
+                moved.setPosition(toPos);
+                Position pawnTaken = new Position(fromPos.getRow(),toPos.getColumn());
+                boardSetup.put(pawnTaken,null);
+                pvpGameboard[fromPos.getRow()][toPos.getColumn()].setImageResource(0);
+            }
+
+            if (boardSetup.get(fromPos) != null){
+                Toast.makeText(this, "Yep, not working",Toast.LENGTH_SHORT).show();
             }
 
             turn = Color.WHITE;
@@ -700,13 +797,7 @@ public class PVPGameBoard extends AppCompatActivity {
     }
 
     public void pvpsuggalt1(View v){
-        if (GameBoard.activeGameBoard.inCheck(Color.BLACK,true)){
-            Toast.makeText(PVPGameBoard.this, "Yay!! It works!",
-                    Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(PVPGameBoard.this, "Damn...",
-                    Toast.LENGTH_SHORT).show();
-        }
+
         //Intent openPawnPromotion = new Intent(getApplicationContext(),PawnPromotion.class);
         //startActivity(openPawnPromotion);
         //new UrlConnection().new Request().execute(GameBoard.activeGameBoard.pack());
@@ -716,14 +807,17 @@ public class PVPGameBoard extends AppCompatActivity {
     }
 
     public void pvpsuggalt2(View v){
-        new UrlConnection().new Request().execute(GameBoard.activeGameBoard.pack());
+        //new UrlConnection().new Request().execute(GameBoard.activeGameBoard.pack());
         Toast.makeText(PVPGameBoard.this, "Sorry, this function is still being worked on.",
                 Toast.LENGTH_SHORT).show();
         return;
     }
 
     public void pvpstarthelp1(View v){
-        new UrlConnection().new Connection().execute("connect");
+        //new UrlConnection().new Connection().execute("connect");
+
+        AsyncTask task = new AIMoveTask().execute(GameBoard.activeGameBoard);
+
         Toast.makeText(PVPGameBoard.this, "Sorry, this function is still being worked on.",
                 Toast.LENGTH_SHORT).show();
 
@@ -731,7 +825,9 @@ public class PVPGameBoard extends AppCompatActivity {
     }
 
     public void pvpstarthelp2(View v){
-        new UrlConnection().new Connection().execute("connect");
+        //new UrlConnection().new Connection().execute("connect");
+
+
         Toast.makeText(PVPGameBoard.this, "Sorry, this function is still being worked on.",
                 Toast.LENGTH_SHORT).show();
         return;
@@ -943,6 +1039,22 @@ public class PVPGameBoard extends AppCompatActivity {
                     finish();
                 }
             }
+        }
+    }
+
+    private class AIMoveTask extends AsyncTask<GameBoard, Integer, Move> {
+        protected Move doInBackground(GameBoard... gameBoards) {
+            GameBoard gameBoard = gameBoards[0];
+            AIMove ai = AIMoveFactory.newAIMove();
+            List<Move> moves = ai.move(gameBoard, 3);
+            if (moves.isEmpty()) return null;
+            Move move = moves.get(0);
+            move = new Move(gameBoard.getGameBoard().get(move.getFrom()), move.getFrom(), move.getTo());
+            return move;
+        }
+
+        protected void onPostExecute(Move move) {
+
         }
     }
 }
