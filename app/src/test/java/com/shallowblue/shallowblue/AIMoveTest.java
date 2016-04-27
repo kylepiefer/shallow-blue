@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * Created by gauch on 4/7/2016.
  */
-public class AIMoveTest extends AIMove{
+public class AIMoveTest {
 
     @Test
     public void comparatorTest() {
@@ -24,12 +24,12 @@ public class AIMoveTest extends AIMove{
                 new AbstractMap.SimpleEntry<Double, Move>(1.0,null)
         ));
 
-        Collections.sort(input, MIN_COMPARATOR);
+        Collections.sort(input, AIMove.MIN_COMPARATOR);
         Assert.assertTrue(input.get(0).getKey() == 1.0);
         Assert.assertTrue(input.get(1).getKey() == 2.0);
         Assert.assertTrue(input.get(2).getKey() == 3.0);
 
-        Collections.sort(input, MAX_COMPARATOR);
+        Collections.sort(input, AIMove.MAX_COMPARATOR);
         Assert.assertTrue(input.get(0).getKey() == 3.0);
         Assert.assertTrue(input.get(1).getKey() == 2.0);
         Assert.assertTrue(input.get(2).getKey() == 1.0);
@@ -38,6 +38,6 @@ public class AIMoveTest extends AIMove{
 
     @Test
     public void moveTest() {
-        Assert.assertTrue(new AIMove().move(new GameBoard(), 0).size() > 0);
+        Assert.assertTrue(AIMoveFactory.newAIMove(false, 1.0).move(new GameBoard(), 0).size() > 0);
     }
 }
