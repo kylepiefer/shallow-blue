@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * Created by gauch on 4/7/2016.
  */
-public class AIMoveTest extends AIMove{
+public class AIMoveTest extends AIMoveLocal{
 
     @Test
     public void comparatorTest() {
@@ -38,6 +38,6 @@ public class AIMoveTest extends AIMove{
 
     @Test
     public void moveTest() {
-        Assert.assertTrue(new AIMove().move(new GameBoard(), 0).size() > 0);
+        Assert.assertTrue(new AIMoveLocal().move(new GameBoard(), 0).size() > 0);
     }
 }
