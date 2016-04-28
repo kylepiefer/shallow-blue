@@ -151,8 +151,8 @@ public class GameBoard {
         if (clearRedoStack) redoStack.clear();
 
         // Handle the GameBoard
-        //Piece moved = gameBoard.get(m.getFrom());
-        Piece moved = m.getPieceMoved();
+        Piece moved = gameBoard.get(m.getFrom());
+        m = new Move(moved, m.getFrom(), m.getTo());
         executeMoveOnBoard(m);
 
         if (isCastle(m)) {
@@ -171,15 +171,6 @@ public class GameBoard {
                 //Log.i("ShallowBlue", "Test");
             }
         }
-
-        /*
-        // Make sure we note that they have moved
-        if (moved instanceof King) {
-            ((King) m.getPieceMoved()).setFirstMove(m);
-        } else if (moved instanceof Rook) {
-            ((Rook) m.getPieceMoved()).setFirstMove(m);
-        }
-        */
 
         // Handle bookkeeping.
         gameHistory.add(m);
