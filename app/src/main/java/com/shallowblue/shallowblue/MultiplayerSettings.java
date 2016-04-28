@@ -32,7 +32,7 @@ public class MultiplayerSettings extends AppCompatActivity {
         Intent creatinggame = new Intent(getApplicationContext(), CustomGame.class);
         Bundle playercount = new Bundle();
         playercount.putInt("players", 2);
-        creatinggame.putExtra("type",playercount);
+        creatinggame.putExtra("Type",playercount);
         startActivity(creatinggame);
     }
 

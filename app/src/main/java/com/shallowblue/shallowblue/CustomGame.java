@@ -202,10 +202,20 @@ public class CustomGame extends AppCompatActivity {
                     Toast.LENGTH_SHORT).show();
             return;
         }
+        if (GameBoard.activeGameBoard.inStaleMate()){
+            Toast.makeText(CustomGame.this, "You can't start a game without legal moves for a " +
+                    "player.", Toast.LENGTH_SHORT).show();
+            return;
+        }
         GameBoard.activeGameBoard.switchPlayerToMove();
         if (GameBoard.activeGameBoard.inCheck()){
             Toast.makeText(CustomGame.this,"You can't start a game with a king in check.",
                     Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (GameBoard.activeGameBoard.inStaleMate()){
+            Toast.makeText(CustomGame.this, "You can't start a game without legal moves for a " +
+                    "player.", Toast.LENGTH_SHORT).show();
             return;
         }
 

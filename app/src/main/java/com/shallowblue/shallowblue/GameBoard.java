@@ -716,6 +716,22 @@ public class GameBoard {
         return legalMoves.isEmpty() && inCheck();
     }
 
+    public boolean inStaleMate(){
+        boolean answer = false;
+        if (!inCheck() && getAllLegalMoves().isEmpty()){
+            answer = true;
+        }
+        List<Piece> allPieces = new ArrayList<>();
+        for (Position p : gameBoard.keySet()){
+            if (gameBoard.get(p) != null){
+                Piece piece = gameBoard.get(p);
+                allPieces.add(piece);
+            }
+        }
+        if (allPieces.size() == 2) answer = true;
+        return answer;
+    }
+
     private boolean isThreatened(Position position) {
         Color byPlayer = playerToMove == Color.WHITE ? Color.BLACK : Color.WHITE;
         return isThreatenedByPlayer(position, byPlayer);
