@@ -46,7 +46,7 @@ public class Pawn extends Piece {
 		//by adding +1 to its row. If it's black, add -1 instead.
 
 
-		int direction = (initialPosition.getRow() == 1) ? 1 : -1;
+		int direction = (getColor() == Color.WHITE) ? 1 : -1;
 		result.add(new Position(getPosition().getRow()+direction, getPosition().getColumn()));
 
 		// check if pawn is at the edge of the board (for diagonal captures)
@@ -56,7 +56,8 @@ public class Pawn extends Piece {
 			result.add(new Position(getPosition().getRow() + direction, getPosition().getColumn() + 1));
 		
 		// if a pawn is in its starting row (meaning it hasn't yet moved) it can move forward 2 spaces
-		if ((getPosition().getRow() == initialPosition.getRow()) ) {
+		if ((getColor() == Color.WHITE && getPosition().getRow() == 1) ||
+				(getColor() == Color.BLACK && getPosition().getRow() == 7)) {
 			result.add(new Position(getPosition().getRow()+(direction*2), getPosition().getColumn()));
 		}
 
