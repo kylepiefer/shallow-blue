@@ -4,18 +4,13 @@ package com.shallowblue.shallowblue;
  * Created by FU on 4/18/2016.
  */
 public class AIMoveFactory {
-    public static AIMove newAIMove(boolean remote, double aggression) {
+    public static AIMove newAIMove(boolean remote) {
         if(remote)
-            return new AIMoveRemote(aggression);
-        //return new AIMoveRandom(aggression);
-        return new AIMoveLocal(aggression);
-    }
-
-    public static AIMove newAIMove(double aggression) {
-        return newAIMove(false, aggression);
+            return new AIMoveRemote();
+        return new AIMoveRandom();
     }
 
     public static AIMove newAIMove() {
-        return newAIMove(1.0);
+        return newAIMove(true);
     }
 }

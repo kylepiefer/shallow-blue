@@ -4,150 +4,150 @@ package com.shallowblue.shallowblue;
  * Created by kofe on 4/7/16.
  */
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import android.os.AsyncTask;
+import android.widget.TextView;
 
 
 public class UrlConnection {
-    static String URLPath="http://104.154.22.179/MyFirstServlet";
-    static URL url;
-    static HttpURLConnection connection;
-    String res;
+    //static String URLPath="http://104.154.22.179/MyFirstServlet";
+    static String URLPath="http://104.154.22.179/SecondServlet/ShowDataServlet";
+    getRemoteAI remote;
 
     public UrlConnection(String... args)
     {
-        new Connection().execute(args);
+        //new Connection().execute(args);
+        remote=new getRemoteAI();
     }
+
     public String UrlRequest(String... args)
     {
         //new Request().execute(args);
-        try {
-            return new Request().execute(args).get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+        try
+        {
+            //String url = URLPath+"?str=80980980980980";//+args[0];
+            String url = URLPath+"?str="+args[0]+"&str2="+args[1];
+            url = url.replaceAll("(\r\n|\n)", "<lol>");
+            //System.out.println(url);
+            String res="";
+            //res= remote.execute(new String[] { url }).get(5, TimeUnit.SECONDS);
+            remote.execute(new String[] { url });
+            return res;
+        }
+        catch(Exception e)
+        {
+
+        }
+        /*
+        catch (InterruptedException e)
+        {
             e.printStackTrace();
         }
-        return "lalalalalalallalalalalalalalal";
+        catch (ExecutionException e)
+        {
+            e.printStackTrace();
+        }
+        catch (TimeoutException e)
+        {
+            e.printStackTrace();
+        }
+        */
+        return "failed to retrieve return string";
     }
 
-    class Connection extends AsyncTask<String, String, String> {
 
+
+
+    private class getRemoteAI extends AsyncTask<String, Void, String>
+    {
         @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-        @Override
-        protected String doInBackground(String... strs)
+        protected String doInBackground(String... urls)
         {
-            if(strs[0].equals("disconnect"))
-            {
-                System.out.println("disconnecting");
-                try
-                {
-                    connection.disconnect();
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                    System.out.println("disconnection failed");
-                }
+
+            String output = "";
+            for (String url : urls) {
+                //System.out.println("doInBackground");
+                output = getOutputFromUrl(url);
             }
-            else
-            {
-                System.out.println("connecting to the server");
-                try
-                {
-                    url = new URL(URLPath);
-                    connection = (HttpURLConnection)url.openConnection();
-                    connection.setConnectTimeout(30000);
-                    connection.setReadTimeout(100000);
-                    connection.setDoOutput(true);
-                    connection.setDoInput(true);
-                    connection.setUseCaches(false);
-                    connection.setRequestMethod("GET");
-                    connection.setRequestProperty("connection", "Keep-Alive");
+            System.out.println(output);
 
-                    connection.connect();
-
-                    /*
-                    System.out.println("start connecting");
-                    if (connection.getResponseCode() != 200)
-                    {
-                        throw new RuntimeException("failed to request url");
-                    }
-                    if(connection.getResponseCode() == 200)
-                    {
-                        System.out.println("connected");
-                    }
-                    */
-
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                    System.out.println("connection failed");
-                }
-            }
-
-            return null;
-        }
-        @Override
-        protected void onPostExecute(String unused) {
-            super.onPostExecute(unused);
-            //access InputStream is
+            return output;
         }
 
-    }
-    class Request extends AsyncTask<String, String, String> {
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-        @Override
-        protected String doInBackground(String... strs)
+        private String getOutputFromUrl(String... urls)
         {
+            StringBuffer output = new StringBuffer("");
             try
             {
-
-                if (connection.getResponseCode() == 200)
+                String url=urls[0];
+                //System.out.println(url);
+                InputStream stream = getHttpConnection(url);
+                //System.out.println("getOutputFromUrl");
+                BufferedReader buffer = new BufferedReader(new InputStreamReader(stream));
+                String s = "";
+                while ((s = buffer.readLine()) != null)
                 {
-                    throw new RuntimeException("failed to request url");
+                    //System.out.println(s);
+                    output.append(s);
                 }
-                else
-                {
-                    System.out.println("requesting");
-                    OutputStream out = connection.getOutputStream();
-                    String entry=strs[0];
-                    out.write(entry.getBytes());
-                    out.flush();
-                    out.close();
-                    if(connection.getResponseCode()==200)
-                    {
-                        InputStream is = connection.getInputStream();
-                        //convert Stream to String
-                        java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
-                        return s.hasNext() ? s.next() : "";
-                    }
-                }
-
+                //System.out.println(output.toString());
+                //return output.toString();
+            } catch (IOException e1) {
+                e1.printStackTrace();
             }
-            catch (Exception e) {
-                e.printStackTrace();
-                System.out.println("connection failed");
+            catch(NullPointerException e2)
+            {
+                e2.printStackTrace();
             }
-
-            return null;
+            return output.toString();
         }
+
+        // Makes HttpURLConnection and returns InputStream
+        private InputStream getHttpConnection(String urlString) throws IOException
+        {
+            InputStream stream = null;
+            URL url = new URL(urlString);
+            URLConnection connection = url.openConnection();
+            try
+            {
+                //System.out.println("getHttpConnection");
+                HttpURLConnection httpConnection = (HttpURLConnection) connection;
+                //httpConnection.setConnectTimeout(10000);
+                //httpConnection.setReadTimeout(100000);
+                //connection.setDoOutput(true);
+                //connection.setDoInput(true);
+                httpConnection.setRequestMethod("GET");
+                httpConnection.connect();
+                if (httpConnection.getResponseCode() == HttpURLConnection.HTTP_OK)
+                {
+                    stream = httpConnection.getInputStream();
+                }
+                //System.out.println("getHttpConnection");
+            }
+            catch (Exception ex)
+            {
+                System.out.println("request failed");
+                ex.printStackTrace();
+            }
+            return stream;
+        }
+
         @Override
-        protected void onPostExecute(String unused) {
-            super.onPostExecute(unused);
-            //access InputStream is
-        }
+        protected void onPostExecute(String output) {
+            //outputText.setText(output);
+            //help_text.setText(output);
 
+        }
     }
 }
