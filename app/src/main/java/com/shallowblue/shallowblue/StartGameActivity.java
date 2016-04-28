@@ -12,12 +12,21 @@ import android.widget.Spinner;
 
 public class StartGameActivity extends AppCompatActivity {
 
+    private String gameMode = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_start_game);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        Intent settings = getIntent();
+        if (settings.hasExtra("Game Mode")) {
+            this.gameMode = settings.getStringExtra("Game Mode");
+        } else {
+            this.gameMode = "PVC";
+        }
 
         // set up the spinners
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -41,6 +50,9 @@ public class StartGameActivity extends AppCompatActivity {
             newGameIntent.putExtra("Color", "White");
         else
             newGameIntent.putExtra("Color", "Black");
+
+        newGameIntent.putExtra("Game Mode", this.gameMode);
+
         startActivity(newGameIntent);
         finish();
     }
@@ -49,9 +61,9 @@ public class StartGameActivity extends AppCompatActivity {
         Intent createGameIntent = new Intent(getApplicationContext(), CustomGame.class);
         Bundle playercount = new Bundle();
         playercount.putInt("players", 1);
-        createGameIntent.putExtra("type",playercount);
+        createGameIntent.putExtra("Type",playercount);
+        createGameIntent.putExtra("Game Mode", this.gameMode);
         startActivity(createGameIntent);
-        finish();
     }
 
     public void loadGame(View button){
@@ -59,6 +71,7 @@ public class StartGameActivity extends AppCompatActivity {
         Bundle game = new Bundle();
         game.putInt("game", 4);
         loadGameIntent.putExtra("start", game);
+        loadGameIntent.putExtra("Game Mode", this.gameMode);
         startActivity(loadGameIntent);
     }
 
