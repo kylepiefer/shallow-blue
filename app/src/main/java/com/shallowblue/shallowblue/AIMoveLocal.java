@@ -13,6 +13,11 @@ import java.util.Map.Entry;
  * Created by gauch on 4/6/2016.
  */
 public class AIMoveLocal extends AIMove {
+    private double aggression;
+
+    public AIMoveLocal(double aggression) {
+        this.aggression = aggression;
+    }
 
     private static int positionsExamined = 0;
 
@@ -269,15 +274,15 @@ public class AIMoveLocal extends AIMove {
             int pCoord = ((Math.abs(calibrate - p.getPosition().getRow())) * 8) + p.getPosition().getColumn();
 
             if (p instanceof Rook) {
-                sum += 500;
+                sum += 500*aggression;
                 wrookC++;
             }
             else if (p instanceof Queen) {
-                sum += 900;
+                sum += 900*aggression;
                 wqueenC++;
             }
             else if (p instanceof Knight) {
-                sum += 300;
+                sum += 300*aggression;
                 sum += KnightTable[pCoord];
                 if (endgame){
                     sum -= 10;
@@ -285,7 +290,7 @@ public class AIMoveLocal extends AIMove {
                 wknightC++;
             }
             else if (p instanceof King) {
-                sum += 10000;
+                sum += 10000*aggression;
                 if (endgame){
                     sum += KingTableEndGame[pCoord];
                 } else {
@@ -294,7 +299,7 @@ public class AIMoveLocal extends AIMove {
                 wkingC++;
             }
             else if (p instanceof Bishop) {
-                 sum += 325;
+                 sum += 325*aggression;
                  sum += BishopTable[pCoord];
                 if (endgame){
                     sum += 10;
@@ -303,7 +308,7 @@ public class AIMoveLocal extends AIMove {
             }
             else if (p instanceof Pawn) {
                 whitePawnCount[p.getPosition().getColumn()]++;
-                sum += 100;
+                sum += 100*aggression;
                 sum += PawnTable[pCoord];
                 wpawnC++;
             }
@@ -326,15 +331,15 @@ public class AIMoveLocal extends AIMove {
         for (Piece p : blackPiece){
             int pCoord = ((Math.abs(calibrate - p.getPosition().getRow())) * 8) + p.getPosition().getColumn();
             if (p instanceof Rook) {
-                sum -= 500;
+                sum -= 500/aggression;
                 brookC++;
             }
             else if (p instanceof Queen) {
-                sum -= 900;
+                sum -= 900/aggression;
                 bqueenC++;
             }
             else if (p instanceof Knight) {
-                sum -= 300;
+                sum -= 300/aggression;
                 sum -= KnightTable[pCoord];
                 if (endgame){
                     sum += 10;
@@ -342,7 +347,7 @@ public class AIMoveLocal extends AIMove {
                 bknightC++;
             }
             else if (p instanceof King) {
-                sum -= 10000;
+                sum -= 10000/aggression;
                 if (endgame){
                     sum -= KingTableEndGame[pCoord];
                 } else {
@@ -352,7 +357,7 @@ public class AIMoveLocal extends AIMove {
                 bkingC++;
             }
             else if (p instanceof Bishop) {
-                sum -= 325;
+                sum -= 325/aggression;
                 sum -= BishopTable[pCoord];
                 if (endgame){
                     sum -= 10;
@@ -361,7 +366,7 @@ public class AIMoveLocal extends AIMove {
             }
             else if (p instanceof Pawn) {
                 blackPawnCount[p.getPosition().getColumn()]++;
-                sum -= 100;
+                sum -= 100/aggression;
                 sum -= PawnTable[pCoord];
                 bpawnC++;
             }

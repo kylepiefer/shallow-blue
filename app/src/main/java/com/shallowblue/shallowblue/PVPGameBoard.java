@@ -291,7 +291,7 @@ public class PVPGameBoard extends AppCompatActivity {
 
         move.setPieceCaptured(tempPiece);
 
-
+        move.getPieceMoved().incrementNumMoves(1);
         GameBoard.activeGameBoard.move(move);
         GameBoard.activeGameBoard.addMove(move);
         GameBoard.activeGameBoard.switchPlayerToMove();

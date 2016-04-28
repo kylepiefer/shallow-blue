@@ -53,10 +53,10 @@ public class GameBoardActivity extends AppCompatActivity {
         }
 
         String colorString = settings.getStringExtra("Color");
-        if (colorString.equalsIgnoreCase("White"))
-            this.playerColor = Color.WHITE;
-        else
+        if (colorString != null && colorString.equalsIgnoreCase("Black"))
             this.playerColor = Color.BLACK;
+        else
+            this.playerColor = Color.WHITE;
 
         // this is needed to handle the game logic
         String gameType = settings.getStringExtra("Type");

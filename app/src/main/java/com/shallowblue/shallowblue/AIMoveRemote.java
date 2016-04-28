@@ -6,9 +6,10 @@ import java.util.List;
  * Created by FU on 4/18/2016.
  */
 public class AIMoveRemote extends AIMove {
+    private double aggression;
     UrlConnection conn;
-    public AIMoveRemote() {
-        conn = new UrlConnection("","","");
+    public AIMoveRemote(double aggression) {
+        conn = new UrlConnection("","",""); this.aggression = aggression;
     }
 
     public List<Move> move(GameBoard current, int depth) {
@@ -16,6 +17,6 @@ public class AIMoveRemote extends AIMove {
         conn.UrlRequest(packedGameBoard,"","");
 
 
-        return AIMoveFactory.newAIMove(false).move(current,depth);
+        return AIMoveFactory.newAIMove(false, aggression).move(current,depth);
     }
 }
