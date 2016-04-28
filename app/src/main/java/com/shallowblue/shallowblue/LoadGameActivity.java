@@ -96,7 +96,6 @@ public class LoadGameActivity extends AppCompatActivity {
     private AdapterView.OnItemClickListener fileNameClickedHandler = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Log.d("ShallowBlue", "touched!");
             String fileName = (String) parent.getItemAtPosition(position);
             boolean result = savedGameManager.loadGame(loadGameActivity, fileName);
             if (result) startGame();

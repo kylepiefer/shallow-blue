@@ -5,6 +5,7 @@ import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Animation;
@@ -12,6 +13,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -27,14 +29,16 @@ public class GameBoardActivity extends AppCompatActivity {
     private GameBoardActivitySquare[][] gameBoardActivitySquares;
     private GameBoardActivitySquare selectedSquare;
     private ArrayList<GameBoardActivitySquare> highlightedSquares;
+    private String gameMode;
     private Color playerColor;
     private int difficulty = 0;
-    private Toast toast;
+    private Toast toast = null;
     private SavedGameManager savedGameManager;
     private int movesToUndo = 0;
     private int movesToRedo = 0;
     private List<Move> suggestedMoves = null;
     private int suggestedMoveIndex = 0;
+    private AsyncTask runningTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,10 +46,17 @@ public class GameBoardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game_board);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        this.toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
         this.savedGameManager = new SavedGameManager();
 
         Intent settings = getIntent();
+
+        if (settings.hasExtra("Game Mode")) {
+            this.gameMode = settings.getStringExtra("Game Mode");
+        } else {
+            this.gameMode = "PVC";
+        }
+        Log.d("GameBoardActivity", "Game mode is: " + this.gameMode);
+
         if (settings.hasExtra("Difficulty")) {
             this.difficulty = settings.getIntExtra("Difficulty", 1);
         } else {
@@ -58,19 +69,9 @@ public class GameBoardActivity extends AppCompatActivity {
         else
             this.playerColor = Color.WHITE;
 
-        // this is needed to handle the game logic
         String gameType = settings.getStringExtra("Type");
         if (gameType != null && gameType.equalsIgnoreCase("Custom")) {
-            // Hack to make this work with the wrong positions from CustomGame activity.
-            // Correct the positions.
-            Map<Position, Piece> correctedBoard = new HashMap<Position, Piece>();
-            for (Position original : GameBoard.customPositions.keySet()) {
-                Position corrected = new Position(7 - original.getRow(), original.getColumn());
-                Piece piece = GameBoard.customPositions.get(original);
-                piece.setPosition(corrected);
-                correctedBoard.put(corrected, piece);
-            }
-            this.gameBoard = new GameBoard(correctedBoard);
+            this.gameBoard = new GameBoard(GameBoard.customPositions);
         } else if (gameType != null && gameType.equalsIgnoreCase("Load Game")){
             this.gameBoard = new GameBoard(GameBoard.activeGameBoard);
         } else {
@@ -87,7 +88,7 @@ public class GameBoardActivity extends AppCompatActivity {
         Map<Position, Piece> gameBoardPiecePositions = this.gameBoard.getGameBoard();
         refreshBoard(gameBoardPiecePositions);
 
-        if (this.playerColor == Color.BLACK) aiMove();
+        if (this.gameMode.equals("CVC") || this.playerColor == Color.BLACK) aiMove();
     }
 
     @Override
@@ -345,17 +346,21 @@ public class GameBoardActivity extends AppCompatActivity {
 
                 if (movesToUndo > 0) {
                     movesToUndo = movesToUndo - 1;
-                    if (movesToUndo > 0) undoMove();
-                    return;
+                    if (movesToUndo > 0) {
+                        undoMove();
+                        return;
+                    }
                 }
 
                 if (movesToRedo > 0) {
                     movesToRedo = movesToRedo - 1;
-                    if (movesToRedo > 0) redoMove();
-                    return;
+                    if (movesToRedo > 0) {
+                        redoMove();
+                        return;
+                    }
                 }
 
-                if (advanceTurn && gameBoard.playerToMove() != playerColor) {
+                if ((advanceTurn && gameBoard.playerToMove() != playerColor) || gameMode.equals("CVC")) {
                     aiMove();
                 }
             }
@@ -366,17 +371,10 @@ public class GameBoardActivity extends AppCompatActivity {
     }
 
     private void aiMove() {
-        if (false) {
-            List<Move> legalAIMoves = this.gameBoard.getAllLegalMoves();
-            int moveNumber = (int)Math.floor(Math.random() * legalAIMoves.size());
-            Move move = legalAIMoves.get(moveNumber);
-            synchronized (gameBoard) {
-                getGameBoard().move(move);
-            }
-            updateGameboard(move, false);
-        }
-
-        AsyncTask task = new AIMoveTask().execute(getGameBoard());
+        GameBoard[] gameBoards = new GameBoard[1];
+        gameBoards[0] = getGameBoard();
+        runningTask = new AIMoveTask();
+        runningTask.execute(gameBoards);
     }
 
     private void updateGameboard(Move move, boolean advanceTurn) {
@@ -413,6 +411,7 @@ public class GameBoardActivity extends AppCompatActivity {
             }
 
             if (moveSucceeded) {
+                endTask();
                 this.updateGameboard(move, true);
                 removeAllSquareHighlights();
             } else {
@@ -457,21 +456,27 @@ public class GameBoardActivity extends AppCompatActivity {
     }
 
     private void showToast(String message) {
+        if (this.toast == null) this.toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
         CharSequence text = (CharSequence)message;
         this.toast.setText(text);
         this.toast.setGravity(Gravity.BOTTOM, 0, 0);
         this.toast.setDuration(Toast.LENGTH_SHORT);
+        TextView view = (TextView) this.toast.getView().findViewById(android.R.id.message);
+        if (view != null) view.setGravity(Gravity.CENTER);
         toast.show();
     }
 
     public void startingHelper(View v) {
         //showToast("The Helper is not currently available."); // TODO
         //new UrlConnection().new Connection().execute("connect");
+        if (gameMode.equals("CVC")) return;
     }
 
     public void altMove(View v ) {
         //showToast("An alternate move is not currently available.");// TODO
         //new UrlConnection().new Request().execute(gameBoard.pack());
+        if (gameMode.equals("CVC")) return;
+
         if(suggestedMoves == null) {
             suggestedMoves = AIMoveFactory.newAIMove().move(gameBoard, difficulty);
             suggestedMoveIndex = 0;
@@ -500,6 +505,7 @@ public class GameBoardActivity extends AppCompatActivity {
         }
 
         if (undoSucceeded) {
+            endTask();
             removeAllSquareHighlights();
             Move reversedMove = new Move(lastMove.getPieceMoved(), lastMove.getTo(), lastMove.getFrom());
             updateGameboard(reversedMove, false);
@@ -512,6 +518,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
     public void undoMove(View v){
         if (movesToUndo > 0 || movesToRedo > 0) return;
+        if (gameMode.equals("CVC")) return;
         movesToUndo = gameBoard.playerToMove() == playerColor ? 2 : 1;
         boolean undone = undoMove();
         if (!undone) {
@@ -526,6 +533,7 @@ public class GameBoardActivity extends AppCompatActivity {
         }
 
         if (redoSucceeded) {
+            endTask();
             removeAllSquareHighlights();
             List<Move> gameHistory = this.gameBoard.getGameHistory();
             Move nextMove = gameHistory.get(gameHistory.size() - 1);
@@ -539,6 +547,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
     public void redoMove(View v) {
         if (movesToUndo > 0 || movesToRedo > 0) return;
+        if (gameMode.equals("CVC")) return;
         movesToRedo = gameBoard.playerToMove() == playerColor ? 2 : 1;
         boolean redone = redoMove();
         if (!redone) {
@@ -547,6 +556,7 @@ public class GameBoardActivity extends AppCompatActivity {
     }
 
     public void optionsScreen(View v){
+        if (gameMode.equals("CVC")) return;
         GameBoard.activeGameBoard = this.getGameBoard();
         Intent openOptions = new Intent(getApplicationContext(),OptionsPopUpWindow.class);
         openOptions.putExtra("Game Mode", "PVC");
@@ -559,6 +569,13 @@ public class GameBoardActivity extends AppCompatActivity {
         verify.putString("activity","main");
         check.putExtra("next",verify);
         startActivity(check);
+    }
+
+    private void endTask() {
+        if (runningTask != null) {
+            runningTask.cancel(true);
+            runningTask = null;
+        }
     }
 
     private void endGame() {
@@ -591,8 +608,7 @@ public class GameBoardActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(Move move) {
-            if (move == null || getGameBoard().playerToMove() == playerColor) {
-                endGame();
+            if (move == null) {
                 return;
             }
 
