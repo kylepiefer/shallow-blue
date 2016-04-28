@@ -493,7 +493,10 @@ public class GameBoardActivity extends AppCompatActivity {
     }
 
     public void startingHelper(View v) {
-        if (gameMode.equals("CVC")) return;
+        if (gameMode.equals("CVC")) {
+            showToast("Not available in the secret mode.");
+            return;
+        }
         if (helperIsOn) {
             helperIsOn = false;
             removeAllSquareHighlights();
@@ -504,7 +507,10 @@ public class GameBoardActivity extends AppCompatActivity {
     }
 
     public void altMove(View v ) {
-        if (gameMode.equals("CVC")) return;
+        if (gameMode.equals("CVC")) {
+            showToast("Not available in the secret mode.");
+            return;
+        }
 
         if(suggestedMoves == null) {
             if (!helperIsOn) startingHelper(null);
@@ -546,7 +552,10 @@ public class GameBoardActivity extends AppCompatActivity {
 
     public void undoMove(View v){
         if (movesToUndo > 0 || movesToRedo > 0) return;
-        if (gameMode.equals("CVC")) return;
+        if (gameMode.equals("CVC")) {
+            showToast("Not available in the secret mode.");
+            return;
+        }
         movesToUndo = gameBoard.playerToMove() == playerColor ? 2 : 1;
         boolean undone = undoMove();
         if (!undone) {
@@ -574,7 +583,10 @@ public class GameBoardActivity extends AppCompatActivity {
 
     public void redoMove(View v) {
         if (movesToUndo > 0 || movesToRedo > 0) return;
-        if (gameMode.equals("CVC")) return;
+        if (gameMode.equals("CVC")) {
+            showToast("Not available in the secret mode.");
+            return;
+        }
         movesToRedo = gameBoard.playerToMove() == playerColor ? 2 : 1;
         boolean redone = redoMove();
         if (!redone) {
@@ -583,7 +595,10 @@ public class GameBoardActivity extends AppCompatActivity {
     }
 
     public void optionsScreen(View v){
-        if (gameMode.equals("CVC")) return;
+        if (gameMode.equals("CVC")) {
+            showToast("Not available in the secret mode.");
+            return;
+        }
         GameBoard.activeGameBoard = this.getGameBoard();
         Intent openOptions = new Intent(getApplicationContext(),OptionsPopUpWindow.class);
         openOptions.putExtra("Game Mode", "PVC");

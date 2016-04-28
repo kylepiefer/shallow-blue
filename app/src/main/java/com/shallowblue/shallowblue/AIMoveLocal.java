@@ -88,8 +88,6 @@ public class AIMoveLocal extends AIMove {
         current = new GameBoard(current);
         List<Move> moves;
 
-        depth = 4;
-
         if(current.playerToMove() == Color.WHITE)
             moves = maxAction(current, depth);
         else
