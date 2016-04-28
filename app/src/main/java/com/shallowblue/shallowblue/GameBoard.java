@@ -23,8 +23,8 @@ public class GameBoard {
 
     // Caches to speed up calculations. Only calculate the legal moves for a given position ONCE!
     private List<Move> legalMovesCache;
-    private King whiteKing;
-    private King blackKing;
+    public King whiteKing;
+    public King blackKing;
 
     public GameBoard() {
         if (gameBoard == null) {
@@ -72,7 +72,7 @@ public class GameBoard {
         legalMovesCache = null;
     }
 
-    private void findKings() {
+    public void findKings() {
         for (Piece piece : gameBoard.values()) {
             if (piece instanceof King) {
                 if (piece.getColor() == Color.WHITE) whiteKing = (King) piece;

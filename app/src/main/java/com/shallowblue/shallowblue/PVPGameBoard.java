@@ -85,6 +85,8 @@ public class PVPGameBoard extends AppCompatActivity {
             addCustomSetup();
         }
         GameBoard.activeGameBoard.gameBoard = boardSetup;
+        GameBoard.activeGameBoard.playerToMove = Color.WHITE;
+        GameBoard.activeGameBoard.findKings();
 
     }
 

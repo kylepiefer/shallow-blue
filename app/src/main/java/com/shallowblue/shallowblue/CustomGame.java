@@ -195,6 +195,8 @@ public class CustomGame extends AppCompatActivity {
         GameBoard.activeGameBoard = new GameBoard();
         GameBoard.activeGameBoard.gameBoard = boardSetup;
         GameBoard.activeGameBoard.playerToMove = Color.WHITE;
+        GameBoard.activeGameBoard.findKings();
+
         if (GameBoard.activeGameBoard.inCheck()){
             Toast.makeText(CustomGame.this,"You can't start a game with a king in check.",
                     Toast.LENGTH_SHORT).show();
@@ -209,7 +211,7 @@ public class CustomGame extends AppCompatActivity {
 
         Intent gametype = getIntent();
         Bundle temp = new Bundle();
-        temp = gametype.getBundleExtra("type");
+        temp = gametype.getBundleExtra("Type");
         int count = temp.getInt("players");
         if (count == 1){
             GameBoard.customPositions = boardSetup;
