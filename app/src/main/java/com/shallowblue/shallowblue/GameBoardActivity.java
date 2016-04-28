@@ -22,6 +22,9 @@ import java.util.List;
 import java.util.Map;
 
 public class GameBoardActivity extends AppCompatActivity {
+    public static final double STRATEGY_BALANCED = 1.0;
+    public static final double STRATEGY_AGGRESSIVE = 0.5;
+    public static final double STRATEGY_DEFENSIVE = 2.0;
 
     private static final int END_OF_GAME_REQUEST = 1;
 
@@ -30,6 +33,7 @@ public class GameBoardActivity extends AppCompatActivity {
     private GameBoardActivitySquare selectedSquare;
     private ArrayList<GameBoardActivitySquare> highlightedSquares;
     private String gameMode;
+    private String gameType;
     private Color playerColor;
     private int difficulty = 0;
     private Toast toast = null;
@@ -40,6 +44,8 @@ public class GameBoardActivity extends AppCompatActivity {
     private int suggestedMoveIndex = 0;
     private boolean helperIsOn = false;
     private AsyncTask runningTask;
+    private double helperStrategy;
+    private double opponentStrategy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,25 +69,45 @@ public class GameBoardActivity extends AppCompatActivity {
         } else {
             this.difficulty = 0;
         }
+        Log.d("GameBoardActivity", "Difficulty is: " + this.difficulty);
 
         String colorString = settings.getStringExtra("Color");
-        if (colorString != null && colorString.equalsIgnoreCase("Black"))
+        if (colorString != null && colorString.equalsIgnoreCase("Black")) {
             this.playerColor = Color.BLACK;
-        else
+        } else {
             this.playerColor = Color.WHITE;
+        }
+        Log.d("GameBoardActivity", "Player Color is: " + this.playerColor);
 
         String gameType = settings.getStringExtra("Type");
         if (gameType != null && gameType.equalsIgnoreCase("Custom")) {
             this.gameBoard = new GameBoard(GameBoard.customPositions);
+            this.gameType = "Custom";
         } else if (gameType != null && gameType.equalsIgnoreCase("Load Game")){
             this.gameBoard = new GameBoard(GameBoard.activeGameBoard);
+            this.gameType = "Load";
         } else {
             this.gameBoard = new GameBoard();
+            this.gameType = "New";
         }
         GameBoard.customPositions = null;
         GameBoard.activeGameBoard = null;
+        Log.d("GameBoardActivity", "Game Type is: " + this.gameType);
 
-        // this is needed to map logical squares to images on the screen
+        if (settings.hasExtra("Helper Strategy")) {
+            this.helperStrategy = settings.getDoubleExtra("Helper Strategy", STRATEGY_BALANCED);
+        } else {
+            this.helperStrategy = STRATEGY_BALANCED;
+        }
+        Log.d("GameBoardActivity", "Helper Strategy is: " + this.helperStrategy);
+
+        if (settings.hasExtra("Opponent Strategy")) {
+            this.opponentStrategy = settings.getDoubleExtra("Opponent Strategy", STRATEGY_BALANCED);
+        } else {
+            this.opponentStrategy = STRATEGY_BALANCED;
+        }
+        Log.d("GameBoardActivity", "Opponent Strategy is: " + this.opponentStrategy);
+
         createGameBoardActivitySquareArray(this.playerColor);
         this.selectedSquare = null;
         this.highlightedSquares = new ArrayList<GameBoardActivitySquare>();
@@ -576,6 +602,7 @@ public class GameBoardActivity extends AppCompatActivity {
         if (runningTask != null) {
             runningTask.cancel(true);
             runningTask = null;
+            System.gc();
         }
     }
 
@@ -600,9 +627,22 @@ public class GameBoardActivity extends AppCompatActivity {
     private class AIMoveTask extends AsyncTask<GameBoard, Integer, Move> {
         protected Move doInBackground(GameBoard... gameBoards) {
             GameBoard board = gameBoards[0];
-            AIMove ai = AIMoveFactory.newAIMove();
+
+            if (gameMode.equalsIgnoreCase("CVC") && suggestedMoves != null) return null;
+
+            double aggression;
+            if (playerColor == getGameBoard().playerToMove()) {
+                aggression = helperStrategy;
+            } else {
+                aggression = opponentStrategy;
+            }
+
+            AIMove ai = AIMoveFactory.newAIMove(aggression);
             List<Move> moves = ai.move(board, difficulty);
-            if (moves.isEmpty()) return null;
+            if (moves.isEmpty()) {
+                if (getGameBoard().gameOver()) endGame();
+                return null;
+            }
 
             if (!gameMode.equals("CVC") && board.playerToMove() == playerColor) {
                 suggestedMoves = moves;
