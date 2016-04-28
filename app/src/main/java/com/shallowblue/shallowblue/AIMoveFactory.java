@@ -8,7 +8,7 @@ public class AIMoveFactory {
         if(remote)
             return new AIMoveRemote(aggression);
         //return new AIMoveRandom(aggression);
-        return new AIMoveRandom();
+        return new AIMoveLocal(aggression);
     }
 
     public static AIMove newAIMove(double aggression) {
