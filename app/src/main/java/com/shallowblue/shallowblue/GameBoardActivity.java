@@ -38,6 +38,7 @@ public class GameBoardActivity extends AppCompatActivity {
     private int movesToRedo = 0;
     private List<Move> suggestedMoves = null;
     private int suggestedMoveIndex = 0;
+    private boolean helperIsOn = false;
     private AsyncTask runningTask;
 
     @Override
@@ -360,9 +361,7 @@ public class GameBoardActivity extends AppCompatActivity {
                     }
                 }
 
-                if ((advanceTurn && gameBoard.playerToMove() != playerColor) || gameMode.equals("CVC")) {
-                    aiMove();
-                }
+                aiMove();
             }
         });
 
@@ -381,6 +380,8 @@ public class GameBoardActivity extends AppCompatActivity {
         synchronized (this.gameBoardActivitySquares) {
             //Log.d("GameBoardActivity", "Cache Hits: " + gameBoard.cacheHits);
             gameBoard.cacheHits = 0;
+            endTask();
+            suggestedMoves = null;
 
             GameBoardActivitySquare from = getGBASForPosition(move.getFrom());
             GameBoardActivitySquare to = getGBASForPosition(move.getTo());
@@ -411,7 +412,6 @@ public class GameBoardActivity extends AppCompatActivity {
             }
 
             if (moveSucceeded) {
-                endTask();
                 this.updateGameboard(move, true);
                 removeAllSquareHighlights();
             } else {
@@ -467,19 +467,22 @@ public class GameBoardActivity extends AppCompatActivity {
     }
 
     public void startingHelper(View v) {
-        //showToast("The Helper is not currently available."); // TODO
-        //new UrlConnection().new Connection().execute("connect");
         if (gameMode.equals("CVC")) return;
+        if (helperIsOn) {
+            helperIsOn = false;
+            removeAllSquareHighlights();
+        } else {
+            helperIsOn = true;
+            if (playerColor == getGameBoard().playerToMove()) aiMove();
+        }
     }
 
     public void altMove(View v ) {
-        //showToast("An alternate move is not currently available.");// TODO
-        //new UrlConnection().new Request().execute(gameBoard.pack());
         if (gameMode.equals("CVC")) return;
 
         if(suggestedMoves == null) {
-            suggestedMoves = AIMoveFactory.newAIMove().move(gameBoard, difficulty);
-            suggestedMoveIndex = 0;
+            if (!helperIsOn) startingHelper(null);
+            return;
         }
 
         removeAllSquareHighlights();
@@ -505,7 +508,6 @@ public class GameBoardActivity extends AppCompatActivity {
         }
 
         if (undoSucceeded) {
-            endTask();
             removeAllSquareHighlights();
             Move reversedMove = new Move(lastMove.getPieceMoved(), lastMove.getTo(), lastMove.getFrom());
             updateGameboard(reversedMove, false);
@@ -533,7 +535,6 @@ public class GameBoardActivity extends AppCompatActivity {
         }
 
         if (redoSucceeded) {
-            endTask();
             removeAllSquareHighlights();
             List<Move> gameHistory = this.gameBoard.getGameHistory();
             Move nextMove = gameHistory.get(gameHistory.size() - 1);
@@ -598,10 +599,16 @@ public class GameBoardActivity extends AppCompatActivity {
 
     private class AIMoveTask extends AsyncTask<GameBoard, Integer, Move> {
         protected Move doInBackground(GameBoard... gameBoards) {
-            GameBoard gameBoard = gameBoards[0];
+            GameBoard board = gameBoards[0];
             AIMove ai = AIMoveFactory.newAIMove();
-            List<Move> moves = ai.move(gameBoard, difficulty);
+            List<Move> moves = ai.move(board, difficulty);
             if (moves.isEmpty()) return null;
+
+            if (!gameMode.equals("CVC") && board.playerToMove() == playerColor) {
+                suggestedMoves = moves;
+                return moves.get(0);
+            }
+
             Move move = moves.get(0);
             move = new Move(gameBoard.getGameBoard().get(move.getFrom()), move.getFrom(), move.getTo());
             return move;
@@ -609,6 +616,11 @@ public class GameBoardActivity extends AppCompatActivity {
 
         protected void onPostExecute(Move move) {
             if (move == null) {
+                return;
+            }
+
+            if (!gameMode.equals("CVC") && playerColor == getGameBoard().playerToMove()) {
+                if (helperIsOn) altMove(null);
                 return;
             }
 
