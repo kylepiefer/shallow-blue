@@ -429,8 +429,8 @@ public class GameBoard {
         String temp = "";
         try {
             Position p;
-            for (int i = 0; i < 7; i++) {
-                for (int j = 0; j < 7; j++) {
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
                     p = new Position(i, j);
                     if (gameBoard.containsKey(p)) {
                         temp += gameBoard.get(p).toString(true);
@@ -478,16 +478,16 @@ public class GameBoard {
 
     public GameBoard(String packedString) {
         legalMovesCache = null;
-        gameBoard.clear();
-        gameHistory.clear();
-        int i = 0;
+        gameBoard = new HashMap<Position, Piece>();
         Position p;
+        int i = 0;
+        gameHistory = new ArrayList<Move>();
         int row = 0;
         int column = 0;
         while (packedString.charAt(i) != '\n') {
-            if (row == 8) {
-                row = 0;
-                column++;
+            if (column == 8) {
+                column = 0;
+                row++;
             }
             if (packedString.charAt(i) != '_') {
                 if (packedString.charAt(i) == 'p') {
@@ -517,7 +517,7 @@ public class GameBoard {
                 }
 
             }
-            row++;
+            column++;
             i++;
         }
         i++;
