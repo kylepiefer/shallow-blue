@@ -21,6 +21,8 @@ public class LoadGameActivity extends AppCompatActivity {
 
     private LoadGameActivity loadGameActivity;
 
+    private Bundle settings;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +39,9 @@ public class LoadGameActivity extends AppCompatActivity {
         listView.setOnItemClickListener(fileNameClickedHandler);
 
         Intent check = getIntent();
+
+        this.settings = check.getBundleExtra("Settings");
+
         if (check.hasExtra("next")){
             Bundle next = check.getBundleExtra("next");
             String activity = next.getString("activity");
@@ -59,16 +64,17 @@ public class LoadGameActivity extends AppCompatActivity {
             }
         }
 
-        if (check.hasExtra("Game Mode")) {
-            String type = check.getStringExtra("Game Mode");
-            this.gameMode = type;
+        if (this.settings != null) {
+            nextActivity.putExtra("Settings", this.settings);
+            this.gameMode = this.settings.getString("Game Mode");
+        } else {
+            this.gameMode = "PVP";
         }
-
         loadGameActivity = this;
     }
 
     public void startGame() {
-        Intent startGame;
+        Intent startGame = nextActivity;
         if (gameMode.equals("PVC")) {
             startGame = new Intent(getApplicationContext(), GameBoardActivity.class);
             startGame.putExtra("Game Mode", "PVC");
@@ -80,7 +86,7 @@ public class LoadGameActivity extends AppCompatActivity {
             startGame.putExtra("Game Mode", "CVC");
         }
 
-        startGame.putExtra("Type", "Load Game");
+        startGame.putExtra("Settings", this.settings);
         startActivity(startGame);
         finish();
     }

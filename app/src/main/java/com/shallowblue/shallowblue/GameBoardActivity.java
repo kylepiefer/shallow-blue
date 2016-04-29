@@ -44,8 +44,8 @@ public class GameBoardActivity extends AppCompatActivity {
     private int suggestedMoveIndex = 0;
     private boolean helperIsOn = false;
     private AsyncTask runningTask;
-    private double helperStrategy;
-    private double opponentStrategy;
+    private double whiteAIStrategy;
+    private double blackAIStrategy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,35 +55,33 @@ public class GameBoardActivity extends AppCompatActivity {
 
         this.savedGameManager = new SavedGameManager();
 
-        Intent settings = getIntent();
-
-        if (settings.hasExtra("Game Mode")) {
-            this.gameMode = settings.getStringExtra("Game Mode");
+        Intent intent = getIntent();
+        Bundle settings;
+        if (intent.hasExtra("Settings")) {
+            settings = intent.getBundleExtra("Settings");
         } else {
-            this.gameMode = "PVC";
+            settings = new Bundle();
         }
+
+        this.gameMode = settings.getString("Game Mode", "PVC");
         Log.d("GameBoardActivity", "Game mode is: " + this.gameMode);
 
-        if (settings.hasExtra("Difficulty")) {
-            this.difficulty = settings.getIntExtra("Difficulty", 1);
-        } else {
-            this.difficulty = 0;
-        }
+        this.difficulty = settings.getInt("Difficulty", 1);
         Log.d("GameBoardActivity", "Difficulty is: " + this.difficulty);
 
-        String colorString = settings.getStringExtra("Color");
-        if (colorString != null && colorString.equalsIgnoreCase("Black")) {
+        String color = settings.getString("Color", "White");
+        if (color.equalsIgnoreCase("Black")) {
             this.playerColor = Color.BLACK;
         } else {
             this.playerColor = Color.WHITE;
         }
         Log.d("GameBoardActivity", "Player Color is: " + this.playerColor);
 
-        String gameType = settings.getStringExtra("Type");
-        if (gameType != null && gameType.equalsIgnoreCase("Custom")) {
+        String gameType = settings.getString("Game Type", "New");
+        if (gameType.equalsIgnoreCase("Custom")) {
             this.gameBoard = new GameBoard(GameBoard.customPositions);
             this.gameType = "Custom";
-        } else if (gameType != null && gameType.equalsIgnoreCase("Load Game")){
+        } else if (gameType.equalsIgnoreCase("Load")){
             this.gameBoard = new GameBoard(GameBoard.activeGameBoard);
             this.gameType = "Load";
         } else {
@@ -94,19 +92,11 @@ public class GameBoardActivity extends AppCompatActivity {
         GameBoard.activeGameBoard = null;
         Log.d("GameBoardActivity", "Game Type is: " + this.gameType);
 
-        if (settings.hasExtra("Helper Strategy")) {
-            this.helperStrategy = settings.getDoubleExtra("Helper Strategy", STRATEGY_BALANCED);
-        } else {
-            this.helperStrategy = STRATEGY_BALANCED;
-        }
-        Log.d("GameBoardActivity", "Helper Strategy is: " + this.helperStrategy);
+        this.whiteAIStrategy = settings.getDouble("White Strategy", GameBoardActivity.STRATEGY_BALANCED);
+        Log.d("GameBoardActivity", "White AI Strategy is: " + this.whiteAIStrategy);
 
-        if (settings.hasExtra("Opponent Strategy")) {
-            this.opponentStrategy = settings.getDoubleExtra("Opponent Strategy", STRATEGY_BALANCED);
-        } else {
-            this.opponentStrategy = STRATEGY_BALANCED;
-        }
-        Log.d("GameBoardActivity", "Opponent Strategy is: " + this.opponentStrategy);
+        this.blackAIStrategy = settings.getDouble("Black Strategy", GameBoardActivity.STRATEGY_BALANCED);
+        Log.d("GameBoardActivity", "Black AI Strategy is: " + this.blackAIStrategy);
 
         createGameBoardActivitySquareArray(this.playerColor);
         this.selectedSquare = null;
@@ -115,7 +105,7 @@ public class GameBoardActivity extends AppCompatActivity {
         Map<Position, Piece> gameBoardPiecePositions = this.gameBoard.getGameBoard();
         refreshBoard(gameBoardPiecePositions);
 
-        if (this.gameMode.equals("CVC") || this.playerColor == Color.BLACK) aiMove();
+        if (this.gameMode.equals("CVC") || this.gameBoard.playerToMove() != this.playerColor) aiMove();
     }
 
     @Override
@@ -646,10 +636,10 @@ public class GameBoardActivity extends AppCompatActivity {
             if (gameMode.equalsIgnoreCase("CVC") && suggestedMoves != null) return null;
 
             double aggression;
-            if (playerColor == getGameBoard().playerToMove()) {
-                aggression = helperStrategy;
+            if (getGameBoard().playerToMove() == Color.WHITE) {
+                aggression = whiteAIStrategy;
             } else {
-                aggression = opponentStrategy;
+                aggression = blackAIStrategy;
             }
 
             AIMove ai = AIMoveFactory.newAIMove(aggression);

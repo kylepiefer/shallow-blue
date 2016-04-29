@@ -33,6 +33,7 @@ public class CustomGame extends AppCompatActivity {
     List<Piece> blackPieces;
     List<Piece> whitePieces;
     Position[][] availPos;
+    Bundle singlePlayerSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +52,12 @@ public class CustomGame extends AppCompatActivity {
         boardSetup = new HashMap<Position, Piece>();
         availPos = new Position[8][8];
 
-
+        Intent intent = getIntent();
+        if (intent.hasExtra("Settings")) {
+            this.singlePlayerSettings = intent.getBundleExtra("Settings");
+        } else {
+            this.singlePlayerSettings = new Bundle();
+        }
 
         customInitialize();
         imagePositionsInitialize(boardImages);
@@ -178,6 +184,7 @@ public class CustomGame extends AppCompatActivity {
         Intent startPvpGame = new Intent(getApplicationContext(), PVPGameBoard.class);
         Bundle game = new Bundle();
         game.putInt("game",2);
+        startGame.putExtra("Settings", this.singlePlayerSettings);
 
         ImageView[][] gameboard = new ImageView[8][8];
         boardResources = new int[8][8];
