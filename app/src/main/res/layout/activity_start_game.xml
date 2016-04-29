@@ -68,13 +68,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
-                    android:id="@+id/opponent_ai_spinner"/>
+                    android:id="@+id/white_ai_spinner"/>
 
                 <Spinner
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
-                    android:id="@+id/suggestion_ai_spinner"/>
+                    android:id="@+id/black_ai_spinner"/>
 
             </LinearLayout>
 

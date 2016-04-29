@@ -32,26 +32,19 @@ public class StartGameActivity extends AppCompatActivity {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.StartGameActivity_ai_array, android.R.layout.simple_spinner_dropdown_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        Spinner opponentSpinner = (Spinner) findViewById(R.id.opponent_ai_spinner);
-        Spinner suggestionSpinner = (Spinner) findViewById(R.id.suggestion_ai_spinner);
-        opponentSpinner.setAdapter(adapter);
-        suggestionSpinner.setAdapter(adapter);
+        Spinner whiteSpinner = (Spinner) findViewById(R.id.white_ai_spinner);
+        Spinner blackSpinner = (Spinner) findViewById(R.id.black_ai_spinner);
+        whiteSpinner.setAdapter(adapter);
+        blackSpinner.setAdapter(adapter);
     }
 
     public void newGame(View button) {
         Intent newGameIntent = new Intent(getApplicationContext(), GameBoardActivity.class);
 
-        SeekBar difficultySeekBar = (SeekBar) findViewById(R.id.seek_bar_difficulty);
-        int difficulty = difficultySeekBar.getProgress();
-        newGameIntent.putExtra("Difficulty", difficulty);
-
-        RadioButton radioButtonWhite = (RadioButton)this.findViewById(R.id.button_white);
-        if (radioButtonWhite.isChecked())
-            newGameIntent.putExtra("Color", "White");
-        else
-            newGameIntent.putExtra("Color", "Black");
-
-        newGameIntent.putExtra("Game Mode", this.gameMode);
+        Bundle settingsBundle = makeSettingsBundle();
+        settingsBundle.putString("Type", "New");
+        settingsBundle.putString("Game Type", "New");
+        newGameIntent.putExtra("Settings", settingsBundle);
 
         startActivity(newGameIntent);
         finish();
@@ -62,7 +55,11 @@ public class StartGameActivity extends AppCompatActivity {
         Bundle playercount = new Bundle();
         playercount.putInt("players", 1);
         createGameIntent.putExtra("Type",playercount);
-        createGameIntent.putExtra("Game Mode", this.gameMode);
+
+        Bundle settingsBundle = makeSettingsBundle();
+        settingsBundle.putString("Game Type", "Custom");
+        createGameIntent.putExtra("Settings", settingsBundle);
+
         startActivity(createGameIntent);
     }
 
@@ -71,8 +68,46 @@ public class StartGameActivity extends AppCompatActivity {
         Bundle game = new Bundle();
         game.putInt("game", 4);
         loadGameIntent.putExtra("start", game);
-        loadGameIntent.putExtra("Game Mode", this.gameMode);
+
+        Bundle settingsBundle = makeSettingsBundle();
+        settingsBundle.putString("Game Type", "Load");
+        loadGameIntent.putExtra("Settings", settingsBundle);
+
         startActivity(loadGameIntent);
+    }
+
+    private Bundle makeSettingsBundle() {
+        Bundle settings = new Bundle();
+        SeekBar difficultySeekBar = (SeekBar) findViewById(R.id.seek_bar_difficulty);
+        int difficulty = difficultySeekBar.getProgress();
+        settings.putInt("Difficulty", difficulty);
+
+        RadioButton radioButtonWhite = (RadioButton)this.findViewById(R.id.button_white);
+        if (radioButtonWhite.isChecked()) {
+            settings.putString("Color", "White");
+        } else {
+            settings.putString("Color", "Black");
+        }
+
+        settings.putString("Game Mode", this.gameMode);
+
+        double whiteAI = GameBoardActivity.STRATEGY_BALANCED;
+        Spinner whiteAISpinner = (Spinner) findViewById(R.id.white_ai_spinner);
+        String whiteAIStrategy = whiteAISpinner.getSelectedItem().toString();
+        if (whiteAIStrategy.equalsIgnoreCase("Aggressive")) whiteAI = GameBoardActivity.STRATEGY_AGGRESSIVE;
+        else if (whiteAIStrategy.equalsIgnoreCase("Defensive")) whiteAI = GameBoardActivity.STRATEGY_DEFENSIVE;
+        else whiteAI = GameBoardActivity.STRATEGY_BALANCED;
+        settings.putDouble("White Strategy", whiteAI);
+
+        double blackAI = GameBoardActivity.STRATEGY_BALANCED;
+        Spinner blackAISpinner = (Spinner) findViewById(R.id.black_ai_spinner);
+        String blackAIStrategy = blackAISpinner.getSelectedItem().toString();
+        if (blackAIStrategy.equalsIgnoreCase("Aggressive")) blackAI = GameBoardActivity.STRATEGY_AGGRESSIVE;
+        else if (blackAIStrategy.equalsIgnoreCase("Defensive")) blackAI = GameBoardActivity.STRATEGY_DEFENSIVE;
+        else blackAI = GameBoardActivity.STRATEGY_BALANCED;
+        settings.putDouble("Black Strategy", blackAI);
+
+        return settings;
     }
 
     public void onBackPressed(){
