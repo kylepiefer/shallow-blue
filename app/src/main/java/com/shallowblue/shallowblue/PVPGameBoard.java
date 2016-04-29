@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
@@ -225,6 +226,17 @@ public class PVPGameBoard extends AppCompatActivity {
                 return;
             } else {
                 if (tempPiece.possibleMoves().isEmpty()){
+                    if (GameBoard.activeGameBoard.playerToMove == Color.BLACK){
+                        Toast toast = Toast.makeText(this, "There are not any moves available" +
+                                " for this piece", Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.TOP,0,10);
+                        toast.getView().setRotation(180);
+                        //toast.setView(message);
+                        //if( message != null) message.setGravity(Gravity.TOP);
+                        toast.show();
+                        clearBackgrounds(true);
+                        return;
+                    }
                     Toast.makeText(PVPGameBoard.this, "There are not any moves available for " +
                             "this piece.", Toast.LENGTH_SHORT).show();
                     clearBackgrounds(true);
@@ -369,17 +381,19 @@ public class PVPGameBoard extends AppCompatActivity {
                 }
                 clearBackgrounds(true);
 
+                if (whiteHelper && GameBoard.activeGameBoard.playerToMove == Color.WHITE){
+                    aiMoveWhite();
+                } else if (blackHelper && GameBoard.activeGameBoard.playerToMove == Color.BLACK){
+                    aiMoveBlack();
+                }
+
                 return;
 
             }
         }, 1000);
 
         clearBackgrounds(false);
-        if (whiteHelper && GameBoard.activeGameBoard.playerToMove == Color.WHITE){
-            aiMoveWhite();
-        } else if (blackHelper && GameBoard.activeGameBoard.playerToMove == Color.BLACK){
-            aiMoveBlack();
-        }
+
 
     }
 
@@ -499,8 +513,13 @@ public class PVPGameBoard extends AppCompatActivity {
     public void undoBlack(){
         List<Move> history = GameBoard.activeGameBoard.getGameHistory();
         if (history.isEmpty()){
-            Toast.makeText(PVPGameBoard.this, "Sorry, you can't undo a move when one doesn't" +
-                    " exist.", Toast.LENGTH_SHORT).show();
+            Toast toast = Toast.makeText(this, "Sorry, you can't undo a move when one doesn't exist",
+                    Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.TOP,0,10);
+            toast.getView().setRotation(180);
+            //toast.setView(message);
+            //if( message != null) message.setGravity(Gravity.TOP);
+            toast.show();
             return;
         }
         int last = history.size() - 1;
@@ -574,8 +593,13 @@ public class PVPGameBoard extends AppCompatActivity {
             redoMoves.add(prev);
             history.remove(last);
         } else {
-            Toast.makeText(PVPGameBoard.this, "You can't undo your opponents last move.",
-                    Toast.LENGTH_SHORT).show();
+            Toast toast = Toast.makeText(this, "You can't undo your opponents last move",
+                    Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.TOP,0,10);
+            toast.getView().setRotation(180);
+            //toast.setView(message);
+            //if( message != null) message.setGravity(Gravity.TOP);
+            toast.show();
             return;
         }
 
@@ -682,8 +706,13 @@ public class PVPGameBoard extends AppCompatActivity {
 
     public void pvpredo2(View v){
         if (redoMoves.isEmpty()){
-            Toast.makeText(PVPGameBoard.this, "Sorry, you can't redo a move when one doesn't" +
-                    " exist.", Toast.LENGTH_SHORT).show();
+            Toast toast = Toast.makeText(this, "Sorry, you can't redo a move when one doesn't exist",
+                    Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.TOP,0,10);
+            toast.getView().setRotation(180);
+            //toast.setView(message);
+            //if( message != null) message.setGravity(Gravity.TOP);
+            toast.show();
             return;
         }
         int last = redoMoves.size() - 1;
@@ -752,17 +781,18 @@ public class PVPGameBoard extends AppCompatActivity {
                 pvpGameboard[fromPos.getRow()][toPos.getColumn()].setImageResource(0);
             }
 
-            if (boardSetup.get(fromPos) != null){
-                Toast.makeText(this, "Yep, not working",Toast.LENGTH_SHORT).show();
-            }
-
             turn = Color.WHITE;
             GameBoard.activeGameBoard.addMove(prev);
             GameBoard.activeGameBoard.switchPlayerToMove();
             redoMoves.remove(last);
         } else {
-            Toast.makeText(PVPGameBoard.this, "You can't redo your opponents last move.",
-                    Toast.LENGTH_SHORT).show();
+            Toast toast = Toast.makeText(this, "You can't redo your opponents last move",
+                    Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.TOP,0,10);
+            toast.getView().setRotation(180);
+            //toast.setView(message);
+            //if( message != null) message.setGravity(Gravity.TOP);
+            toast.show();
             return;
         }
 
@@ -834,8 +864,13 @@ public class PVPGameBoard extends AppCompatActivity {
     public void pvpsuggalt2(View v){
         //new UrlConnection().new Request().execute(GameBoard.activeGameBoard.pack());
         if (suggestedBlackMoves == null){
-            Toast.makeText(PVPGameBoard.this, "To get alternate suggested moves, tap the 'Start " +
-                    "Helper' button first.", Toast.LENGTH_SHORT).show();
+            Toast toast = Toast.makeText(this, "To get alternate suggested moves, " +
+                    "tap the 'Start Helper' button first.", Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.TOP,0,10);
+            toast.getView().setRotation(180);
+            //toast.setView(message);
+            //if( message != null) message.setGravity(Gravity.TOP);
+            toast.show();
         }
         if (suggestedBlackMoves.size() == blackSuggCount){
             blackSuggCount = 0;
@@ -854,22 +889,49 @@ public class PVPGameBoard extends AppCompatActivity {
         ImageView toImage = pvpGameboard[toPos.getRow()][toPos.getColumn()];
         fromImage.setBackgroundResource(yellowBoardSelection);
         toImage.setBackgroundResource(greenHighlight);
+        Piece moved = move.getPieceMoved();
+        int id;
+        if (moved.getColor() == Color.BLACK){
+            id = getFlippedId(moved);
+            moved.setDrawableId(id);
+        }
         selImage = fromImage;
-        selPiece = move.getPieceMoved();
+        selPiece = moved;
         selPosition = fromPos;
         selLegal.add(move);
     }
 
+    private int getFlippedId(Piece p){
+        int answer = 0;
+        if (p instanceof Pawn){
+            return R.drawable.black_pawn_flipped;
+        } else if (p instanceof Knight){
+            return R.drawable.black_knight_flipped;
+        } else if (p instanceof Bishop){
+            return R.drawable.black_bishop_flipped;
+        } else if (p instanceof Rook){
+            return R.drawable.black_rook_flipped;
+        } else if (p instanceof Queen){
+            return R.drawable.black_queen_flipped;
+        } else if (p instanceof King){
+            return R.drawable.black_king_flipped;
+        }
+        return answer;
+    }
+
+
     public void pvpstarthelp1(View v){
+        if (GameBoard.activeGameBoard.playerToMove != Color.WHITE){
+            Toast.makeText(this, "Wait until you're turn to activate the AI Helper",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (!whiteHelper) {
             if (GameBoard.activeGameBoard.playerToMove == Color.WHITE) {
                 ImageView helperButton = (ImageView) findViewById(R.id.helper1);
                 helperButton.setImageResource(R.drawable.stop_helper_button);
                 whiteHelper = true;
                 aiMoveWhite();
-            } else {
-                Toast.makeText(this, "Wait until you're turn to activate the AI Helper",
-                        Toast.LENGTH_SHORT).show();
             }
         } else {
             ImageView helperButton = (ImageView) findViewById(R.id.helper1);
@@ -891,6 +953,15 @@ public class PVPGameBoard extends AppCompatActivity {
 
     public void pvpstarthelp2(View v){
         //new UrlConnection().new Connection().execute("connect");
+        if (GameBoard.activeGameBoard.playerToMove != Color.BLACK){
+            Toast toast = Toast.makeText(this, "Wait until you're turn to activate the AI Helper",
+                    Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.TOP,0,10);
+            toast.getView().setRotation(180);
+            //toast.setView(message);
+            //if( message != null) message.setGravity(Gravity.TOP);
+            toast.show();
+        }
         if (!blackHelper) {
             if (GameBoard.activeGameBoard.playerToMove == Color.BLACK) {
                 ImageView helperButton = (ImageView) findViewById(R.id.helper2);
@@ -898,9 +969,6 @@ public class PVPGameBoard extends AppCompatActivity {
                 helperButton.setScaleType(ImageView.ScaleType.FIT_XY);
                 blackHelper = true;
                 aiMoveBlack();
-            } else {
-                Toast.makeText(this, "Wait until you're turn to activate the AI Helper",
-                        Toast.LENGTH_SHORT).show();
             }
         } else {
             ImageView helperButton = (ImageView) findViewById(R.id.helper2);
@@ -1127,12 +1195,6 @@ public class PVPGameBoard extends AppCompatActivity {
     private class AIMoveTask extends AsyncTask<GameBoard, Integer, Move> {
         protected Move doInBackground(GameBoard... gameBoards) {
             GameBoard board = gameBoards[0];
-
-            if (GameBoard.activeGameBoard.playerToMove == Color.WHITE) {
-                if (suggestedWhiteMoves != null) return null;
-            } else {
-                if (suggestedBlackMoves != null) return null;
-            }
 
             double aggression;
             if (GameBoard.activeGameBoard.playerToMove() == Color.WHITE) {
