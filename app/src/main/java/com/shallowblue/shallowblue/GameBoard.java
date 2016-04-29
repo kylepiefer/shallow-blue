@@ -456,6 +456,12 @@ public class GameBoard {
             }
             temp += "/" + history;
             temp +=  "/" + whiteRook + "!";
+            if(playerToMove == Color.BLACK){
+                temp += "1";
+            }
+            else {
+                temp += "0";
+            }
             return temp;
         } catch (Exception e) {
             //null exception when on gameHistory available
@@ -622,6 +628,7 @@ public class GameBoard {
                 }
             }
         }
+        i++;
 
 
 
