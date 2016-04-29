@@ -1,5 +1,6 @@
 package com.shallowblue.shallowblue;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
@@ -41,18 +42,38 @@ public class PawnPromotion extends AppCompatActivity {
     }
 
     public void queenClicked(View v){
+        Intent result = new Intent();
+        result.putExtra("Choice", "Queen");
+        setResult(RESULT_OK, result);
         finish();
     }
 
     public void rookClicked(View v){
+        Intent result = new Intent();
+        result.putExtra("Choice", "Rook");
+        setResult(RESULT_OK, result);
         finish();
     }
 
     public void knightClicked(View v){
+        Intent result = new Intent();
+        result.putExtra("Choice", "Knight");
+        setResult(RESULT_OK, result);
         finish();
     }
 
     public void bishopClicked(View v){
+        Intent result = new Intent();
+        result.putExtra("Choice", "Bishop");
+        setResult(RESULT_OK, result);
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent result = new Intent();
+        result.putExtra("Choice", "Cancel");
+        setResult(RESULT_OK, result);
         finish();
     }
 }
