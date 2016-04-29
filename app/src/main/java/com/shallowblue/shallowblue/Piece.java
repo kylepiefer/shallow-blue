@@ -87,6 +87,10 @@ public abstract class Piece {
 
 
 	public int getNumMoves() {return numMoves;}
+	public void setNumMoves(int i) {
+		numMoves = i;
+
+	}
 	public void incrementNumMoves(int i) {numMoves += i;}
 
 }

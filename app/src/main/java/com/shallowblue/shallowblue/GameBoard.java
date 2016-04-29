@@ -416,7 +416,12 @@ public class GameBoard {
     }
 
     public String pack() {
-        int value = 0;
+        String whiteRook = "";
+        String blackRook = "";
+        int whiteKingValue = 0;
+        int blackKingValue = 0;
+
+
         String temp = "";
         try {
             Position p;
@@ -441,20 +446,16 @@ public class GameBoard {
             } else if (gameHistory.size() >= 3) {
                 history = gameHistory.get(0).toString(true) + gameHistory.get(1).toString(true) + gameHistory.get(2).toString(true);
             }
-            for (Piece piece : gameBoard.values()) {
+            int whiteRookCount = 0;
+            int blackRookCount = 0;
 
-                if (piece instanceof Rook) {
-                    if (piece.hasMoved() && ((Rook) piece).leftright()) {
-                        value += 2;
-                    } else if (piece.hasMoved() && !((Rook) piece).leftright()) {
-                        value += 3;
-                    }
-                } else if (piece instanceof King)
-                    if (piece.hasMoved()) {
-                        value += 5;
+            for (Piece piece : gameBoard.values()) {
+                    if (piece instanceof Rook ||piece instanceof King) {
+                        whiteRook = whiteRook + piece.getNumMoves() + "/";
                     }
             }
-            temp += "\n" + history + "\n" + value;
+            temp += "/" + history;
+            temp +=  "/" + whiteRook + "!";
             return temp;
         } catch (Exception e) {
             //null exception when on gameHistory available
@@ -468,6 +469,12 @@ public class GameBoard {
     }
 
     public GameBoard(String packedString) {
+        int whiteRookValue1 = 0;
+        int blackRookValue1 = 0;
+        int whiteRookValue2 = 0;
+        int blackRookValue2 = 0;
+        int whiteKingValue = 0;
+        int blackKingValue = 0;
         legalMovesCache = null;
         gameBoard = new HashMap<Position, Piece>();
         Position p;
@@ -475,7 +482,7 @@ public class GameBoard {
         gameHistory = new ArrayList<Move>();
         int row = 0;
         int column = 0;
-        while (packedString.charAt(i) != '\n') {
+        while (packedString.charAt(i) != '/') {
             if (column == 8) {
                 column = 0;
                 row++;
@@ -512,7 +519,7 @@ public class GameBoard {
             i++;
         }
         i++;
-        while (packedString.charAt(i) != '\n') {
+        while (packedString.charAt(i) != '/') {
             Move m;
             char movedPiece = packedString.charAt(i);
             int fromRow = Integer.parseInt(packedString.substring(i + 1, i + 2));
@@ -553,6 +560,72 @@ public class GameBoard {
             }
             i += 6;
         }
+        i++;
+        //temp += whiteRookValue1 + "/" + whiteRookValue2 + "/" + whiteKingValue;
+        //temp += "/" + blackRookValue1 + "/" + blackRookValue2 + "/" + blackKingValue;
+        /*while(packedString.charAt(i)!='/'){
+            whiteRookValue1 = whiteRookValue1 * 10;
+            System.out.print(whiteRookValue1 + " * 10 + " + (packedString.charAt(i)-48) + " = ");
+            whiteRookValue1 = whiteRookValue1 + packedString.charAt(i)-48;
+            i++;
+            System.out.print(whiteRookValue1 + "_");
+        }
+        i++;
+        while(packedString.charAt(i)!='/'){
+            whiteRookValue2 = whiteRookValue2 * 10;
+            System.out.print(whiteRookValue2 + " * 10 + " + (packedString.charAt(i)-48) + " = ");
+            whiteRookValue2 = whiteRookValue2 + packedString.charAt(i)-48;
+            i++;
+            System.out.print(whiteRookValue2 + "_");
+        }
+        i++;
+        while(packedString.charAt(i)!='/'){
+            whiteKingValue = whiteKingValue * 10;
+            System.out.print(whiteKingValue + " * 10 + " + (packedString.charAt(i)-48) + " = ");
+            whiteKingValue = whiteKingValue + packedString.charAt(i)-48;
+            i++;
+            System.out.print(whiteKingValue + "_");
+        }
+        i++;
+        while(packedString.charAt(i)!='/'){
+            whiteRookValue1 = blackRookValue1 * 10;
+            whiteRookValue1 += packedString.charAt(i)-48;
+            i++;
+        }
+        i++;
+        while(packedString.charAt(i)!='/'){
+            whiteRookValue1 = blackRookValue2 * 10;
+            whiteRookValue1 += packedString.charAt(i)-48;
+            i++;
+        }
+        i++;
+        while(packedString.charAt(i)!='/'){
+            whiteRookValue1 = blackKingValue * 10;
+            whiteRookValue1 += packedString.charAt(i)-48;
+            i++;
+        }*/
+        for (Piece piece : gameBoard.values()) {
+            if (packedString.charAt(i-1)!='!') {
+
+                int value = 0;
+
+
+                if (piece instanceof Rook || piece instanceof King) {
+                    while (packedString.charAt(i) != '/') {
+                        value = value * 10;
+                        value += packedString.charAt(i) - 48;
+
+                        i++;
+                    }
+                    i++;
+                    piece.setNumMoves(value);
+                }
+            }
+        }
+
+
+
+
         findKings();
     }
 
