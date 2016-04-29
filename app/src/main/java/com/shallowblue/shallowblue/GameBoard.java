@@ -629,10 +629,11 @@ public class GameBoard {
             }
         }
         i++;
+        playerToMove = Color.WHITE;
+        if(packedString.charAt(i) == '1'){
+            playerToMove = Color.BLACK;
 
-
-
-
+        }
         findKings();
     }
 
