@@ -44,8 +44,6 @@ public class Pawn extends Piece {
 
 		//if the pawn is white, a new possible position is generated
 		//by adding +1 to its row. If it's black, add -1 instead.
-
-
 		int direction = (getColor() == Color.WHITE) ? 1 : -1;
 		result.add(new Position(getPosition().getRow()+direction, getPosition().getColumn()));
 
@@ -57,7 +55,7 @@ public class Pawn extends Piece {
 		
 		// if a pawn is in its starting row (meaning it hasn't yet moved) it can move forward 2 spaces
 		if ((getColor() == Color.WHITE && getPosition().getRow() == 1) ||
-				(getColor() == Color.BLACK && getPosition().getRow() == 7)) {
+				(getColor() == Color.BLACK && getPosition().getRow() == 6)) {
 			result.add(new Position(getPosition().getRow()+(direction*2), getPosition().getColumn()));
 		}
 
