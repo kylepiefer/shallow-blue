@@ -58,6 +58,9 @@
         <activity android:name=".EndOfGameActivity"
             android:theme="@style/AppTheme.customThemePopUp">
         </activity>
+        <activity android:name=".PawnPromotion"
+            android:theme="@style/AppTheme.customThemePopUp">
+        </activity>
 
     </application>
 

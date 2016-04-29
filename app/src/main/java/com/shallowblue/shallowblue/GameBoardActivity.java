@@ -27,6 +27,7 @@ public class GameBoardActivity extends AppCompatActivity {
     public static final double STRATEGY_DEFENSIVE = 2.0;
 
     private static final int END_OF_GAME_REQUEST = 1;
+    private static final int PAWN_PROMOTION_REQUEST = 2;
 
     private GameBoard gameBoard;
     private GameBoardActivitySquare[][] gameBoardActivitySquares;
@@ -46,6 +47,8 @@ public class GameBoardActivity extends AppCompatActivity {
     private AsyncTask runningTask;
     private double whiteAIStrategy;
     private double blackAIStrategy;
+
+    private Move cachedMoveForPromotion = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +125,32 @@ public class GameBoardActivity extends AppCompatActivity {
                     startActivity(quit);
                     finish();
                 }
+            }
+        } else if (requestCode == PAWN_PROMOTION_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Move toAnimate = cachedMoveForPromotion;
+                if (toAnimate == null) return;
+
+                Piece newPiece;
+                String choice = data.getStringExtra("Choice");
+                if (choice.equalsIgnoreCase("Queen")) {
+                    newPiece = new Queen(toAnimate.getTo(), getGameBoard().playerToMove());
+                } else if (choice.equalsIgnoreCase("Knight")) {
+                    newPiece = new Knight(toAnimate.getTo(), getGameBoard().playerToMove());
+                } else if (choice.equalsIgnoreCase("Rook")) {
+                    newPiece = new Rook(toAnimate.getTo(), getGameBoard().playerToMove());
+                } else if (choice.equalsIgnoreCase("Bishop")) {
+                    newPiece = new Bishop(toAnimate.getTo(), getGameBoard().playerToMove());
+                } else { // Cancel
+                    newPiece = null;
+                }
+                Move toPerform = new Move(newPiece, toAnimate.getFrom(), toAnimate.getPieceMoved(), toAnimate.getTo());
+                if (newPiece != null) {
+                    performMove(toPerform);
+                }
+
+                GameBoard.activeGameBoard = null;
+                cachedMoveForPromotion = null;
             }
         }
     }
@@ -422,17 +451,18 @@ public class GameBoardActivity extends AppCompatActivity {
                                  this.selectedSquare.getBoardPosition(),
                                  gbas.getBoardPosition());
 
-            boolean moveSucceeded = false;
-            synchronized (gameBoard) {
-                moveSucceeded = gameBoard.move(move);
+            // Test for Promotion
+            if (move.getPieceMoved() instanceof Pawn &&
+                    ((move.getTo().getRow() == 7 && move.getPieceMoved().getColor() == Color.WHITE) ||
+                            (move.getTo().getRow() == 0 && move.getPieceMoved().getColor() == Color.BLACK))) {
+                cachedMoveForPromotion = move;
+                GameBoard.activeGameBoard = getGameBoard();
+                Intent promote = new Intent(this, PawnPromotion.class);
+                startActivityForResult(promote, PAWN_PROMOTION_REQUEST);
+                return;
             }
 
-            if (moveSucceeded) {
-                this.updateGameboard(move, true);
-                removeAllSquareHighlights();
-            } else {
-                //Log.d("ShallowBlue", "Player move failed: " + move.toString() + " Reason: " + getGameBoard().getLastExplanation());
-            }
+            performMove(move);
         }
 
         else {
@@ -468,6 +498,20 @@ public class GameBoardActivity extends AppCompatActivity {
                     }
                 }
             }
+        }
+    }
+
+    private void performMove(Move move) {
+        boolean moveSucceeded = false;
+        synchronized (gameBoard) {
+            moveSucceeded = gameBoard.move(move);
+        }
+
+        if (moveSucceeded) {
+            this.updateGameboard(move, true);
+            removeAllSquareHighlights();
+        } else {
+            //Log.d("ShallowBlue", "Player move failed: " + move.toString() + " Reason: " + getGameBoard().getLastExplanation());
         }
     }
 

@@ -82,11 +82,11 @@ public class AIMoveLocal extends AIMove {
             };
 
     public List<Move> move(GameBoard current, int depth) {
-        positionsExamined = 0;
-        long startTime = System.currentTimeMillis();
-
         current = new GameBoard(current);
         List<Move> moves;
+
+        positionsExamined = 0;
+        long startTime = System.currentTimeMillis();
 
         if(current.playerToMove() == Color.WHITE)
             moves = maxAction(current, depth);

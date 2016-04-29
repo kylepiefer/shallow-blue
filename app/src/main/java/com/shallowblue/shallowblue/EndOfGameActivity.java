@@ -50,4 +50,12 @@ public class EndOfGameActivity extends AppCompatActivity {
         setResult(RESULT_OK, result);
         finish();
     }
+
+    @Override
+    public void onBackPressed() {
+        Intent result = new Intent();
+        result.putExtra("Action", "Undo");
+        setResult(RESULT_OK, result);
+        finish();
+    }
 }

@@ -129,8 +129,22 @@ public class GameBoard {
                 if (piece.getColor() == playerToMove) {
                     List<Position> possibleMoves = piece.possibleMoves();
                     for (Position position : possibleMoves) {
-                        Move move = new Move(piece, piece.getPosition(), position);
-                        if (legalMove(move)) legalMoves.add(move);
+                        // Make promotion moves if necessary.
+                        if (piece instanceof Pawn &&
+                                ((position.getRow() == 7 && playerToMove == Color.WHITE) ||
+                                        (position.getRow() == 0 && playerToMove == Color.BLACK))) {
+                            Move toBishop = new Move(new Bishop(position, playerToMove), piece.getPosition(), piece, position);
+                            if (legalMove(toBishop)) legalMoves.add(toBishop);
+                            Move toKnight = new Move(new Knight(position, playerToMove), piece.getPosition(), piece, position);
+                            if (legalMove(toKnight)) legalMoves.add(toKnight);
+                            Move toRook = new Move(new Rook(position, playerToMove), piece.getPosition(), piece, position);
+                            if (legalMove(toRook)) legalMoves.add(toRook);
+                            Move toQueen = new Move(new Queen(position, playerToMove), piece.getPosition(), piece, position);
+                            if (legalMove(toQueen)) legalMoves.add(toQueen);
+                        } else { // Otherwise it is just a normal move.
+                            Move move = new Move(piece, piece.getPosition(), position);
+                            if (legalMove(move)) legalMoves.add(move);
+                        }
                     }
                 }
             }
@@ -152,7 +166,14 @@ public class GameBoard {
 
         // Handle the GameBoard
         Piece moved = gameBoard.get(m.getFrom());
-        m = new Move(moved, m.getFrom(), m.getTo());
+
+        // Hack to fix bug. Make a new move to make sure it is correct.
+        if (isPromotion(m)) {
+            m = new Move(m.getPieceMoved(), m.getFrom(), gameBoard.get(m.getFrom()), m.getTo());
+        } else {
+            m = new Move(moved, m.getFrom(), m.getTo());
+        }
+
         executeMoveOnBoard(m);
 
         if (isCastle(m)) {
@@ -191,6 +212,11 @@ public class GameBoard {
             Piece captured = gameBoard.get(capturedPosition);
             m.setPieceCaptured(captured);
             gameBoard.remove(capturedPosition);
+        } else if (isPromotion(m)) {
+            Pawn promoted = (Pawn) gameBoard.remove(m.getFrom());
+            m.setPieceCaptured(promoted);
+            gameBoard.put(m.getTo(), m.getPieceMoved());
+            return; // We must return because the normal steps will mess up the board.
         }
 
         // Update the game board.
@@ -255,6 +281,12 @@ public class GameBoard {
     }
 
     private void executeUndoOnBoard(Move m) {
+        if (isPromotion(m)) {
+            Piece promoted = gameBoard.remove(m.getTo());
+            gameBoard.put(m.getPieceCaptured().getPosition(), m.getPieceCaptured());
+            return; // We must return because the normal steps will mess up the board.
+        }
+
         Piece moved = gameBoard.get(m.getTo());
         gameBoard.remove(m.getTo());
         gameBoard.put(m.getFrom(), moved);
@@ -264,15 +296,6 @@ public class GameBoard {
         if (m.getPieceCaptured() != null) {
             gameBoard.put(m.getPieceCaptured().getPosition(), m.getPieceCaptured());
         }
-
-        /*
-        if (moved instanceof Rook) {
-            Rook rook = (Rook) moved;
-            if (m.equals(rook.getFirstMove())) rook.setFirstMove(null);
-        } else if (moved instanceof King) {
-            King king = (King) moved;
-            if (m.equals(king.getFirstMove())) king.setFirstMove(null);
-        }*/
     }
 
     public boolean redo() {
@@ -308,6 +331,16 @@ public class GameBoard {
 
         // the move meets all the criteria to be a legal en passant
         return true;
+    }
+
+    public boolean isPromotion(Move m) {
+        if (m.getPieceCaptured() != null &&
+                m.getPieceCaptured().getColor() == m.getPieceMoved().getColor() &&
+                m.getPieceCaptured() instanceof Pawn) {
+            return true;
+        }
+
+        return false;
     }
 
     public boolean legalMove(Move m) {
@@ -396,6 +429,25 @@ public class GameBoard {
                 return false;
             } else {
                 this.explanation = "You can legally castle.";
+            }
+        }
+
+        // Check for legal promotion.
+        if (isPromotion(m)) {
+            if (m.getTo().getColumn() != m.getFrom().getColumn()) {
+                if (gameBoard.get(m.getTo()) == null) {
+                    this.explanation = "Pawns can only move diagonally when capturing.";
+                    return false;
+                } else if (gameBoard.get(m.getTo()).getColor() == playerToMove) {
+                    this.explanation = "You cannot capture your own piece.";
+                    return false;
+                }
+            }
+            if (m.getPieceMoved() instanceof Pawn || m.getPieceMoved() instanceof King) {
+                this.explanation = "You cannot promote a pawn to another pawn or to a king.";
+                return false;
+            } else {
+                this.explanation = "When a pawn reaches the opposite end of the board, it can be promoted to another piece. This is called Pawn Promotion.";
             }
         }
 
@@ -567,49 +619,7 @@ public class GameBoard {
             i += 6;
         }
         i++;
-        //temp += whiteRookValue1 + "/" + whiteRookValue2 + "/" + whiteKingValue;
-        //temp += "/" + blackRookValue1 + "/" + blackRookValue2 + "/" + blackKingValue;
-        /*while(packedString.charAt(i)!='/'){
-            whiteRookValue1 = whiteRookValue1 * 10;
-            System.out.print(whiteRookValue1 + " * 10 + " + (packedString.charAt(i)-48) + " = ");
-            whiteRookValue1 = whiteRookValue1 + packedString.charAt(i)-48;
-            i++;
-            System.out.print(whiteRookValue1 + "_");
-        }
-        i++;
-        while(packedString.charAt(i)!='/'){
-            whiteRookValue2 = whiteRookValue2 * 10;
-            System.out.print(whiteRookValue2 + " * 10 + " + (packedString.charAt(i)-48) + " = ");
-            whiteRookValue2 = whiteRookValue2 + packedString.charAt(i)-48;
-            i++;
-            System.out.print(whiteRookValue2 + "_");
-        }
-        i++;
-        while(packedString.charAt(i)!='/'){
-            whiteKingValue = whiteKingValue * 10;
-            System.out.print(whiteKingValue + " * 10 + " + (packedString.charAt(i)-48) + " = ");
-            whiteKingValue = whiteKingValue + packedString.charAt(i)-48;
-            i++;
-            System.out.print(whiteKingValue + "_");
-        }
-        i++;
-        while(packedString.charAt(i)!='/'){
-            whiteRookValue1 = blackRookValue1 * 10;
-            whiteRookValue1 += packedString.charAt(i)-48;
-            i++;
-        }
-        i++;
-        while(packedString.charAt(i)!='/'){
-            whiteRookValue1 = blackRookValue2 * 10;
-            whiteRookValue1 += packedString.charAt(i)-48;
-            i++;
-        }
-        i++;
-        while(packedString.charAt(i)!='/'){
-            whiteRookValue1 = blackKingValue * 10;
-            whiteRookValue1 += packedString.charAt(i)-48;
-            i++;
-        }*/
+
         for (Piece piece : gameBoard.values()) {
             if (packedString.charAt(i-1)!='!') {
 
@@ -648,83 +658,6 @@ public class GameBoard {
     public Color playerToMove() {
         return playerToMove;
     }
-
-    /*
-    public double sbe() {
-        int wrookC = 0;
-        int wqueenC = 0;
-        int wknightC = 0;
-        int wbishopC = 0;
-        int wpawnC = 0;
-        int wkingC = 0;
-
-        int brookC = 0;
-        int bqueenC = 0;
-        int bknightC = 0;
-        int bbishopC = 0;
-        int bpawnC = 0;
-        int bkingC = 0;
-
-        List<Piece> allPiecesOnBoard = new ArrayList<>();
-        List<Piece> whitePieces = new ArrayList<>();
-        List<Piece> blackPieces = new ArrayList<>();
-
-        double sum = 0.0;
-        for (Position p : gameBoard.keySet()){
-            allPiecesOnBoard.add(gameBoard.get(p));
-            if (gameBoard.get(p).getColor() == Color.WHITE){
-                whitePieces.add(gameBoard.get(p));
-            } else {
-                blackPieces.add(gameBoard.get(p));
-            }
-        }
-
-        for (Piece p : whitePieces) {
-            if (p instanceof Rook)
-                wrookC++;
-            else if (p instanceof Queen)
-                wqueenC++;
-            else if (p instanceof Knight)
-                wknightC++;
-            else if (p instanceof King)
-                wkingC++;
-            else if (p instanceof Bishop)
-                wbishopC++;
-            else if (p instanceof Pawn)
-                wpawnC++;
-            else
-                continue; // null
-        }
-
-        for (Piece p : blackPieces){
-            if (p instanceof Rook)
-                brookC++;
-            else if (p instanceof Queen)
-                bqueenC++;
-            else if (p instanceof Knight)
-                bknightC++;
-            else if (p instanceof King)
-                bkingC++;
-            else if (p instanceof Bishop)
-                bbishopC++;
-            else if (p instanceof Pawn)
-                bpawnC++;
-            else
-                continue; // null
-        }
-        int playerEval = 0;
-        if (playerToMove == Color.WHITE){
-            playerEval = -1;
-        } else {
-            playerEval = 1;
-        }
-
-
-        return sum = playerEval * (1000000*(wkingC - bkingC) + 9*(wqueenC - bqueenC) +
-                5*(wrookC - brookC) + 3*(wbishopC - bbishopC + wknightC - bknightC) +
-                0.5*(wpawnC - bpawnC));
-    }
-    */
 
     //TODO Add 50 move/replay/other ties
     public boolean gameOver() {
