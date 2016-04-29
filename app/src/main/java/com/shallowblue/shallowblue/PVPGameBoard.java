@@ -48,6 +48,17 @@ public class PVPGameBoard extends AppCompatActivity {
     private final int animationFadeOut = R.anim.fadeout;
     private ImageView checkWhite;
     private ImageView checkBlack;
+    private AsyncTask runningTaskWhite;
+    private AsyncTask runningTaskBlack;
+    private int difficulty = 3;
+    private List<Move> suggestedWhiteMoves = null;
+    private List<Move> suggestedBlackMoves = null;
+    private double whiteAIStrategy = 1;
+    private double blackAIStrategy = 1;
+    private boolean whiteHelper = false;
+    private boolean blackHelper = false;
+    private int whiteSuggCount = 1;
+    private int blackSuggCount = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +74,7 @@ public class PVPGameBoard extends AppCompatActivity {
         redoMoves = new ArrayList<>();
         checkWhite = (ImageView) findViewById(R.id.player1Check);
         checkBlack = (ImageView) findViewById(R.id.player2Check);
+        selLegal = new ArrayList<>();
 
         GameBoard.activeGameBoard = new GameBoard();
 
@@ -194,6 +206,7 @@ public class PVPGameBoard extends AppCompatActivity {
         Piece tempPiece = boardSetup.get(tempPos);
         boolean foundMatch = false;
         if (selImage == null && tempPiece != null && tempPiece.getColor() != turn){
+            clearBackgrounds(true);
             return;
         }
         if (selImage == temp){
@@ -204,6 +217,7 @@ public class PVPGameBoard extends AppCompatActivity {
                 pvpGameboard[selMoveX][selMoveY].setBackgroundResource(0);
             }
             selImage = null;
+            clearBackgrounds(true);
             return;
         }
         if (selImage == null){
@@ -213,8 +227,10 @@ public class PVPGameBoard extends AppCompatActivity {
                 if (tempPiece.possibleMoves().isEmpty()){
                     Toast.makeText(PVPGameBoard.this, "There are not any moves available for " +
                             "this piece.", Toast.LENGTH_SHORT).show();
+                    clearBackgrounds(true);
                     return;
                 }
+                clearBackgrounds(false);
                 selImage = temp;
                 selImage.setBackgroundResource(yellowBoardSelection);
                 selPiece = tempPiece;
@@ -227,6 +243,7 @@ public class PVPGameBoard extends AppCompatActivity {
                     pvpGameboard[selMoveX][selMoveY].setBackgroundResource(redHighlight);
                     Position curr = selMoves.get(i);
                     Move possible = new Move(selPiece, selPiece.getPosition(), curr);
+
                     if (GameBoard.activeGameBoard.legalMove(possible)) {
                         pvpGameboard[selMoveX][selMoveY].setBackgroundResource(greenHighlight);
                     }
@@ -246,11 +263,7 @@ public class PVPGameBoard extends AppCompatActivity {
             }
             if (!foundMatch){
                 selImage.setBackgroundResource(0);
-                for (int i = 0; i < selMoves.size(); i++) {
-                    int selMoveX = selMoves.get(i).getRow();
-                    int selMoveY = selMoves.get(i).getColumn();
-                    pvpGameboard[selMoveX][selMoveY].setBackgroundResource(0);
-                }
+                clearBackgrounds(true);
                 selImage = null;
                 return;
             }
@@ -354,19 +367,19 @@ public class PVPGameBoard extends AppCompatActivity {
                     boardSetup.put(takenPawnPos,null);
                     pvpGameboard[takenPawnPos.getRow()][takenPawnPos.getColumn()].setImageResource(0);
                 }
+                clearBackgrounds(true);
+
                 return;
 
             }
         }, 1000);
 
-
-
-        for (int i = 0; i < selMoves.size(); i++) {
-            int selMoveX = selMoves.get(i).getRow();
-            int selMoveY = selMoves.get(i).getColumn();
-            pvpGameboard[selMoveX][selMoveY].setBackgroundResource(0);
+        clearBackgrounds(false);
+        if (whiteHelper && GameBoard.activeGameBoard.playerToMove == Color.WHITE){
+            aiMoveWhite();
+        } else if (blackHelper && GameBoard.activeGameBoard.playerToMove == Color.BLACK){
+            aiMoveBlack();
         }
-
 
     }
 
@@ -397,7 +410,7 @@ public class PVPGameBoard extends AppCompatActivity {
         int last = history.size() - 1;
         Move prev = history.get(last);
         if (prev.getPieceMoved().getColor() == Color.WHITE){
-            clearBackgrounds();
+            clearBackgrounds(true);
             Position fromPos = prev.getFrom();
             Position toPos = prev.getTo();
             ImageView from = pvpGameboard[fromPos.getRow()][fromPos.getColumn()];
@@ -493,7 +506,7 @@ public class PVPGameBoard extends AppCompatActivity {
         int last = history.size() - 1;
         Move prev = history.get(last);
         if (prev.getPieceMoved().getColor() == Color.BLACK){
-            clearBackgrounds();
+            clearBackgrounds(true);
             Position fromPos = prev.getFrom();
             Position toPos = prev.getTo();
             ImageView from = pvpGameboard[fromPos.getRow()][fromPos.getColumn()];
@@ -585,7 +598,7 @@ public class PVPGameBoard extends AppCompatActivity {
         int last = redoMoves.size() - 1;
         Move prev = redoMoves.get(last);
         if (prev.getPieceMoved().getColor() == Color.WHITE){
-            clearBackgrounds();
+            clearBackgrounds(true);
             Position fromPos = prev.getFrom();
             Position toPos = prev.getTo();
             ImageView to = pvpGameboard[fromPos.getRow()][fromPos.getColumn()];
@@ -676,7 +689,7 @@ public class PVPGameBoard extends AppCompatActivity {
         int last = redoMoves.size() - 1;
         Move prev = redoMoves.get(last);
         if (prev.getPieceMoved().getColor() == Color.BLACK){
-            clearBackgrounds();
+            clearBackgrounds(true);
             Position fromPos = prev.getFrom();
             Position toPos = prev.getTo();
             ImageView to = pvpGameboard[fromPos.getRow()][fromPos.getColumn()];
@@ -799,39 +812,104 @@ public class PVPGameBoard extends AppCompatActivity {
     }
 
     public void pvpsuggalt1(View v){
-
+        if (suggestedWhiteMoves == null){
+            Toast.makeText(PVPGameBoard.this, "To get alternate suggested moves, tap the 'Start " +
+                    "Helper' button first.", Toast.LENGTH_SHORT).show();
+        }
+        if (suggestedWhiteMoves.size() == whiteSuggCount){
+            whiteSuggCount = 0;
+        }
+        Move nextSugg = suggestedWhiteMoves.get(whiteSuggCount);
+        whiteSuggCount++;
+        clearBackgrounds(true);
+        createSuggestion(nextSugg);
         //Intent openPawnPromotion = new Intent(getApplicationContext(),PawnPromotion.class);
         //startActivity(openPawnPromotion);
         //new UrlConnection().new Request().execute(GameBoard.activeGameBoard.pack());
         //Toast.makeText(PVPGameBoard.this, "Sorry, this function is still being worked on.",
         //        Toast.LENGTH_SHORT).show();
-        //return;
+        return;
     }
 
     public void pvpsuggalt2(View v){
         //new UrlConnection().new Request().execute(GameBoard.activeGameBoard.pack());
-        Toast.makeText(PVPGameBoard.this, "Sorry, this function is still being worked on.",
-                Toast.LENGTH_SHORT).show();
+        if (suggestedBlackMoves == null){
+            Toast.makeText(PVPGameBoard.this, "To get alternate suggested moves, tap the 'Start " +
+                    "Helper' button first.", Toast.LENGTH_SHORT).show();
+        }
+        if (suggestedBlackMoves.size() == blackSuggCount){
+            blackSuggCount = 0;
+        }
+        Move nextSugg = suggestedBlackMoves.get(blackSuggCount);
+        blackSuggCount++;
+        clearBackgrounds(true);
+        createSuggestion(nextSugg);
         return;
     }
 
+    private void createSuggestion(Move move){
+        Position fromPos = move.getFrom();
+        Position toPos = move.getTo();
+        ImageView fromImage = pvpGameboard[fromPos.getRow()][fromPos.getColumn()];
+        ImageView toImage = pvpGameboard[toPos.getRow()][toPos.getColumn()];
+        fromImage.setBackgroundResource(yellowBoardSelection);
+        toImage.setBackgroundResource(greenHighlight);
+        selImage = fromImage;
+        selPiece = move.getPieceMoved();
+        selPosition = fromPos;
+        selLegal.add(move);
+    }
+
     public void pvpstarthelp1(View v){
+        if (!whiteHelper) {
+            if (GameBoard.activeGameBoard.playerToMove == Color.WHITE) {
+                ImageView helperButton = (ImageView) findViewById(R.id.helper1);
+                helperButton.setImageResource(R.drawable.stop_helper_button);
+                whiteHelper = true;
+                aiMoveWhite();
+            } else {
+                Toast.makeText(this, "Wait until you're turn to activate the AI Helper",
+                        Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            ImageView helperButton = (ImageView) findViewById(R.id.helper1);
+            helperButton.setImageResource(R.drawable.sp_start_helper);
+            whiteHelper = false;
+            clearBackgrounds(true);
+        }
+
+
         //new UrlConnection().new Connection().execute("connect");
 
-        AsyncTask task = new AIMoveTask().execute(GameBoard.activeGameBoard);
+        //AsyncTask task = new AIMoveTask().execute(GameBoard.activeGameBoard);
 
-        Toast.makeText(PVPGameBoard.this, "Sorry, this function is still being worked on.",
-                Toast.LENGTH_SHORT).show();
+        //Toast.makeText(PVPGameBoard.this, "Sorry, this function is still being worked on.",
+                //Toast.LENGTH_SHORT).show();
 
         return;
     }
 
     public void pvpstarthelp2(View v){
         //new UrlConnection().new Connection().execute("connect");
+        if (!blackHelper) {
+            if (GameBoard.activeGameBoard.playerToMove == Color.BLACK) {
+                ImageView helperButton = (ImageView) findViewById(R.id.helper2);
+                helperButton.setImageResource(R.drawable.stop_helper_button);
+                helperButton.setScaleType(ImageView.ScaleType.FIT_XY);
+                blackHelper = true;
+                aiMoveBlack();
+            } else {
+                Toast.makeText(this, "Wait until you're turn to activate the AI Helper",
+                        Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            ImageView helperButton = (ImageView) findViewById(R.id.helper2);
+            helperButton.setImageResource(R.drawable.sp_start_helper);
+            blackHelper = false;
+            clearBackgrounds(true);
+        }
 
 
-        Toast.makeText(PVPGameBoard.this, "Sorry, this function is still being worked on.",
-                Toast.LENGTH_SHORT).show();
         return;
     }
 
@@ -843,12 +921,14 @@ public class PVPGameBoard extends AppCompatActivity {
         startActivity(check);
     }
 
-    public void clearBackgrounds(){
+    public void clearBackgrounds(boolean clear){
+        if (clear) {
+            selImage = null;
+            selPiece = null;
+            selPosition = null;
+        }
         for (int x = 0; x < 8; x++){
             for (int y = 0; y < 8; y++){
-                selImage = null;
-                selPiece = null;
-                selPosition = null;
                 pvpGameboard[x][y].setBackgroundResource(0);
             }
         }
@@ -1046,17 +1126,64 @@ public class PVPGameBoard extends AppCompatActivity {
 
     private class AIMoveTask extends AsyncTask<GameBoard, Integer, Move> {
         protected Move doInBackground(GameBoard... gameBoards) {
-            GameBoard gameBoard = gameBoards[0];
-            AIMove ai = AIMoveFactory.newAIMove();
-            List<Move> moves = ai.move(gameBoard, 3);
-            if (moves.isEmpty()) return null;
+            GameBoard board = gameBoards[0];
+
+            if (GameBoard.activeGameBoard.playerToMove == Color.WHITE) {
+                if (suggestedWhiteMoves != null) return null;
+            } else {
+                if (suggestedBlackMoves != null) return null;
+            }
+
+            double aggression;
+            if (GameBoard.activeGameBoard.playerToMove() == Color.WHITE) {
+                aggression = whiteAIStrategy;
+            } else {
+                aggression = blackAIStrategy;
+            }
+
+            AIMove ai = AIMoveFactory.newAIMove(aggression);
+            List<Move> moves = ai.move(board, difficulty);
+            if (moves.isEmpty()) {
+                if (GameBoard.activeGameBoard.gameOver()) gameOver();
+                return null;
+            }
+
+            if (GameBoard.activeGameBoard.playerToMove == Color.WHITE){
+                suggestedWhiteMoves = moves;
+            } else {
+                suggestedBlackMoves = moves;
+            }
             Move move = moves.get(0);
-            move = new Move(gameBoard.getGameBoard().get(move.getFrom()), move.getFrom(), move.getTo());
-            return move;
+            return moves.get(0);
         }
 
         protected void onPostExecute(Move move) {
-
+            if (move == null){
+                return;
+            }
+            if (GameBoard.activeGameBoard.playerToMove == move.getPieceMoved().getColor()){
+                if (GameBoard.activeGameBoard.playerToMove == Color.WHITE){
+                    whiteSuggCount = 0;
+                    pvpsuggalt1(null);
+                } else {
+                    blackSuggCount = 0;
+                    pvpsuggalt2(null);
+                }
+            }
         }
+    }
+
+    private void aiMoveWhite() {
+        GameBoard[] gameBoards = new GameBoard[1];
+        gameBoards[0] = GameBoard.activeGameBoard;
+        runningTaskWhite = new AIMoveTask();
+        runningTaskWhite.execute(gameBoards);
+    }
+
+    private void aiMoveBlack() {
+        GameBoard[] gameBoards = new GameBoard[1];
+        gameBoards[0] = GameBoard.activeGameBoard;
+        runningTaskBlack = new AIMoveTask();
+        runningTaskBlack.execute(gameBoards);
     }
 }
