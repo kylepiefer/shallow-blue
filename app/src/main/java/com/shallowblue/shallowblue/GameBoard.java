@@ -870,5 +870,72 @@ public class GameBoard {
         }
         return diagonals;
     }
+public List<Move> parseServerOutput(String serverOutput) { //(1,5)->(3,5) (1,7)->(3,7) (0,6)->(2,5) (1,2)->(3,2) (1,4)->(2,4) (0,1)->(2,2) (0,6)->(2,7) (1,4)->(3,4) (1,0)->(3,0) (1,2)->(2,2) (1,5)->(2,5) (1,1)->(2,1) (0,1)->(2,0) (1,7)->(2,7) (1,1)->(3,1) (1,3)->(2,3) (1,0)->(2,0) (1,6)->(3,6) (1,6)->(2,6) (1,3)->(3,3)!
+        List<Move> serverMoves = new ArrayList<Move>();
+        Move tempMove;
+        int i = -1;
+        int fromrow;
+        int fromcol;
+        int torow;
+        int tocol;
+        Position from;
+        Position to;
+        System.out.print('\n');
+        i+=2;
 
+        fromrow = serverOutput.charAt(i) - 48;
+        i+=2;
+
+        fromcol = serverOutput.charAt(i) - 48;
+        i+=5;
+
+        torow = serverOutput.charAt(i) - 48;
+        i+=2;
+
+        tocol = serverOutput.charAt(i) - 48;
+        i+=2;
+
+
+
+        from = new Position(fromrow, fromcol);
+        to = new Position(torow,tocol);
+        if (gameBoard.containsKey(to)){
+            tempMove = new Move(gameBoard.get(from), from, gameBoard.get(to), to);
+        }else {
+            tempMove = new Move(gameBoard.get(from), from, to);
+        }
+        serverMoves.add(tempMove);
+
+        while (serverOutput.charAt(i)!= '!'){
+
+            i+=2;
+
+            fromrow = serverOutput.charAt(i) - 48;
+            i+=2;
+
+            fromcol = serverOutput.charAt(i) - 48;
+            i+=5;
+
+            torow = serverOutput.charAt(i) - 48;
+            i+=2;
+
+            tocol = serverOutput.charAt(i) - 48;
+            i+=2;
+
+
+
+            from = new Position(fromrow, fromcol);
+            to = new Position(torow,tocol);
+            if (gameBoard.containsKey(to)){
+                tempMove = new Move(gameBoard.get(from), from, gameBoard.get(to), to);
+            }else {
+                tempMove = new Move(gameBoard.get(from), from, to);
+            }
+            serverMoves.add(tempMove);
+
+        }
+
+
+        return serverMoves;
+    }
 }
