@@ -130,21 +130,7 @@ public class GameBoard {
                 if (piece.getColor() == playerToMove) {
                     List<Move> possibleMoves = piece.possibleMoves();
                     for (Move move : possibleMoves) {
-                        // Make promotion moves if necessary.
-                        /*if (piece instanceof Pawn &&
-                                ((position.getRow() == 7 && playerToMove == Color.WHITE) ||
-                                        (position.getRow() == 0 && playerToMove == Color.BLACK))) {
-                            Move toBishop = new Move(new Bishop(position, playerToMove), piece.getPosition(), piece, position);
-                            if (legalMove(toBishop)) legalMoves.add(toBishop);
-                            Move toKnight = new Move(new Knight(position, playerToMove), piece.getPosition(), piece, position);
-                            if (legalMove(toKnight)) legalMoves.add(toKnight);
-                            Move toRook = new Move(new Rook(position, playerToMove), piece.getPosition(), piece, position);
-                            if (legalMove(toRook)) legalMoves.add(toRook);
-                            Move toQueen = new Move(new Queen(position, playerToMove), piece.getPosition(), piece, position);
-                            if (legalMove(toQueen)) legalMoves.add(toQueen);
-                        } else { // Otherwise it is just a normal move.*/
-                            if (legalMove(move)) legalMoves.add(move);
-                        //}
+                        if (legalMove(move)) legalMoves.add(move);
                     }
                 }
             }
@@ -168,11 +154,9 @@ public class GameBoard {
         Piece moved = gameBoard.get(m.getFrom());
 
         // Hack to fix bug. Make a new move to make sure it is correct.
-        if (isPromotion(m)) {
-            m = new Move(m.getPieceMoved(), m.getFrom(), gameBoard.get(m.getFrom()), m.getTo());
-        } else {
-            m = new Move(moved, m.getFrom(), m.getTo());
-        }
+        Piece promoted = m.getPiecePromoted();
+        m = new Move(moved, m.getFrom(), m.getTo());
+        m.setPiecePromoted(promoted);
 
         executeMoveOnBoard(m);
 
@@ -187,9 +171,7 @@ public class GameBoard {
                 gameBoard.remove(currentRookPosition);
                 gameBoard.put(newRookPosition, rook);
                 rook.setPosition(newRookPosition);
-                rook.incrementNumMoves(1);//rook.setFirstMove(m);
-            } else {
-                //Log.i("ShallowBlue", "Test");
+                rook.incrementNumMoves(1);
             }
         }
 
@@ -212,11 +194,6 @@ public class GameBoard {
             Piece captured = gameBoard.get(capturedPosition);
             m.setPieceCaptured(captured);
             gameBoard.remove(capturedPosition);
-        } else if (isPromotion(m)) {
-            Pawn promoted = (Pawn) gameBoard.remove(m.getFrom());
-            m.setPieceCaptured(promoted);
-            gameBoard.put(m.getTo(), m.getPieceMoved());
-            return; // We must return because the normal steps will mess up the board.
         }
 
         // Update the game board.
@@ -226,6 +203,12 @@ public class GameBoard {
 
         // Update the piece's position
         m.getPieceMoved().setPosition(m.getTo());
+
+        // Handle Pawn Promotion
+        if (isPromotion(m)) {
+            gameBoard.remove(m.getTo());
+            gameBoard.put(m.getTo(), m.getPiecePromoted());
+        }
     }
 
     public boolean isCastle(Move m) {
@@ -283,16 +266,16 @@ public class GameBoard {
     private void executeUndoOnBoard(Move m) {
         if (isPromotion(m)) {
             Piece promoted = gameBoard.remove(m.getTo());
-            gameBoard.put(m.getPieceCaptured().getPosition(), m.getPieceCaptured());
-            return; // We must return because the normal steps will mess up the board.
-        }
-
-        Piece moved = gameBoard.get(m.getTo());
-        gameBoard.remove(m.getTo());
-        gameBoard.put(m.getFrom(), moved);
-        moved.setPosition(m.getFrom());
-        if(moved != null)
+            gameBoard.put(m.getFrom(), m.getPieceMoved());
+            m.getPieceMoved().setPosition(m.getFrom());
+        } else {
+            Piece moved = gameBoard.get(m.getTo());
+            gameBoard.remove(m.getTo());
+            gameBoard.put(m.getFrom(), moved);
             moved.setPosition(m.getFrom());
+            if (moved != null)
+                moved.setPosition(m.getFrom());
+        }
 
         if (m.getPieceCaptured() != null) {
             gameBoard.put(m.getPieceCaptured().getPosition(), m.getPieceCaptured());
@@ -335,9 +318,7 @@ public class GameBoard {
     }
 
     public boolean isPromotion(Move m) {
-        if (m.getPieceCaptured() != null &&
-                m.getPieceCaptured().getColor() == m.getPieceMoved().getColor() &&
-                m.getPieceCaptured() instanceof Pawn) {
+        if (m.getPiecePromoted() != null) {
             return true;
         }
 
@@ -345,13 +326,13 @@ public class GameBoard {
     }
 
     public boolean legalMove(Move m) {
-        if (legalMovesCache != null) {
+        /*if (legalMovesCache != null) {
             cacheHits++;
             for (Move legal : legalMovesCache) {
                 if (legal.getTo().equals(m.getTo()) && legal.getFrom().equals(m.getFrom())) return true;
             }
             return false;
-        }
+        }*/
 
         // Check to make sure there is a piece in the square and that it belongs to the player
         // whose turn it is.
@@ -426,7 +407,10 @@ public class GameBoard {
                 return false;
             } else if ((movingToHigherColumn && isThreatened(new Position(m.getFrom().getRow(), m.getFrom().getColumn() + 1))) ||
                     (!movingToHigherColumn && isThreatened(new Position(m.getFrom().getRow(), m.getFrom().getColumn() - 1)))) {
-                this.explanation = "You can castle if you would be moving through a square in which you would be in check.";
+                this.explanation = "You cannot castle if you would be moving through a square in which you would be in check.";
+                return false;
+            } else if (isThreatened(m.getFrom())) {
+                this.explanation = "You cannot castle if you are in check.";
                 return false;
             } else {
                 this.explanation = "You can legally castle.";
@@ -444,7 +428,7 @@ public class GameBoard {
                     return false;
                 }
             }
-            if (m.getPieceMoved() instanceof Pawn || m.getPieceMoved() instanceof King) {
+            if (m.getPiecePromoted() instanceof Pawn || m.getPiecePromoted() instanceof King) {
                 this.explanation = "You cannot promote a pawn to another pawn or to a king.";
                 return false;
             } else {
@@ -453,6 +437,7 @@ public class GameBoard {
         }
 
         if (movePutsPlayerInCheck(m)) {
+            this.explanation = "You cannot move here because you are in check.";
             return false;
         }
 

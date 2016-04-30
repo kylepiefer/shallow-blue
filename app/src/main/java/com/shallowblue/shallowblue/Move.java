@@ -8,6 +8,7 @@ public class Move {
     private final Position to;
     private final Piece pieceMoved;
     private Piece pieceCaptured = null;
+    private Piece piecePromoted = null;
 
     public Move(Piece pieceMoved, Position from, Position to) {
         this.pieceMoved = pieceMoved;
@@ -68,6 +69,10 @@ public class Move {
     public void setPieceCaptured(Piece pieceCaptured) {
         this.pieceCaptured = pieceCaptured;
     }
+
+    public Piece getPiecePromoted() { return this.piecePromoted; }
+
+    public void setPiecePromoted(Piece piecePromoted) { this.piecePromoted = piecePromoted; }
 
     @Override
     public boolean equals(Object obj) {

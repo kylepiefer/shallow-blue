@@ -15,16 +15,9 @@ public class Pawn extends Piece {
 	}
 
 	public Pawn(Pawn p) {
-		super(p.getPosition(), p.getColor(), p.getColor() == Color.WHITE ? R.drawable.white_pawn : R.drawable.black_pawn);
+        super(p.getPosition(), p.getColor(), p.getColor() == Color.WHITE ? R.drawable.white_pawn : R.drawable.black_pawn);
         this.initialPosition = p.initialPosition;
-	}
-
-	/*@Override
-	public boolean hasMoved() {
-		
-		  return (!(initialPosition.getRow() == getPosition().getRow()
-		  		&& initialPosition.getColumn() == getPosition().getColumn()));
-	}*/
+    }
 
 	@Override
 	public boolean isPromoting() {
@@ -65,13 +58,24 @@ public class Pawn extends Piece {
 		List<Move> result = new ArrayList<Move>();
 		for(Position p : positions) {
 			if(p.getRow() == 0 || p.getRow() == 7) {
-				result.add(new Move(new Bishop(p, getColor()), getPosition(), this, p));
-				result.add(new Move(new Knight(p, getColor()), getPosition(), this, p));
-				result.add(new Move(new Rook  (p, getColor()), getPosition(), this, p));
-				result.add(new Move(new Queen (p, getColor()), getPosition(), this, p));
-			}
-			else
+				Move toBishop = new Move(this, getPosition(), p);
+				toBishop.setPiecePromoted(new Bishop(p, getColor()));
+				result.add(toBishop);
+
+				Move toKnight = new Move(this, getPosition(), p);
+				toKnight.setPiecePromoted(new Knight(p, getColor()));
+				result.add(toKnight);
+
+				Move toRook = new Move(this, getPosition(), p);
+				toRook.setPiecePromoted(new Rook(p, getColor()));
+				result.add(toRook);
+
+				Move toQueen = new Move(this, getPosition(), p);
+				toQueen.setPiecePromoted(new Queen(p, getColor()));
+				result.add(toQueen);
+			} else {
 				result.add(new Move(this, p));
+			}
 		}
 		return result;
 	}
