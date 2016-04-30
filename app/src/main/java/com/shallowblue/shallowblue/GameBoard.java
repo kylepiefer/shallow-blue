@@ -4,6 +4,7 @@ package com.shallowblue.shallowblue;
  * Created by peter on 3/14/2016.
  */
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -127,10 +128,10 @@ public class GameBoard {
             }
             for (Piece piece : pieces) {
                 if (piece.getColor() == playerToMove) {
-                    List<Position> possibleMoves = piece.possibleMoves();
-                    for (Position position : possibleMoves) {
+                    List<Move> possibleMoves = piece.possibleMoves();
+                    for (Move move : possibleMoves) {
                         // Make promotion moves if necessary.
-                        if (piece instanceof Pawn &&
+                        /*if (piece instanceof Pawn &&
                                 ((position.getRow() == 7 && playerToMove == Color.WHITE) ||
                                         (position.getRow() == 0 && playerToMove == Color.BLACK))) {
                             Move toBishop = new Move(new Bishop(position, playerToMove), piece.getPosition(), piece, position);
@@ -141,10 +142,9 @@ public class GameBoard {
                             if (legalMove(toRook)) legalMoves.add(toRook);
                             Move toQueen = new Move(new Queen(position, playerToMove), piece.getPosition(), piece, position);
                             if (legalMove(toQueen)) legalMoves.add(toQueen);
-                        } else { // Otherwise it is just a normal move.
-                            Move move = new Move(piece, piece.getPosition(), position);
+                        } else { // Otherwise it is just a normal move.*/
                             if (legalMove(move)) legalMoves.add(move);
-                        }
+                        //}
                     }
                 }
             }
@@ -291,7 +291,8 @@ public class GameBoard {
         gameBoard.remove(m.getTo());
         gameBoard.put(m.getFrom(), moved);
         moved.setPosition(m.getFrom());
-        m.getPieceMoved().setPosition(m.getFrom());
+        if(moved != null)
+            moved.setPosition(m.getFrom());
 
         if (m.getPieceCaptured() != null) {
             gameBoard.put(m.getPieceCaptured().getPosition(), m.getPieceCaptured());
@@ -313,7 +314,7 @@ public class GameBoard {
     }
 
     public boolean isLegalEnPassant(Move m) {
-        if (!(m.getPieceMoved() instanceof Pawn)) return false; // must being moving a pawn
+        if (!(gameBoard.get(m.getPieceMoved()) instanceof Pawn)) return false; // must being moving a pawn
         if (m.getFrom().getColumn() == m.getTo().getColumn())
             return false; // must be moving diagonally
 
@@ -372,15 +373,15 @@ public class GameBoard {
             return false;
         }
 
-        // Check to make sure the move is possible.
-        if (!gameBoard.get(m.getFrom()).possibleMoves().contains(m.getTo())) {
+        /*/ Check to make sure the move is possible.
+        if (gameBoard.get(m.getFrom()).possibleMoves().contains(m)) {
             // TODO: Make each piece have a method to describe how it moves and call it here.
             this.explanation = "This piece does not move this way!";
             return false;
-        }
+        }*/
 
         // Check to make sure a pawn isn't capturing forward or moving diagonally when not capturing.
-        if (m.getPieceMoved() instanceof Pawn) {
+        if (gameBoard.get(m.getFrom()) instanceof Pawn) {
             if (m.getFrom().getColumn() == m.getTo().getColumn() && gameBoard.get(m.getTo()) != null) {
                 this.explanation = "Pawns can only capture enemy pieces diagonally.";
                 return false;

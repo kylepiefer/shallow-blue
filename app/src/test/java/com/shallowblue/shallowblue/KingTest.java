@@ -4,6 +4,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -70,41 +71,43 @@ public class KingTest {
      */
     @Test
     public void testPossibleMoves() {
-        ArrayList<Position> possibleMoves;
 
 
         /*** wKing ***/
-        possibleMoves = wKing.possibleMoves();
+        List<Position> positions = new ArrayList<Position>();
+        for(Move m : wKing.possibleMoves())
+            positions.add(m.getTo());
 
         //Assert.assertTrue(possibleMoves.size() == 5);
-        Assert.assertTrue(possibleMoves.contains(new Position(1, 4)));
-        Assert.assertTrue(possibleMoves.contains(new Position(0, 5)));
-        Assert.assertTrue(possibleMoves.contains(new Position(0, 3)));
-        Assert.assertTrue(possibleMoves.contains(new Position(1, 5)));
-        Assert.assertTrue(possibleMoves.contains(new Position(1, 3)));
+        Assert.assertTrue(positions.contains(new Position(1, 4)));
+        Assert.assertTrue(positions.contains(new Position(0, 5)));
+        Assert.assertTrue(positions.contains(new Position(0, 3)));
+        Assert.assertTrue(positions.contains(new Position(1, 5)));
+        Assert.assertTrue(positions.contains(new Position(1, 3)));
 
 
         /*** bKing ***/
-        possibleMoves = bKing.possibleMoves();
+        for(Move m: bKing.possibleMoves());
 
         //Assert.assertTrue(possibleMoves.isEmpty());
 
 
         /*** mKing ***/
-        possibleMoves = mKing.possibleMoves();
-
+        positions = new ArrayList<Position>();
+        for(Move m : mKing.possibleMoves())
+            positions.add(m.getTo());
         //Assert.assertTrue(possibleMoves.size() == 8);
 
-        Assert.assertTrue(possibleMoves.contains(new Position(4, 2)));
-        Assert.assertTrue(possibleMoves.contains(new Position(4, 3)));
-        Assert.assertTrue(possibleMoves.contains(new Position(4, 4)));
+        Assert.assertTrue(positions.contains(new Position(4, 2)));
+        Assert.assertTrue(positions.contains(new Position(4, 3)));
+        Assert.assertTrue(positions.contains(new Position(4, 4)));
 
-        Assert.assertTrue(possibleMoves.contains(new Position(3, 2)));
-        Assert.assertTrue(possibleMoves.contains(new Position(3, 4)));
+        Assert.assertTrue(positions.contains(new Position(3, 2)));
+        Assert.assertTrue(positions.contains(new Position(3, 4)));
 
-        Assert.assertTrue(possibleMoves.contains(new Position(2, 2)));
-        Assert.assertTrue(possibleMoves.contains(new Position(2, 3)));
-        Assert.assertTrue(possibleMoves.contains(new Position(2, 4)));
+        Assert.assertTrue(positions.contains(new Position(2, 2)));
+        Assert.assertTrue(positions.contains(new Position(2, 3)));
+        Assert.assertTrue(positions.contains(new Position(2, 4)));
 
 
     }

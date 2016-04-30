@@ -1,6 +1,8 @@
 package com.shallowblue.shallowblue;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 public class Knight extends Piece {
@@ -26,10 +28,10 @@ public class Knight extends Piece {
 	}
 
 	@Override
-	public ArrayList<Position> possibleMoves() {
+	public List<Move> possibleMoves() {
 		
-		ArrayList<Position> result = new ArrayList<Position>();
-		if (this.getPosition() == null) return result;
+		List<Move> result = new ArrayList<Move>();
+		if (this.getPosition() == null) return Collections.<Move>emptyList();
 
 		int i = getPosition().getRow();
 		int j = getPosition().getColumn();
@@ -46,7 +48,7 @@ public class Knight extends Piece {
 			if (row >= 0 && row <= 7) //if row is not out of bounds
 				if (col >= 0 && col <= 7) //and column is not out of bounds
 					if (row != i && col != j) //and we're not looking at our current position
-						result.add(new Position(row,col));
+						result.add(new Move(this, new Position(row,col)));
 		}
 		
 		return result;

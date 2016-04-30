@@ -4,6 +4,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -63,19 +64,22 @@ public class BishopTest {
      */
     @Test
     public void testPossibleMoves() {
-        ArrayList<Position> possibleMoves;
+        List<Move> possibleMoves;
 
 
         //1- bishop0 (0,0):
         possibleMoves = bishop0.possibleMoves();
+        List<Position> positions = new ArrayList<Position>();
+        for(Move m : possibleMoves)
+            positions.add(m.getTo());
 
-        Assert.assertTrue(possibleMoves.contains(new Position(1, 1)));
-        Assert.assertTrue(possibleMoves.contains(new Position(2, 2)));
-        Assert.assertTrue(possibleMoves.contains(new Position(3, 3)));
-        Assert.assertTrue(possibleMoves.contains(new Position(4, 4)));
-        Assert.assertTrue(possibleMoves.contains(new Position(5, 5)));
-        Assert.assertTrue(possibleMoves.contains(new Position(6, 6)));
-        Assert.assertTrue(possibleMoves.contains(new Position(7, 7)));
+        Assert.assertTrue(positions.contains(new Position(1, 1)));
+        Assert.assertTrue(positions.contains(new Position(2, 2)));
+        Assert.assertTrue(positions.contains(new Position(3, 3)));
+        Assert.assertTrue(positions.contains(new Position(4, 4)));
+        Assert.assertTrue(positions.contains(new Position(5, 5)));
+        Assert.assertTrue(positions.contains(new Position(6, 6)));
+        Assert.assertTrue(positions.contains(new Position(7, 7)));
 
 
         //2- bishop1 (9,10):

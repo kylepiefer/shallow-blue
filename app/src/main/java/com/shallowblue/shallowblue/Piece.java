@@ -1,6 +1,7 @@
 package com.shallowblue.shallowblue;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /*
  * Abstract Class that defines Piece object.
@@ -52,7 +53,7 @@ public abstract class Piece {
 	 * Does not account for Pawn's en passant and Pawn's diagonal captures.
 	 * @return ArrayList of "Position" objects.
 	 */
-	public abstract ArrayList<Position> possibleMoves();
+	public abstract List<Move> possibleMoves();
 	
 	//Getters & Setters
 	public Position getPosition(){return position;};

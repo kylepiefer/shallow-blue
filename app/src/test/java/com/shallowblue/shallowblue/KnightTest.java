@@ -64,17 +64,20 @@ public class KnightTest {
         ArrayList<Position> possibleMoves;
 
         //1- wKnight
-        possibleMoves = wKnight.possibleMoves();
+        possibleMoves = new ArrayList<Position>();
+        for(Move m : wKnight.possibleMoves())
+            possibleMoves.add(m.getTo());
         Assert.assertTrue(possibleMoves.contains(new Position(1, 2)));
         Assert.assertTrue(possibleMoves.contains(new Position(2, 1)));
 
 
         //2- bKnight
-        possibleMoves = bKnight.possibleMoves();
-        Assert.assertTrue(possibleMoves.isEmpty());
+        Assert.assertTrue(bKnight.possibleMoves().isEmpty());
 
         //3- mKnight
-        possibleMoves = mKnight.possibleMoves();
+        possibleMoves = new ArrayList<Position>();
+        for(Move m : mKnight.possibleMoves())
+            possibleMoves.add(m.getTo());
         Assert.assertTrue(possibleMoves.contains(new Position(2, 1)));
         Assert.assertTrue(possibleMoves.contains(new Position(4, 1)));
         Assert.assertTrue(possibleMoves.contains(new Position(5, 2)));

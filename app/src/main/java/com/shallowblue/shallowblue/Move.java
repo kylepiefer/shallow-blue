@@ -22,6 +22,9 @@ public class Move {
         this.pieceCaptured = pieceCaptured;
     }
 
+    public Move(Piece pieceMoved, Position to) {
+        this(pieceMoved,pieceMoved.getPosition(),to);
+    }
 
 
     /*

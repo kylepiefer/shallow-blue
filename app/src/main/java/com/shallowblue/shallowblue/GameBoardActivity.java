@@ -443,7 +443,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
         else if (this.highlightedSquares.contains(gbas)){
             if ((int)gbas.getHighlightImage().getTag() == R.drawable.board_square_highlight_possible) {
-                showToast("This possible move is not currently legal.");
+                showToast(gameBoard.getLastExplanation());
                 return;
             }
 
@@ -473,24 +473,23 @@ public class GameBoardActivity extends AppCompatActivity {
             if (gbas.getOccupyingPiece() != null) {
                 Piece piece = gbas.getOccupyingPiece();
 
-                List<Position> possibleMoves = piece.possibleMoves();
-                List<Position> legalMoves = new ArrayList<Position>();
+                List<Move> possibleMoves = piece.possibleMoves();
+                List<Move> legalMoves = new ArrayList<Move>();
                 for (int p = possibleMoves.size() - 1; p >= 0; p--) {
-                    Position curr = possibleMoves.get(p);
-                    Move possible = new Move(piece, piece.getPosition(), curr);
+                    Move possible = possibleMoves.get(p);
                     if (this.gameBoard.legalMove(possible)) {
                         possibleMoves.remove(p);
-                        legalMoves.add(curr);
+                        legalMoves.add(possible);
                     }
                 }
 
-                for (Position p : possibleMoves) {
-                    GameBoardActivitySquare possibleSquare = getGBASForPosition(p);
+                for (Move m : possibleMoves) {
+                    GameBoardActivitySquare possibleSquare = getGBASForPosition(m.getTo());
                     drawBoardSquareHighlight(possibleSquare, R.drawable.board_square_highlight_possible);
                 }
 
-                for (Position p : legalMoves) {
-                    GameBoardActivitySquare legalSquare = getGBASForPosition(p);
+                for (Move m : legalMoves) {
+                    GameBoardActivitySquare legalSquare = getGBASForPosition(m.getTo());
                     if (gbas.getOccupyingPiece().getColor() == this.playerColor) {
                         drawBoardSquareHighlight(legalSquare, R.drawable.board_square_highlight_legal);
                     } else {

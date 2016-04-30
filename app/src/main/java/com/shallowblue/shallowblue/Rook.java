@@ -1,6 +1,8 @@
 package com.shallowblue.shallowblue;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 public class Rook extends Piece {
@@ -43,23 +45,26 @@ public class Rook extends Piece {
 	}
 
 	@Override
-	public ArrayList<Position> possibleMoves() {
+	public List<Move> possibleMoves() {
 		
-		ArrayList<Position> result = new ArrayList<Position>();
-		if (this.getPosition() == null) return result;
+		List<Move> result = new ArrayList<Move>();
+		if (this.getPosition() == null) return Collections.<Move>emptyList();
 
 		//if the rook's position is illegal, return no moves
 		int checkRow = getPosition().getRow();
 		int checkCol = getPosition().getColumn();
-		if (checkRow > 7 || checkRow < 0) return result;
-		if (checkCol > 7 || checkCol < 0) return result;
+		if (checkRow > 7 || checkRow < 0) return Collections.<Move>emptyList();;
+		if (checkCol > 7 || checkCol < 0) return Collections.<Move>emptyList();;
 		
 		//Left & right movements
-		for (int i = 0; i <= 7; i++) if (i != getPosition().getColumn()) result.add(new Position(getPosition().getRow(), i));
+		for (int i = 0; i <= 7; i++)
+			if (i != getPosition().getColumn())
+				result.add(new Move(this, new Position(getPosition().getRow(), i)));
 		//Up & down
-		for (int i = 0; i <= 7; i++) if (i != getPosition().getRow()) result.add(new Position(i, getPosition().getColumn()));
-		
-		
+		for (int i = 0; i <= 7; i++)
+			if (i != getPosition().getRow())
+				result.add(new Move(this, new Position(i, getPosition().getColumn())));
+
 		return result;
 	}
 

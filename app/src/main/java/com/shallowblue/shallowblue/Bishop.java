@@ -1,7 +1,8 @@
 package com.shallowblue.shallowblue;
 
 import java.util.ArrayList;
-
+import java.util.Collections;
+import java.util.List;
 
 
 public class Bishop extends Piece {
@@ -28,35 +29,34 @@ public class Bishop extends Piece {
 	}
 
 	@Override
-	public ArrayList<Position> possibleMoves() {
-		ArrayList<Position> result = new ArrayList<Position>();
-		if (this.getPosition() == null) return result;
+	public List<Move> possibleMoves() {
+		List<Move> result = new ArrayList<Move>();
+		if (this.getPosition() == null)
+			return Collections.<Move>emptyList();
 
 		int x = getPosition().getRow();
 		int y = getPosition().getColumn();
 		
 		//top left diagonal range
 		for (int i = x, j = y; i <= 7 && j >= 0 && i >= 0 && j <= 7; i++, j--) {
-			if (i != x && j != y) result.add(new Position(i,j));
+			if (i != x && j != y) result.add(new Move(this, new Position(i,j)));
 		}
 			
 				
 		//top right 
 		for (int i = x, j = y; i <= 7 && j <= 7 && i >= 0 && j >= 0; i++, j++) {
-			if (i != x && j != y) result.add(new Position(i,j));
+			if (i != x && j != y) result.add(new Move(this, new Position(i,j)));
 		}
 		
 		//bottom left
 		for (int i = x, j = y; i >= 0 && j >= 0 && i <= 7 && j <= 7; i--, j--) {
-			if (i != x && j != y) result.add(new Position(i,j));
+			if (i != x && j != y) result.add(new Move(this, new Position(i,j)));
 		}
 		
 		//bottom right
 		for (int i = x, j = y; i >= 0 && j <= 7 && i <= 7 && j >= 0; i--, j++) {
-			if (i != x && j != y) result.add(new Position(i,j));
+			if (i != x && j != y) result.add(new Move(this, new Position(i,j)));
 		}
-		
-		
 		
 		return result;
 	}

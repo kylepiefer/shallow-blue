@@ -1,6 +1,8 @@
 package com.shallowblue.shallowblue;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 public class King extends Piece {
@@ -34,9 +36,9 @@ public class King extends Piece {
 	}
 
 	@Override
-	public ArrayList<Position> possibleMoves() {
-		ArrayList<Position> result = new ArrayList<Position>();
-		if (this.getPosition() == null) return result;
+	public List<Move> possibleMoves() {
+		List<Move> result = new ArrayList<Move>();
+		if (this.getPosition() == null) return Collections.<Move>emptyList();
 
 		int pieceRow = getPosition().getRow();
 		int pieceCol = getPosition().getColumn();
@@ -46,12 +48,12 @@ public class King extends Piece {
 				if (i >= 0 && i <= 7) //row isn't out of bounds
 					if (j >= 0 && j <= 7) //column isn't out of bounds
 						if (!(i == pieceRow && j == pieceCol)) //we're not adding the current position
-							result.add(new Position(i,j));
+							result.add(new Move(this, new Position(i,j)));
 
 		// if a King is in its initial position, it can potentially castle
 		if (getPosition().equals(initialPosition)) {
-			result.add(new Position(getPosition().getRow(), getPosition().getColumn() + 2));
-            result.add(new Position(getPosition().getRow(), getPosition().getColumn() - 2));
+			result.add(new Move(this, new Position(getPosition().getRow(), getPosition().getColumn() + 2)));
+            result.add(new Move(this, new Position(getPosition().getRow(), getPosition().getColumn() - 2)));
         }
 
 		return result;

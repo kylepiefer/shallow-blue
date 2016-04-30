@@ -1,6 +1,8 @@
 package com.shallowblue.shallowblue;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 public class Pawn extends Piece {
@@ -31,34 +33,46 @@ public class Pawn extends Piece {
 	}
 
 	@Override
-	public ArrayList<Position> possibleMoves() {
+	public List<Move> possibleMoves() {
 		
-		ArrayList<Position> result = new ArrayList<Position>();
-		if (this.getPosition() == null) return result;
+		if (this.getPosition() == null)
+            return Collections.<Move>emptyList();
 
 		int row = getPosition().getRow();
 		int col = getPosition().getColumn();
 
 		//if the pawn's position is illegal or it can no longer move forward, no moves should be added
-		if (row >= 7 || row <= 0 || col > 7 || col < 0) return result;
+		if (row >= 7 || row <= 0 || col > 7 || col < 0) return Collections.<Move>emptyList();
 
-		//if the pawn is white, a new possible position is generated
+        List<Position> positions = new ArrayList<Position>();
+        //if the pawn is white, a new possible position is generated
 		//by adding +1 to its row. If it's black, add -1 instead.
 		int direction = (getColor() == Color.WHITE) ? 1 : -1;
-		result.add(new Position(getPosition().getRow()+direction, getPosition().getColumn()));
+		positions.add(new Position(getPosition().getRow()+direction, getPosition().getColumn()));
 
 		// check if pawn is at the edge of the board (for diagonal captures)
 		if (getPosition().getColumn() > 0)
-			result.add(new Position(getPosition().getRow() + direction, getPosition().getColumn() - 1));
+			positions.add(new Position(getPosition().getRow() + direction, getPosition().getColumn() - 1));
 		if (getPosition().getColumn() < 7)
-			result.add(new Position(getPosition().getRow() + direction, getPosition().getColumn() + 1));
+			positions.add(new Position(getPosition().getRow() + direction, getPosition().getColumn() + 1));
 		
 		// if a pawn is in its starting row (meaning it hasn't yet moved) it can move forward 2 spaces
 		if ((getColor() == Color.WHITE && getPosition().getRow() == 1) ||
 				(getColor() == Color.BLACK && getPosition().getRow() == 6)) {
-			result.add(new Position(getPosition().getRow()+(direction*2), getPosition().getColumn()));
+			positions.add(new Position(getPosition().getRow()+(direction*2), getPosition().getColumn()));
 		}
 
+		List<Move> result = new ArrayList<Move>();
+		for(Position p : positions) {
+			if(p.getRow() == 0 || p.getRow() == 7) {
+				result.add(new Move(new Bishop(p, getColor()), getPosition(), this, p));
+				result.add(new Move(new Knight(p, getColor()), getPosition(), this, p));
+				result.add(new Move(new Rook  (p, getColor()), getPosition(), this, p));
+				result.add(new Move(new Queen (p, getColor()), getPosition(), this, p));
+			}
+			else
+				result.add(new Move(this, p));
+		}
 		return result;
 	}
 

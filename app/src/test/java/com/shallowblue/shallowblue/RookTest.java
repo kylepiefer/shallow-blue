@@ -78,7 +78,9 @@ public class RookTest {
         ArrayList<Position> possibleMoves;
 
         //1- rook0 (0,7):
-        possibleMoves = rook0.possibleMoves();
+        possibleMoves = new ArrayList<Position>();
+        for(Move m : rook0.possibleMoves())
+            possibleMoves.add(m.getTo());
 
         Assert.assertTrue(possibleMoves.contains(new Position(0, 0)));
         Assert.assertTrue(possibleMoves.contains(new Position(0, 1)));
@@ -98,7 +100,9 @@ public class RookTest {
 
 
         //2- rook1 (3,3):
-        possibleMoves = rook1.possibleMoves();
+        possibleMoves = new ArrayList<Position>();
+        for(Move m : rook1.possibleMoves())
+            possibleMoves.add(m.getTo());
 
         Assert.assertTrue(possibleMoves.contains(new Position(3, 0)));
         Assert.assertTrue(possibleMoves.contains(new Position(3, 1)));
@@ -119,8 +123,7 @@ public class RookTest {
 
 
         //3- rook2 (0,-15):
-        possibleMoves = rook2.possibleMoves();
-        Assert.assertTrue(possibleMoves.isEmpty());
+        Assert.assertTrue(rook2.possibleMoves().isEmpty());
 
 
     }

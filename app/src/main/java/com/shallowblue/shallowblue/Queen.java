@@ -1,6 +1,8 @@
 package com.shallowblue.shallowblue;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 public class Queen extends Piece {
@@ -26,23 +28,25 @@ public class Queen extends Piece {
 	}
 
 	@Override
-	public ArrayList<Position> possibleMoves() {
+	public List<Move> possibleMoves() {
 		
-		ArrayList<Position> result = new ArrayList<Position>();
-		if (this.getPosition() == null) return result;
+		List<Move> result = new ArrayList<Move>();
+		if (this.getPosition() == null) return Collections.<Move>emptyList();
 
 		//if the queen's position is illegal, no moves should be added:
 		int checkRow = getPosition().getRow();
 		int checkCol = getPosition().getColumn();
-		if (checkRow > 7 || checkRow < 0) return result;
-		if (checkCol > 7 || checkCol < 0) return result;
+		if (checkRow > 7 || checkRow < 0) return Collections.<Move>emptyList();
+		if (checkCol > 7 || checkCol < 0) return Collections.<Move>emptyList();
 		
 		//left & right movements
 		for (int i = 0; i <= 7; i++)
-			if (i != getPosition().getColumn()) result.add(new Position(getPosition().getRow(), i));
+			if (i != getPosition().getColumn())
+				result.add(new Move(this, new Position(getPosition().getRow(), i)));
 		//up and down
 		for (int i = 0; i <= 7; i++)
-			if (i != getPosition().getRow()) result.add(new Position(i, getPosition().getColumn()));
+			if (i != getPosition().getRow())
+				result.add(new Move(this, new Position(i, getPosition().getColumn())));
 		
 		int x = getPosition().getRow();
 		int y = getPosition().getColumn();
@@ -51,23 +55,28 @@ public class Queen extends Piece {
 		
 		//top left
 		for (int i = x, j = y; i <= 7 && j >= 0; i++, j--) {
-			if (i != x && j != y) result.add(new Position(i,j));
+			if (i != x && j != y)
+				result.add(new Move(this, new Position(i,j)));
 		}
 			
 				
 		//top right 
 		for (int i = x, j = y; i <= 7 && j <= 7; i++, j++) {
-			if (i != x && j != y) result.add(new Position(i,j));
+			if (i != x && j != y)
+				result.add(new Move(this, new Position(i,j)));
 		}
 		
 		//bottom left
 		for (int i = x, j = y; i >= 0 && j >= 0; i--, j--) {
-			if (i != x && j != y) result.add(new Position(i,j));
+			if (i != x && j != y)
+				result.add(new Move(this, new Position(i,j)));
+
 		}
 		
 		//bottom right
 		for (int i = x, j = y; i >= 0 && j <= 7; i--, j++) {
-			if (i != x && j != y) result.add(new Position(i,j));
+			if (i != x && j != y)
+				result.add(new Move(this, new Position(i,j)));
 		}
 		
 		

@@ -34,7 +34,7 @@ public class PVPGameBoard extends AppCompatActivity {
     public Piece selPiece;
     public Color turn;
     public Position selPosition;
-    public List<Position> selMoves;
+    public List<Move> selMoves;
     public List<Move> selLegal;
     public final int redHighlight = R.drawable.board_square_highlight_possible;
     public final int greenHighlight = R.drawable.board_square_highlight_legal;
@@ -213,8 +213,8 @@ public class PVPGameBoard extends AppCompatActivity {
         if (selImage == temp){
             selImage.setBackgroundResource(0);
             for (int i = 0; i < selMoves.size(); i++) {
-                int selMoveX = selMoves.get(i).getRow();
-                int selMoveY = selMoves.get(i).getColumn();
+                int selMoveX = selMoves.get(i).getTo().getRow();
+                int selMoveY = selMoves.get(i).getTo().getColumn();
                 pvpGameboard[selMoveX][selMoveY].setBackgroundResource(0);
             }
             selImage = null;
@@ -250,13 +250,10 @@ public class PVPGameBoard extends AppCompatActivity {
                 selMoves = selPiece.possibleMoves();
                 selLegal = GameBoard.activeGameBoard.getLegalMoves(selPosition);
                 for (int i = 0; i < selMoves.size(); i++) {
-                    int selMoveX = selMoves.get(i).getRow();
-                    int selMoveY = selMoves.get(i).getColumn();
+                    int selMoveX = selMoves.get(i).getTo().getRow();
+                    int selMoveY = selMoves.get(i).getTo().getColumn();
                     pvpGameboard[selMoveX][selMoveY].setBackgroundResource(redHighlight);
-                    Position curr = selMoves.get(i);
-                    Move possible = new Move(selPiece, selPiece.getPosition(), curr);
-
-                    if (GameBoard.activeGameBoard.legalMove(possible)) {
+                    if (GameBoard.activeGameBoard.legalMove(selMoves.get(i))) {
                         pvpGameboard[selMoveX][selMoveY].setBackgroundResource(greenHighlight);
                     }
                 }

@@ -75,7 +75,9 @@ public class QueenTest {
         ArrayList<Position> possibleMoves;
 
         //1- wQueen
-        possibleMoves = wQueen.possibleMoves();
+        possibleMoves = new ArrayList<Position>();
+        for(Move m : wQueen.possibleMoves())
+            possibleMoves.add(m.getTo());
 
         Assert.assertTrue(possibleMoves.contains(new Position(0, 0)));
         Assert.assertTrue(possibleMoves.contains(new Position(0, 1)));
@@ -106,8 +108,7 @@ public class QueenTest {
 
 
         //2- bQueen
-        possibleMoves = bQueen.possibleMoves();
-        Assert.assertTrue(possibleMoves.isEmpty());
+        Assert.assertTrue(bQueen.possibleMoves().isEmpty());
 
 
     }
