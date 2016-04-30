@@ -21,6 +21,7 @@ import java.util.Map;
 public class PVPGameBoard extends AppCompatActivity {
 
     private static final int END_OF_GAME_REQUEST = 1;
+    private static final int PAWN_PROMOTION_REQUEST = 2;
     private ImageView pieceSelected;
     public static ImageView[][] customGameBoard;
     public static int[][] customBoardResources;
@@ -41,6 +42,7 @@ public class PVPGameBoard extends AppCompatActivity {
     public final int yellowBoardSelection = R.drawable.board_square_outline;
     public Move castle;
     public Move passant;
+    public Move promotion;
     ImageView temp;
     boolean doneWithPrev;
     private List<Move> redoMoves;
@@ -60,6 +62,7 @@ public class PVPGameBoard extends AppCompatActivity {
     private boolean blackHelper = false;
     private int whiteSuggCount = 1;
     private int blackSuggCount = 1;
+    private boolean promotionAnswer = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -313,6 +316,12 @@ public class PVPGameBoard extends AppCompatActivity {
             passant = null;
         }
 
+        if (move.getPieceMoved() instanceof Pawn &&
+                ((move.getTo().getRow() == 7 && move.getPieceMoved().getColor() == Color.WHITE) ||
+                        (move.getTo().getRow() == 0 && move.getPieceMoved().getColor() == Color.BLACK))) {
+            promotion = move;
+        }
+
         move.setPieceCaptured(tempPiece);
 
         move.getPieceMoved().incrementNumMoves(1);
@@ -327,18 +336,6 @@ public class PVPGameBoard extends AppCompatActivity {
                 temp.setImageResource(selPiece.getDrawableId());
                 selImage = null;
                 doneWithPrev = true;
-                if (checkBlack.getDrawable() != null || checkWhite.getDrawable() != null){
-                    checkAnimationOut();
-                }
-
-                if (GameBoard.activeGameBoard.inCheckMate()){
-                    gameOver();
-                    return;
-                }
-
-                if (GameBoard.activeGameBoard.inCheck()){
-                    checkAnimationIn();
-                }
 
                 if (castle != null){
                     if (castle.getTo().getColumn() > 4){
@@ -376,12 +373,29 @@ public class PVPGameBoard extends AppCompatActivity {
                     boardSetup.put(takenPawnPos,null);
                     pvpGameboard[takenPawnPos.getRow()][takenPawnPos.getColumn()].setImageResource(0);
                 }
-                clearBackgrounds(true);
 
-                if (whiteHelper && GameBoard.activeGameBoard.playerToMove == Color.WHITE){
-                    aiMoveWhite();
-                } else if (blackHelper && GameBoard.activeGameBoard.playerToMove == Color.BLACK){
-                    aiMoveBlack();
+
+
+                if (checkBlack.getDrawable() != null || checkWhite.getDrawable() != null){
+                    checkAnimationOut();
+                }
+
+                if (GameBoard.activeGameBoard.inCheckMate()){
+                    gameOver();
+                    return;
+                }
+
+                if (GameBoard.activeGameBoard.inCheck()){
+                    checkAnimationIn();
+                }
+
+                clearBackgrounds(true);
+                if (promotion == null) {
+                    if (whiteHelper && GameBoard.activeGameBoard.playerToMove == Color.WHITE) {
+                        aiMoveWhite();
+                    } else if (blackHelper && GameBoard.activeGameBoard.playerToMove == Color.BLACK) {
+                        aiMoveBlack();
+                    }
                 }
 
                 return;
@@ -391,6 +405,11 @@ public class PVPGameBoard extends AppCompatActivity {
 
         clearBackgrounds(false);
 
+        if (promotion != null){
+            GameBoard.activeGameBoard.switchPlayerToMove();
+            Intent promote = new Intent(getApplicationContext(), PawnPromotion.class);
+            startActivityForResult(promote, PAWN_PROMOTION_REQUEST);
+        }
 
     }
 
@@ -486,6 +505,7 @@ public class PVPGameBoard extends AppCompatActivity {
             }
             turn = Color.WHITE;
             GameBoard.activeGameBoard.switchPlayerToMove();
+            prev.getPieceMoved().incrementNumMoves(-1);
             redoMoves.add(prev);
             history.remove(last);
         } else {
@@ -587,6 +607,7 @@ public class PVPGameBoard extends AppCompatActivity {
             }
             turn = Color.BLACK;
             GameBoard.activeGameBoard.switchPlayerToMove();
+            prev.getPieceMoved().incrementNumMoves(-1);
             redoMoves.add(prev);
             history.remove(last);
         } else {
@@ -627,6 +648,13 @@ public class PVPGameBoard extends AppCompatActivity {
             Piece moved = prev.getPieceMoved();
             Piece taken = prev.getPieceCaptured();
 
+            if (prev.getPiecePromoted() != null){
+                promotion = prev;
+                promotePiece();
+                turn = Color.BLACK;
+                GameBoard.activeGameBoard.switchPlayerToMove();
+                return;
+            }
             boolean enPassantcheck = false;
 
             if (moved instanceof Pawn){
@@ -682,10 +710,12 @@ public class PVPGameBoard extends AppCompatActivity {
                 pvpGameboard[fromPos.getRow()][toPos.getColumn()].setImageResource(0);
             }
 
+            prev.getPieceMoved().incrementNumMoves(1);
             turn = Color.BLACK;
             GameBoard.activeGameBoard.addMove(prev);
             GameBoard.activeGameBoard.switchPlayerToMove();
             redoMoves.remove(last);
+
         } else {
             Toast.makeText(PVPGameBoard.this, "You can't redo your opponents last move.",
                     Toast.LENGTH_SHORT).show();
@@ -723,6 +753,14 @@ public class PVPGameBoard extends AppCompatActivity {
             Piece moved = prev.getPieceMoved();
             Piece taken = prev.getPieceCaptured();
 
+            if (prev.getPiecePromoted() != null){
+                promotion = prev;
+                promotePiece();
+                turn = Color.WHITE;
+                GameBoard.activeGameBoard.switchPlayerToMove();
+                return;
+            }
+
             boolean enPassantcheck = false;
             if (moved instanceof Pawn){
                 if (taken instanceof Pawn){
@@ -778,6 +816,7 @@ public class PVPGameBoard extends AppCompatActivity {
                 pvpGameboard[fromPos.getRow()][toPos.getColumn()].setImageResource(0);
             }
 
+            prev.getPieceMoved().incrementNumMoves(1);
             turn = Color.WHITE;
             GameBoard.activeGameBoard.addMove(prev);
             GameBoard.activeGameBoard.switchPlayerToMove();
@@ -1186,6 +1225,65 @@ public class PVPGameBoard extends AppCompatActivity {
                     finish();
                 }
             }
+        } else if (requestCode == PAWN_PROMOTION_REQUEST){
+            if (resultCode == RESULT_OK){
+                if (promotion == null) return;
+
+                Piece newPiece;
+                String choice = data.getStringExtra("Choice");
+                if (choice.equalsIgnoreCase("Queen")) {
+                    newPiece = new Queen(promotion.getTo(), GameBoard.activeGameBoard.playerToMove());
+                } else if (choice.equalsIgnoreCase("Knight")) {
+                    newPiece = new Knight(promotion.getTo(), GameBoard.activeGameBoard.playerToMove());
+                } else if (choice.equalsIgnoreCase("Rook")) {
+                    newPiece = new Rook(promotion.getTo(), GameBoard.activeGameBoard.playerToMove());
+                } else if (choice.equalsIgnoreCase("Bishop")) {
+                    newPiece = new Bishop(promotion.getTo(), GameBoard.activeGameBoard.playerToMove());
+                } else { // Cancel
+                    newPiece = null;
+                }
+                if (newPiece != null) {
+                    promotion.setPiecePromoted(newPiece);
+                    if (newPiece.getColor() == Color.BLACK){
+                        newPiece.setDrawableId(getFlippedId(newPiece));
+                    }
+                    GameBoard.activeGameBoard.switchPlayerToMove();
+                    promotePiece();
+                    return;
+                }
+            }
+        }
+    }
+
+    private void promotePiece(){
+        Piece moved = promotion.getPieceMoved();
+        Piece promoted = promotion.getPiecePromoted();
+        promoted.setPosition(promotion.getTo());
+        pvpGameboard[promotion.getTo().getRow()][promotion.getTo().getColumn()]
+                .setImageResource(promoted.getDrawableId());
+        pvpGameboard[promotion.getFrom().getRow()][promotion.getFrom().getColumn()]
+                .setImageResource(0);
+        boardSetup.put(promotion.getFrom(),null);
+        boardSetup.put(promotion.getTo(),promoted);
+        promotion = null;
+
+        if (checkBlack.getDrawable() != null || checkWhite.getDrawable() != null){
+            checkAnimationOut();
+        }
+
+        if (GameBoard.activeGameBoard.inCheckMate()){
+            gameOver();
+            return;
+        }
+
+        if (GameBoard.activeGameBoard.inCheck()){
+            checkAnimationIn();
+        }
+
+        if (whiteHelper && GameBoard.activeGameBoard.playerToMove == Color.WHITE) {
+            aiMoveWhite();
+        } else if (blackHelper && GameBoard.activeGameBoard.playerToMove == Color.BLACK) {
+            aiMoveBlack();
         }
     }
 
