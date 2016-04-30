@@ -12,6 +12,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -21,7 +24,7 @@ import android.widget.TextView;
 
 public class UrlConnection {
     //static String URLPath="http://104.154.22.179/MyFirstServlet";
-    static String URLPath="http://104.154.22.179/SecondServlet/ShowDataServlet";
+    static String URLPath="http://104.154.22.179/FirstServlet/ShowDataServlet";
     getRemoteAI remote;
 
     public UrlConnection(String... args)
@@ -37,16 +40,20 @@ public class UrlConnection {
         {
             //String url = URLPath+"?str=80980980980980";//+args[0];
             String url = URLPath+"?str="+args[0]+"&str2="+args[1];
-            url = url.replaceAll("(\r\n|\n)", "<lol>");
+            //url = url.replaceAll("(\r\n|\n)", "<lol>");
             //System.out.println(url);
             String res="";
-            //res= remote.execute(new String[] { url }).get(5, TimeUnit.SECONDS);
-            remote.execute(new String[] { url });
+            LinkedBlockingQueue<Runnable> blockingQueue = new LinkedBlockingQueue<Runnable>();
+            ExecutorService exec = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, blockingQueue);
+            res=new getRemoteAI().executeOnExecutor(exec,new String[] { url }).get(5, TimeUnit.SECONDS);
+            //res= new getRemoteAI().execute(new String[] { url }).get(5, TimeUnit.SECONDS);
+            //remote.execute(new String[] { url });
             return res;
         }
-        catch(Exception e)
+        catch (Exception e)
         {
-
+            e.printStackTrace();
+            return "";
         }
         /*
         catch (InterruptedException e)
@@ -62,7 +69,9 @@ public class UrlConnection {
             e.printStackTrace();
         }
         */
-        return "failed to retrieve return string";
+
+
+        //return "failed to retrieve return string";
     }
 
 
@@ -80,7 +89,6 @@ public class UrlConnection {
                 output = getOutputFromUrl(url);
             }
             System.out.println(output);
-
             return output;
         }
 
@@ -123,8 +131,8 @@ public class UrlConnection {
             {
                 //System.out.println("getHttpConnection");
                 HttpURLConnection httpConnection = (HttpURLConnection) connection;
-                //httpConnection.setConnectTimeout(10000);
-                //httpConnection.setReadTimeout(100000);
+                httpConnection.setConnectTimeout(1000);
+                httpConnection.setReadTimeout(1000);
                 //connection.setDoOutput(true);
                 //connection.setDoInput(true);
                 httpConnection.setRequestMethod("GET");
@@ -145,9 +153,11 @@ public class UrlConnection {
 
         @Override
         protected void onPostExecute(String output) {
+            super.onPostExecute(output);
             //outputText.setText(output);
             //help_text.setText(output);
 
+            //result=output;
         }
     }
 }
