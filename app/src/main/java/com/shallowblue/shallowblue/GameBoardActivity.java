@@ -128,24 +128,24 @@ public class GameBoardActivity extends AppCompatActivity {
             }
         } else if (requestCode == PAWN_PROMOTION_REQUEST) {
             if (resultCode == RESULT_OK) {
-                Move toAnimate = cachedMoveForPromotion;
-                if (toAnimate == null) return;
+                Move toPerform = cachedMoveForPromotion;
+                if (toPerform == null) return;
 
                 Piece newPiece;
                 String choice = data.getStringExtra("Choice");
                 if (choice.equalsIgnoreCase("Queen")) {
-                    newPiece = new Queen(toAnimate.getTo(), getGameBoard().playerToMove());
+                    newPiece = new Queen(toPerform.getTo(), getGameBoard().playerToMove());
                 } else if (choice.equalsIgnoreCase("Knight")) {
-                    newPiece = new Knight(toAnimate.getTo(), getGameBoard().playerToMove());
+                    newPiece = new Knight(toPerform.getTo(), getGameBoard().playerToMove());
                 } else if (choice.equalsIgnoreCase("Rook")) {
-                    newPiece = new Rook(toAnimate.getTo(), getGameBoard().playerToMove());
+                    newPiece = new Rook(toPerform.getTo(), getGameBoard().playerToMove());
                 } else if (choice.equalsIgnoreCase("Bishop")) {
-                    newPiece = new Bishop(toAnimate.getTo(), getGameBoard().playerToMove());
+                    newPiece = new Bishop(toPerform.getTo(), getGameBoard().playerToMove());
                 } else { // Cancel
                     newPiece = null;
                 }
-                Move toPerform = new Move(newPiece, toAnimate.getFrom(), toAnimate.getPieceMoved(), toAnimate.getTo());
                 if (newPiece != null) {
+                    toPerform.setPiecePromoted(newPiece);
                     performMove(toPerform);
                 }
 
@@ -434,6 +434,11 @@ public class GameBoardActivity extends AppCompatActivity {
         }
     }
 
+    public void updateHint() {
+        TextView text = (TextView) findViewById(R.id.hints);
+        text.setText(gameBoard.getLastExplanation());
+    }
+
     public void onBoardTouched(View squareImage) {
         GameBoardActivitySquare gbas = (GameBoardActivitySquare)squareImage.getTag();
 
@@ -443,6 +448,14 @@ public class GameBoardActivity extends AppCompatActivity {
 
         else if (this.highlightedSquares.contains(gbas)){
             if ((int)gbas.getHighlightImage().getTag() == R.drawable.board_square_highlight_possible) {
+                for (Move m : gameBoard.getAllLegalMoves()) {
+                    if (this.selectedSquare.getBoardPosition().equals(m.getFrom()) &&
+                            gbas.getBoardPosition().equals(m.getTo())) {
+                        gameBoard.legalMove(m);
+                        break;
+                    }
+                }
+                updateHint();
                 showToast(gameBoard.getLastExplanation());
                 return;
             }
@@ -676,7 +689,10 @@ public class GameBoardActivity extends AppCompatActivity {
         protected Move doInBackground(GameBoard... gameBoards) {
             GameBoard board = gameBoards[0];
 
-            if (gameMode.equalsIgnoreCase("CVC") && suggestedMoves != null) return null;
+            if (gameMode.equalsIgnoreCase("PVC") &&
+                    playerColor == getGameBoard().playerToMove()) {
+                if (!helperIsOn || suggestedMoves != null) return null;
+            }
 
             double aggression;
             if (getGameBoard().playerToMove() == Color.WHITE) {
