@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 
 public class PawnPromotion extends AppCompatActivity {
 
@@ -34,6 +35,15 @@ public class PawnPromotion extends AppCompatActivity {
             knight.setImageResource(R.drawable.white_knight);
             bishop.setImageResource(R.drawable.white_bishop);
         } else {
+            Intent curr = getIntent();
+            Bundle passedBundle = curr.getBundleExtra("Flip");
+            if (passedBundle != null){
+                int color = passedBundle.getInt("Color");
+                if (color == 1){
+                    LinearLayout layout = (LinearLayout) findViewById(R.id.pawnPromotionLayout);
+                    layout.setRotation(180);
+                }
+            }
             queen.setImageResource(R.drawable.black_queen);
             rook.setImageResource(R.drawable.black_rook);
             knight.setImageResource(R.drawable.black_knight);

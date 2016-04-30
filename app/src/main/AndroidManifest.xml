@@ -56,10 +56,10 @@
         <activity android:name=".LeaveGameVerify"
             android:theme="@style/AppTheme.customThemePopUp"/>
         <activity android:name=".EndOfGameActivity"
-            android:theme="@style/AppTheme.customThemePopUp">
+            android:theme="@style/AppTheme.customNotificationPopUp">
         </activity>
         <activity android:name=".PawnPromotion"
-            android:theme="@style/AppTheme.customThemePopUp">
+            android:theme="@style/AppTheme.customNotificationPopUp">
         </activity>
 
     </application>

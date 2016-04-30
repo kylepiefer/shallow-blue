@@ -4,7 +4,6 @@ package com.shallowblue.shallowblue;
  * Created by peter on 3/14/2016.
  */
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -731,9 +730,15 @@ public class GameBoard {
     private boolean isThreatenedByPlayer(Position position, Color byPlayer) {
         // In this function, we try to short circuit at quickly as possible.
         // First check for knights. They are always legal to attack their possible moves.
-        for (Piece piece : gameBoard.values()) {
+        for (Position pos : gameBoard.keySet()) {
+            Piece piece = gameBoard.get(pos);
             if (piece instanceof Knight && piece.getColor() == byPlayer) {
-                if (piece.possibleMoves().contains(position)) return true; // Quit as fast as possible!
+                List<Move> possMoves = piece.possibleMoves();
+                for (int i = 0; i < possMoves.size(); i++){
+                    if (possMoves.get(i).getTo() == position){
+                        return true;
+                    }
+                }
             }
         }
 

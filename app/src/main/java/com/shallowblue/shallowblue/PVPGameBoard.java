@@ -407,7 +407,14 @@ public class PVPGameBoard extends AppCompatActivity {
 
         if (promotion != null){
             GameBoard.activeGameBoard.switchPlayerToMove();
+            Bundle bundle = new Bundle();
+            int color = 0;
+            if (promotion.getPieceMoved().getColor() == Color.BLACK){
+                color = 1;
+            }
+            bundle.putInt("Color", color);
             Intent promote = new Intent(getApplicationContext(), PawnPromotion.class);
+            promote.putExtra("Flip", bundle);
             startActivityForResult(promote, PAWN_PROMOTION_REQUEST);
         }
 
