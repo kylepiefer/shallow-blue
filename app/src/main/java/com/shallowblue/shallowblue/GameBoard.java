@@ -755,7 +755,7 @@ public class GameBoard {
             if (piece instanceof Knight && piece.getColor() == byPlayer) {
                 List<Move> possMoves = piece.possibleMoves();
                 for (int i = 0; i < possMoves.size(); i++){
-                    if (possMoves.get(i).getTo() == position){
+                    if (possMoves.get(i).getTo().equals(position)){
                         return true;
                     }
                 }
