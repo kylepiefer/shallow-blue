@@ -646,14 +646,8 @@ public class GameBoard {
 
     //TODO Add 50 move/replay/other ties
     public boolean gameOver() {
-        List<Move> legalMoves = getAllLegalMoves();
-        if (!legalMoves.isEmpty()) return false;
-        if (inCheckMate()) {
-            this.explanation = "You are in check and have no legal moves. The game is over by checkmate.";
-        } else {
-            this.explanation = "You are not in check but have no legal moves. The game ends in a stalemate.";
-        }
-        return true;
+        if (inCheckMate() || isDraw()) return true;
+        return false;
     }
 
     public boolean inCheck() {
@@ -703,22 +697,48 @@ public class GameBoard {
 
     public boolean inCheckMate() {
         List<Move> legalMoves = getAllLegalMoves();
-        return legalMoves.isEmpty() && inCheck();
+        if (legalMoves.isEmpty() && inCheck()) {
+            this.explanation = "You are in checkmate because you are in check and have no legal moves.";
+            return true;
+        }
+
+        return false;
     }
 
-    public boolean inStaleMate(){
+    public boolean isDraw(){
         boolean answer = false;
+
+        // stalemate -- not in check but no legal moves
         if (!inCheck() && getAllLegalMoves().isEmpty()){
             answer = true;
+            String color = playerToMove == Color.WHITE ? "white" : "black";
+            this.explanation = "This game is a draw because " + color + " has no legal moves but is not in check.";
         }
-        List<Piece> allPieces = new ArrayList<>();
-        for (Position p : gameBoard.keySet()){
-            if (gameBoard.get(p) != null){
-                Piece piece = gameBoard.get(p);
-                allPieces.add(piece);
+
+        // insufficient material -- neither side has enough pieces to win with
+        if (!answer) {
+            List<Piece> whitePieces = new ArrayList<>();
+            List<Piece> blackPieces = new ArrayList<>();
+            Piece enough = null;
+            for (Piece piece : gameBoard.values()) {
+                if (piece != null) {
+                    // try to quit early
+                    if (piece instanceof Rook || piece instanceof Queen || piece instanceof Pawn) {
+                        answer = false;
+                        enough = piece;
+                        break;
+                    }
+                    if (piece.getColor() == Color.WHITE) whitePieces.add(piece);
+                    else blackPieces.add(piece);
+                }
+            }
+
+            if (enough == null && whitePieces.size() < 4 && blackPieces.size() < 4) {
+                answer = true;
+                this.explanation = "This game is a draw because neither side has sufficient material to checkmate.";
             }
         }
-        if (allPieces.size() == 2) answer = true;
+
         return answer;
     }
 
@@ -735,7 +755,7 @@ public class GameBoard {
             if (piece instanceof Knight && piece.getColor() == byPlayer) {
                 List<Move> possMoves = piece.possibleMoves();
                 for (int i = 0; i < possMoves.size(); i++){
-                    if (possMoves.get(i).getTo() == position){
+                    if (possMoves.get(i).getTo().equals(position)){
                         return true;
                     }
                 }

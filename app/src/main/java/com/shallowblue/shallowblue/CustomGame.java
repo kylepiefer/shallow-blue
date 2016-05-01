@@ -209,9 +209,8 @@ public class CustomGame extends AppCompatActivity {
                     Toast.LENGTH_SHORT).show();
             return;
         }
-        if (GameBoard.activeGameBoard.inStaleMate()){
-            Toast.makeText(CustomGame.this, "You can't start a game without legal moves for a " +
-                    "player.", Toast.LENGTH_SHORT).show();
+        if (GameBoard.activeGameBoard.isDraw()){
+            Toast.makeText(CustomGame.this, "You can't start a game in a draw.", Toast.LENGTH_SHORT).show();
             return;
         }
         GameBoard.activeGameBoard.switchPlayerToMove();
@@ -220,7 +219,7 @@ public class CustomGame extends AppCompatActivity {
                     Toast.LENGTH_SHORT).show();
             return;
         }
-        if (GameBoard.activeGameBoard.inStaleMate()){
+        if (GameBoard.activeGameBoard.isDraw()){
             Toast.makeText(CustomGame.this, "You can't start a game without legal moves for a " +
                     "player.", Toast.LENGTH_SHORT).show();
             return;
