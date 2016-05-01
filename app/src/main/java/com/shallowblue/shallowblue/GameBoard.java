@@ -723,7 +723,7 @@ public class GameBoard {
             for (Piece piece : gameBoard.values()) {
                 if (piece != null) {
                     // try to quit early
-                    if (piece instanceof Rook || piece instanceof Queen) {
+                    if (piece instanceof Rook || piece instanceof Queen || piece instanceof Pawn) {
                         answer = false;
                         enough = piece;
                         break;
