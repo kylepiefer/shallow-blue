@@ -16,6 +16,7 @@ public class AIMoveRemote extends AIMove {
     public List<Move> move(GameBoard current, int depth) {
         String packedGameBoard = current.pack();
         //System.out.println(packedGameBoard);
+        depth=7;
         String ret=conn.UrlRequest(packedGameBoard,""+depth,"");
         if(ret.equals(""))
         {

@@ -513,7 +513,7 @@ public class GameBoardActivity extends AppCompatActivity {
         }
     }
 
-    private void performMove(Move move) {
+    private synchronized void performMove(Move move) {
         boolean moveSucceeded = false;
         synchronized (gameBoard) {
             moveSucceeded = gameBoard.move(move);
@@ -538,7 +538,7 @@ public class GameBoardActivity extends AppCompatActivity {
         toast.show();
     }
 
-    public void startingHelper(View v) {
+    public synchronized void startingHelper(View v) {
         if (gameMode.equals("CVC")) {
             showToast("Not available in the secret mode.");
             return;
@@ -552,7 +552,7 @@ public class GameBoardActivity extends AppCompatActivity {
         }
     }
 
-    public void altMove(View v ) {
+    public synchronized void altMove(View v ) {
         if (gameMode.equals("CVC")) {
             showToast("Not available in the secret mode.");
             return;

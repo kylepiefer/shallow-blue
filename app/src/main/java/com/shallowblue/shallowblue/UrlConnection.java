@@ -131,8 +131,8 @@ public class UrlConnection {
             {
                 //System.out.println("getHttpConnection");
                 HttpURLConnection httpConnection = (HttpURLConnection) connection;
-                httpConnection.setConnectTimeout(1000);
-                httpConnection.setReadTimeout(1000);
+                httpConnection.setConnectTimeout(3000);
+                httpConnection.setReadTimeout(3000);
                 //connection.setDoOutput(true);
                 //connection.setDoInput(true);
                 httpConnection.setRequestMethod("GET");
