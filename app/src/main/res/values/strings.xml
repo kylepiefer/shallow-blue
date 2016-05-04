@@ -11,8 +11,8 @@
     <string name="StartGameActivity_start_game">Start Game</string>
 
     <string-array name="StartGameActivity_ai_array">
-        <item>Aggressive</item>
         <item>Balanced</item>
+        <item>Aggressive</item>
         <item>Defensive</item>
     </string-array>
 

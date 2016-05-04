@@ -4,6 +4,7 @@ package com.shallowblue.shallowblue;
  * Created by peter on 3/14/2016.
  */
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -157,6 +158,7 @@ public class GameBoard {
         m = new Move(moved, m.getFrom(), m.getTo());
         m.setPiecePromoted(promoted);
 
+
         executeMoveOnBoard(m);
 
         if (isCastle(m)) {
@@ -217,7 +219,10 @@ public class GameBoard {
     }
 
     public boolean move(Move m) {
-        return move(m, true);
+        boolean temp = move(m, true);
+        if(temp == false)
+            Log.i("GameBoardMove:", "Illegal Move");
+        return temp;
     }
 
     public void addMove(Move m) {
