@@ -82,7 +82,7 @@ public class GameBoard {
         }
     }
 
-    public synchronized GameBoard(GameBoard in) {
+    public GameBoard(GameBoard in) {
         gameBoard = new HashMap<Position, Piece>();
         for (Map.Entry<Position, Piece> e : in.gameBoard.entrySet())
             gameBoard.put(new Position(e.getKey()), Piece.copy(e.getValue()));
@@ -94,6 +94,7 @@ public class GameBoard {
         playerToMove = in.playerToMove();
         redoStack = new Stack<Move>();
         legalMovesCache = null;
+    }
 
     public GameBoard(Map<Position, Piece> map) {
         gameBoard = map;
@@ -137,8 +138,8 @@ public class GameBoard {
 
     private synchronized boolean move(Move m, boolean clearRedoStack) {
         // Check that the move is valid.
-        if (m == null) return false;
-        if (gameBoard.get(m.getFrom()) == null) {
+        if (m == null || gameBoard.get(m.getFrom()) == null) {
+            Log.i("From: ", ""+m.getFrom());
             return false;
         }
 
@@ -216,7 +217,7 @@ public class GameBoard {
     public boolean move(Move m) {
         boolean temp = move(m, true);
         if(temp == false)
-            Log.i("GameBoardMove:", "Illegal Move");
+            Log.i("GameBoardMove:", "Illegal Move: " + m);
         return temp;
     }
 
