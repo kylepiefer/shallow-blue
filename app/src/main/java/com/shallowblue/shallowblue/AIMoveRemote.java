@@ -17,7 +17,7 @@ public class AIMoveRemote extends AIMove {
         String packedGameBoard = current.pack();
         //System.out.println(packedGameBoard);
         //depth=7;
-        String ret=conn.UrlRequest(packedGameBoard,""+7,"");
+        String ret=conn.UrlRequest(packedGameBoard,""+7,""+aggression);
         if(ret.equals(""))
         {
             return AIMoveFactory.newAIMove(false, aggression).move(current,depth);
