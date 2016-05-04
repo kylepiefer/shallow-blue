@@ -135,7 +135,7 @@ public class GameBoard {
         return legalMoves;
     }
 
-    private boolean move(Move m, boolean clearRedoStack) {
+    private synchronized boolean move(Move m, boolean clearRedoStack) {
         // Check that the move is valid.
         if (m == null) return false;
         if (gameBoard.get(m.getFrom()) == null) {
