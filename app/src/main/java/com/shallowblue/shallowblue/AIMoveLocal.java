@@ -81,25 +81,27 @@ public class AIMoveLocal extends AIMove {
                     -50,-30,-30,-30,-30,-30,-30,-50
             };
 
-    public List<Move> move(GameBoard current, int depth) {
-        current = new GameBoard(current);
-        List<Move> moves;
+    public List<Move> move(GameBoard in, int depth) {
+        synchronized(in) {
+            GameBoard current = new GameBoard(in);
+            List<Move> moves;
 
-        positionsExamined = 0;
-        long startTime = System.currentTimeMillis();
+            positionsExamined = 0;
+            long startTime = System.currentTimeMillis();
 
-        if(current.playerToMove() == Color.WHITE)
-            moves = maxAction(current, depth);
-        else
-            moves = minAction(current, depth);
+            if(current.playerToMove() == Color.WHITE)
+                moves = maxAction(current, depth);
+            else
+                moves = minAction(current, depth);
 
-        long stopTime = System.currentTimeMillis();
-        float elapsedTime = (float)((stopTime - startTime) / 1000.0);
-        Log.i("AIMove", "Time taken: " + String.format("%.3f", elapsedTime) + " seconds.");
-        Log.i("AIMove", "Positions examined: " + positionsExamined);
-        Log.i("AIMove", "Rate: " + String.format("%.3f", ((float)positionsExamined / elapsedTime)) + " positions per second");
+            long stopTime = System.currentTimeMillis();
+            float elapsedTime = (float)((stopTime - startTime) / 1000.0);
+            Log.i("AIMove", "Time taken: " + String.format("%.3f", elapsedTime) + " seconds.");
+            Log.i("AIMove", "Positions examined: " + positionsExamined);
+            Log.i("AIMove", "Rate: " + String.format("%.3f", ((float)positionsExamined / elapsedTime)) + " positions per second");
 
-        return moves;
+            return moves;
+        }
     }
 
     //returns a sorted list of moves from best to worst
