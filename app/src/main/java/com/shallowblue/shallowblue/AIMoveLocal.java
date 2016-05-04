@@ -104,6 +104,7 @@ public class AIMoveLocal extends AIMove {
 
     //returns a sorted list of moves from best to worst
     private List<Move> maxAction(GameBoard current, int depth) {
+        
         List<Entry<Double,Move>> moveGoodness = new ArrayList<Entry<Double,Move>>();
         double best = Double.NEGATIVE_INFINITY;
         List<Move> moves = current.getAllLegalMoves();
@@ -121,9 +122,12 @@ public class AIMoveLocal extends AIMove {
         }
         Collections.sort(moveGoodness, MIN_COMPARATOR);
         List<Move> ret = new ArrayList<Move>();
-        for(Entry<Double,Move> e : moveGoodness)
+        for(Entry<Double,Move> e : moveGoodness) {
+            Log.i("AIMoveLocalMax", "Move: " + e.getValue().toString() + " Score: " + e.getKey().toString());
             ret.add(e.getValue());
-        return ret;    }
+        }
+        return ret;
+    }
 
     //returns a sorted list of moves from best to worst
     private List<Move> minAction(GameBoard current, int depth) {
@@ -144,8 +148,10 @@ public class AIMoveLocal extends AIMove {
 
         Collections.sort(moveGoodness, MIN_COMPARATOR);
         List<Move> ret = new ArrayList<Move>();
-        for(Entry<Double,Move> e : moveGoodness)
+        for(Entry<Double,Move> e : moveGoodness) {
+            Log.i("AIMoveLocalMin", "Move: " + e.getValue().toString() + " Score: " + e.getKey().toString());
             ret.add(e.getValue());
+        }
         return ret;
     }
 
@@ -174,7 +180,7 @@ public class AIMoveLocal extends AIMove {
         if(depth <= 0 || current.gameOver())
             return sbe(current);
 
-        double v = Double.NEGATIVE_INFINITY;
+        double v = Double.POSITIVE_INFINITY;
         for (Move m : current.getAllLegalMoves()) {
             current.move(m);
             double nextV = maxAction(current, depth-1, alpha, beta);
@@ -192,6 +198,18 @@ public class AIMoveLocal extends AIMove {
     }
 
     public double sbe(GameBoard current) {
+        if(current.gameOver()) {
+            if(current.isDraw())
+                return 0;
+            if(current.inCheckMate()) {
+                if(current.playerToMove == Color.BLACK)
+                    return Double.POSITIVE_INFINITY;
+                else
+                    return Double.NEGATIVE_INFINITY;
+            } else Log.i("AIMoveLocalSBE:", "This shouldn't happen");
+        }
+
+
         Piece wking = null;
         Piece bking = null;
 
@@ -288,7 +306,6 @@ public class AIMoveLocal extends AIMove {
                 wknightC++;
             }
             else if (p instanceof King) {
-                sum += 10000*aggression;
                 if (endgame){
                     sum += KingTableEndGame[pCoord];
                 } else {
