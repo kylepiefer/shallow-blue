@@ -82,21 +82,18 @@ public class GameBoard {
         }
     }
 
-    public GameBoard(GameBoard in) {
-        synchronized (GameBoard.class) {
-            gameBoard = new HashMap<Position, Piece>();
-            for (Map.Entry<Position, Piece> e : in.gameBoard.entrySet())
-                gameBoard.put(new Position(e.getKey()), Piece.copy(e.getValue()));
-            gameHistory = new ArrayList<Move>();
-            for (Move m : in.gameHistory) {
-                gameHistory.add(new Move(m));
-            }
-            findKings();
-            playerToMove = in.playerToMove();
-            redoStack = new Stack<Move>();
-            legalMovesCache = null;
+    public synchronized GameBoard(GameBoard in) {
+        gameBoard = new HashMap<Position, Piece>();
+        for (Map.Entry<Position, Piece> e : in.gameBoard.entrySet())
+            gameBoard.put(new Position(e.getKey()), Piece.copy(e.getValue()));
+        gameHistory = new ArrayList<Move>();
+        for (Move m : in.gameHistory) {
+            gameHistory.add(new Move(m));
         }
-    }
+        findKings();
+        playerToMove = in.playerToMove();
+        redoStack = new Stack<Move>();
+        legalMovesCache = null;
 
     public GameBoard(Map<Position, Piece> map) {
         gameBoard = map;
@@ -113,31 +110,29 @@ public class GameBoard {
     }
 
     public static int cacheHits = 0;
-    public List<Move> getAllLegalMoves() {
-        synchronized (GameBoard.class) {
-            if (legalMovesCache != null) {
-                cacheHits++;
-                return legalMovesCache;
-            }
+    public synchronized List<Move> getAllLegalMoves() {
+        if (legalMovesCache != null) {
+        cacheHits++;
+            return legalMovesCache;
+        }
 
-            List<Move> legalMoves = new ArrayList<Move>();
-            List<Piece> pieces = new ArrayList<Piece>();
-            for (Piece piece : gameBoard.values()) {
-                if (piece != null)
-                    pieces.add(piece);
-            }
-            for (Piece piece : pieces) {
-                if (piece.getColor() == playerToMove) {
-                    List<Move> possibleMoves = piece.possibleMoves();
-                    for (Move move : possibleMoves) {
-                        if (legalMove(move)) legalMoves.add(move);
-                    }
+        List<Move> legalMoves = new ArrayList<Move>();
+        List<Piece> pieces = new ArrayList<Piece>();
+        for (Piece piece : gameBoard.values()) {
+            if (piece != null)
+                pieces.add(piece);
+        }
+        for (Piece piece : pieces) {
+            if (piece.getColor() == playerToMove) {
+                List<Move> possibleMoves = piece.possibleMoves();
+                for (Move move : possibleMoves) {
+                    if (legalMove(move)) legalMoves.add(move);
                 }
             }
-
-            legalMovesCache = legalMoves;
-            return legalMoves;
         }
+
+        legalMovesCache = legalMoves;
+        return legalMoves;
     }
 
     private boolean move(Move m, boolean clearRedoStack) {
