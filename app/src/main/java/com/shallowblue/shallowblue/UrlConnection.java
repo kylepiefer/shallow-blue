@@ -39,7 +39,7 @@ public class UrlConnection {
         try
         {
             //String url = URLPath+"?str=80980980980980";//+args[0];
-            String url = URLPath+"?str="+args[0]+"&str2="+args[1];
+            String url = URLPath+"?str="+args[0]+"&str2="+args[1]+"&str3="+args[2];
             //url = url.replaceAll("(\r\n|\n)", "<lol>");
             //System.out.println(url);
             String res="";
