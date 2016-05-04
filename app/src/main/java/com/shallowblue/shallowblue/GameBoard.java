@@ -813,7 +813,8 @@ public class GameBoard {
                         // We don't care about pieces that can't move to us.
                         !(threat instanceof Pawn || threat instanceof Bishop || threat instanceof Knight) &&
                         // We don't care about Kings if they are more than one square away.
-                        !(threat instanceof King && Math.abs(position.getRow() - threat.getPosition().getRow()) > 1)) {
+                        !(threat instanceof King && ((Math.abs(position.getRow() - threat.getPosition().getRow()) > 1) ||
+                                (Math.abs(position.getColumn() - threat.getPosition().getColumn()) > 1)))) {
                     // If we made it here, the closest piece is threatening. Stop and return true.
                     return true;
                 }
@@ -830,7 +831,8 @@ public class GameBoard {
                         // We don't care about pieces that can't move to us.
                         !(threat instanceof Pawn || threat instanceof Bishop || threat instanceof Knight) &&
                         // We don't care about Kings if they are more than one square away.
-                        !(threat instanceof King && Math.abs(position.getRow() - threat.getPosition().getRow()) > 1)) {
+                        !(threat instanceof King && ((Math.abs(position.getRow() - threat.getPosition().getRow()) > 1) ||
+                                (Math.abs(position.getColumn() - threat.getPosition().getColumn()) > 1)))) {
                     // If we made it here, the closest piece is threatening. Stop and return true.
                     return true;
                 }
