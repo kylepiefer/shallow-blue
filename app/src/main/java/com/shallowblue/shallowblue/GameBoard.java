@@ -17,7 +17,7 @@ public class GameBoard {
     public NonNullMap<Position,Piece> gameBoard;
     public List<Move> gameHistory;
     public Color playerToMove;
-    private Stack<Move> redoStack;
+    public Stack<Move> redoStack;
     private String explanation;
 
     // Caches to speed up calculations. Only calculate the legal moves for a given position ONCE!
