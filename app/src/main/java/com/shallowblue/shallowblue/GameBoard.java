@@ -142,7 +142,7 @@ public class GameBoard {
         }
 
         // Clear the redo stack now since we know we are proceeding.
-        if (clearRedoStack) redoStack.clear();
+        if (clearRedoStack) redoStack = new Stack<Move>();
 
         // Handle the GameBoard
         Piece moved = gameBoard.get(m.getFrom());
