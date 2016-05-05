@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 
 public class PVPGameBoard extends AppCompatActivity {
 
@@ -27,12 +26,14 @@ public class PVPGameBoard extends AppCompatActivity {
     public static ImageView[][] customGameBoard;
     public static int[][] customBoardResources;
     public ImageView[][] pvpGameboard;
+    public static Map<Position,Piece> boardSetup;
     public static Position[][] availPos;
     public Map<ImageView, Position> imagePositions;
     public static List<Piece> blackPieces;
     public static List<Piece> whitePieces;
     public ImageView selImage;
     public Piece selPiece;
+    public Color turn;
     public Position selPosition;
     public List<Move> selMoves;
     public List<Move> selLegal;
@@ -44,6 +45,7 @@ public class PVPGameBoard extends AppCompatActivity {
     public Move promotion;
     ImageView temp;
     boolean doneWithPrev;
+    private List<Move> redoMoves;
     private final int checkImage = R.drawable.check_image2;
     private final int animationFadeIn = R.anim.fadein;
     private final int animationFadeOut = R.anim.fadeout;
@@ -78,38 +80,45 @@ public class PVPGameBoard extends AppCompatActivity {
         }
         imagePositions = new HashMap<ImageView, Position>();
         doneWithPrev = true;
+        redoMoves = new ArrayList<>();
         checkWhite = (ImageView) findViewById(R.id.player1Check);
         checkBlack = (ImageView) findViewById(R.id.player2Check);
         selLegal = new ArrayList<>();
-        NonNullMap<Position,Piece> boardSetup = new NonNullMap<Position,Piece>();
+
+
+
+
 
         pvpGameboard = new ImageView[8][8];
         selMoves = new ArrayList<>();
+        turn = Color.WHITE;
 
         if (count == 0){
             boardSetup = GameBoard.activeGameBoard.gameBoard;
             availPos = new Position[8][8];
             initializeBoard();
-            loadPreviousSetup(boardSetup);
+            loadPreviousSetup();
         } else if (count == 1){
             GameBoard.activeGameBoard = new GameBoard();
+            GameBoard.activeGameBoard.gameHistory = new ArrayList<Move>();
+            boardSetup = new HashMap<Position, Piece>();
             availPos = new Position[8][8];
             createPositionArray();
             initializeBoard();
-            startNewPvpGame(boardSetup);
+            startNewPvpGame();
         } else if (count == 2){
             GameBoard.activeGameBoard = new GameBoard();
+            GameBoard.activeGameBoard.gameHistory = new ArrayList<Move>();
             initializeBoard();
-            addCustomSetup(boardSetup);
+            addCustomSetup();
         }
         GameBoard.activeGameBoard.gameBoard = boardSetup;
         GameBoard.activeGameBoard.playerToMove = Color.WHITE;
         GameBoard.activeGameBoard.findKings();
-        boardSetup = null;
 
     }
 
-    private void loadPreviousSetup(NonNullMap<Position,Piece> boardSetup){
+    private void loadPreviousSetup(){
         for (int x = 0; x < 8; x++){
             for (int y = 0; y < 8; y++){
                 Position currPos = new Position(x,y);
@@ -134,7 +143,7 @@ public class PVPGameBoard extends AppCompatActivity {
         }
     }
 
-    public void startNewPvpGame(Map<Position,Piece> boardSetup){
+    public void startNewPvpGame(){
         for (int y = 0; y < 8; y++){
             Pawn start = new Pawn(availPos[1][y], Color.WHITE);
             pvpGameboard[1][y].setImageResource(start.getDrawableId());
@@ -211,6 +220,14 @@ public class PVPGameBoard extends AppCompatActivity {
 
         boardSetup.put(availPos[0][4], setup14);
         boardSetup.put(availPos[7][4], setup15);
+
+        //This is to set all other positions to null for their Piece value so that they can be
+        // called without a NullPointerException
+        for (int x = 2; x < 6; x++ ){
+            for (int y = 0; y < 8; y++){
+                boardSetup.put(availPos[x][y], null);
+            }
+        }
     }
 
     public void movePiece(View v){
@@ -219,9 +236,9 @@ public class PVPGameBoard extends AppCompatActivity {
         }
         temp = (ImageView) v;
         Position tempPos = imagePositions.get(temp);
-        Piece tempPiece = GameBoard.activeGameBoard.gameBoard.get(tempPos);
+        Piece tempPiece = boardSetup.get(tempPos);
         boolean foundMatch = false;
-        if (selImage == null && tempPiece != null && tempPiece.getColor() != GameBoard.activeGameBoard.playerToMove()){
+        if (selImage == null && tempPiece != null && tempPiece.getColor() != turn){
             clearBackgrounds(true);
             return;
         }
@@ -277,23 +294,30 @@ public class PVPGameBoard extends AppCompatActivity {
         } else {
             int tempX = tempPos.getRow();
             int tempY = tempPos.getColumn();
-            for (int x = 0; x < selLegal.size(); x++) {
+            for (int x = 0; x < selLegal.size(); x++){
                 int selX = selLegal.get(x).getTo().getRow();
                 int selY = selLegal.get(x).getTo().getColumn();
-                if (selX == tempX && selY == tempY) {
+                if (selX == tempX && selY == tempY){
                     foundMatch = true;
                     break;
                 }
             }
-            if (!foundMatch) {
+            if (!foundMatch){
                 selImage.setBackgroundResource(0);
                 clearBackgrounds(true);
                 selImage = null;
                 return;
             }
         }
+        if (turn == Color.BLACK){
+            turn = Color.WHITE;
+        } else { turn = Color.BLACK; }
 
+        redoMoves = new ArrayList<>();
         doneWithPrev = false;
+        selPiece.setPosition(tempPos);
+        boardSetup.put(tempPos, selPiece);
+        boardSetup.put(selPosition, null);
 
         int multiplier = this.getResources().getDimensionPixelSize(R.dimen.game_board_activity_square_width);
 
@@ -329,7 +353,10 @@ public class PVPGameBoard extends AppCompatActivity {
 
         move.setPieceCaptured(tempPiece);
 
+        move.getPieceMoved().incrementNumMoves(1);
         GameBoard.activeGameBoard.move(move);
+        GameBoard.activeGameBoard.addMove(move);
+        GameBoard.activeGameBoard.switchPlayerToMove();
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -343,16 +370,22 @@ public class PVPGameBoard extends AppCompatActivity {
                     if (castle.getTo().getColumn() > 4){
                         Position pastRook = new Position(castle.getTo().getRow(),7);
                         Position newRook = new Position(castle.getTo().getRow(),5);
-                        Piece rook = GameBoard.activeGameBoard.gameBoard.get(pastRook);
+                        Piece rook = boardSetup.get(pastRook);
                         castle.setPieceCaptured(rook);
+                        rook.setPosition(newRook);
+                        boardSetup.put(pastRook,null);
+                        boardSetup.put(newRook,rook);
                         pvpGameboard[castle.getTo().getRow()][7].setImageResource(0);
                         pvpGameboard[castle.getTo().getRow()][5].
                                 setImageResource(rook.getDrawableId());
                     } else {
                         Position pastRook = new Position(castle.getTo().getRow(),0);
                         Position newRook = new Position(castle.getTo().getRow(),3);
-                        Piece rook = GameBoard.activeGameBoard.gameBoard.get(pastRook);
+                        Piece rook = boardSetup.get(pastRook);
                         castle.setPieceCaptured(rook);
+                        rook.setPosition(newRook);
+                        boardSetup.put(pastRook,null);
+                        boardSetup.put(newRook,rook);
                         pvpGameboard[castle.getTo().getRow()][0].setImageResource(0);
                         pvpGameboard[castle.getTo().getRow()][3].
                                 setImageResource(rook.getDrawableId());
@@ -364,9 +397,10 @@ public class PVPGameBoard extends AppCompatActivity {
                     Position fromPos = passant.getFrom();
                     Position takenPawnPos;
                     takenPawnPos = new Position(fromPos.getRow(), toPos.getColumn());
-                    Piece takenPawn = GameBoard.activeGameBoard.gameBoard.get(takenPawnPos);
+                    Piece takenPawn = boardSetup.get(takenPawnPos);
                     passant.setPieceCaptured(takenPawn);
-                                        pvpGameboard[takenPawnPos.getRow()][takenPawnPos.getColumn()].setImageResource(0);
+                    boardSetup.put(takenPawnPos,null);
+                    pvpGameboard[takenPawnPos.getRow()][takenPawnPos.getColumn()].setImageResource(0);
                 }
 
 
@@ -401,6 +435,7 @@ public class PVPGameBoard extends AppCompatActivity {
         clearBackgrounds(false);
 
         if (promotion != null){
+            GameBoard.activeGameBoard.switchPlayerToMove();
             Bundle bundle = new Bundle();
             int color = 0;
             if (promotion.getPieceMoved().getColor() == Color.BLACK){
@@ -451,6 +486,8 @@ public class PVPGameBoard extends AppCompatActivity {
             Piece moved = prev.getPieceMoved();
             Piece taken = prev.getPieceCaptured();
             from.setImageResource(moved.getDrawableId());
+            moved.setPosition(fromPos);
+            boardSetup.put(fromPos,moved);
             boolean enPassantcheck = false;
             if (moved instanceof Pawn){
                 if (taken instanceof Pawn){
@@ -462,34 +499,53 @@ public class PVPGameBoard extends AppCompatActivity {
 
             if (taken != null && !GameBoard.activeGameBoard.isCastle(prev) && !enPassantcheck) {
                 to.setImageResource(taken.getDrawableId());
+                taken.setPosition(toPos);
+                boardSetup.put(toPos, taken);
             } else if(GameBoard.activeGameBoard.isCastle(prev)) {
                 to.setImageResource(0);
                 if (toPos.getColumn() > 5){
                     Position newRook = new Position(toPos.getRow(), 7);
                     Position oldRook = new Position(toPos.getRow(), toPos.getColumn()-1);
-                    Piece oldRookPiece = GameBoard.activeGameBoard.gameBoard.get(oldRook);
+                    Piece oldRookPiece = boardSetup.get(oldRook);
                     ImageView oldRookImage = pvpGameboard[toPos.getRow()][toPos.getColumn()-1];
                     oldRookImage.setImageResource(0);
+                    taken.setPosition(newRook);
+                    boardSetup.put(oldRook, null);
+                    boardSetup.put(toPos,null);
+                    boardSetup.put(newRook,taken);
                     ImageView rook = pvpGameboard[toPos.getRow()][7];
                     rook.setImageResource(taken.getDrawableId());
                 } else {
                     Position newRook = new Position(toPos.getRow(), 0);
                     Position oldRook = new Position(toPos.getRow(), toPos.getColumn()+1);
+                    taken.setPosition(newRook);
                     ImageView oldRookImage = pvpGameboard[toPos.getRow()][toPos.getColumn()+1];
                     oldRookImage.setImageResource(0);
+                    taken.setPosition(newRook);
+                    boardSetup.put(oldRook, null);
+                    boardSetup.put(toPos,null);
+                    boardSetup.put(newRook,taken);
                     ImageView rook = pvpGameboard[toPos.getRow()][0];
                     rook.setImageResource(taken.getDrawableId());
                 }
             } else if(enPassantcheck) {
                 Position takenPawnPos;
                 takenPawnPos = new Position(fromPos.getRow(),toPos.getColumn());
+                boardSetup.put(takenPawnPos,taken);
+                taken.setPosition(takenPawnPos);
                 pvpGameboard[takenPawnPos.getRow()][takenPawnPos.getColumn()].
                         setImageResource(taken.getDrawableId());
                 pvpGameboard[toPos.getRow()][toPos.getColumn()].setImageResource(0);
-                            } else {
+                boardSetup.put(toPos, null);
+            } else {
                 to.setImageResource(0);
-                            }
-            GameBoard.activeGameBoard.undo();
+                boardSetup.put(toPos,null);
+            }
+            turn = Color.WHITE;
+            GameBoard.activeGameBoard.switchPlayerToMove();
+            prev.getPieceMoved().incrementNumMoves(-1);
+            redoMoves.add(prev);
+            history.remove(last);
         } else {
             Toast.makeText(PVPGameBoard.this, "You can't undo your opponents last move.",
                     Toast.LENGTH_SHORT).show();
@@ -532,6 +588,8 @@ public class PVPGameBoard extends AppCompatActivity {
             Piece moved = prev.getPieceMoved();
             Piece taken = prev.getPieceCaptured();
             from.setImageResource(moved.getDrawableId());
+            moved.setPosition(fromPos);
+            boardSetup.put(fromPos, moved);
             boolean enPassantcheck = false;
 
             if (moved instanceof Pawn){
@@ -542,9 +600,10 @@ public class PVPGameBoard extends AppCompatActivity {
                 }
             }
 
-
             if (taken != null && !GameBoard.activeGameBoard.isCastle(prev) && !enPassantcheck) {
                 to.setImageResource(taken.getDrawableId());
+                taken.setPosition(toPos);
+                boardSetup.put(toPos, taken);
             } else if(GameBoard.activeGameBoard.isCastle(prev)) {
                 to.setImageResource(0);
                 if (toPos.getColumn() > 5){
@@ -552,26 +611,43 @@ public class PVPGameBoard extends AppCompatActivity {
                     Position oldRook = new Position(toPos.getRow(), toPos.getColumn()-1);
                     ImageView oldRookImage = pvpGameboard[toPos.getRow()][toPos.getColumn()-1];
                     oldRookImage.setImageResource(0);
+                    taken.setPosition(newRook);
+                    boardSetup.put(oldRook, null);
+                    boardSetup.put(toPos,null);
+                    boardSetup.put(newRook,taken);
                     ImageView rook = pvpGameboard[toPos.getRow()][7];
                     rook.setImageResource(taken.getDrawableId());
                 } else {
                     Position newRook = new Position(toPos.getRow(), 0);
                     Position oldRook = new Position(toPos.getRow(), toPos.getColumn()+1);
+                    taken.setPosition(newRook);
                     ImageView oldRookImage = pvpGameboard[toPos.getRow()][toPos.getColumn()+1];
                     oldRookImage.setImageResource(0);
+                    taken.setPosition(newRook);
+                    boardSetup.put(oldRook, null);
+                    boardSetup.put(toPos,null);
+                    boardSetup.put(newRook,taken);
                     ImageView rook = pvpGameboard[toPos.getRow()][0];
                     rook.setImageResource(taken.getDrawableId());
                 }
             } else if(enPassantcheck) {
                 Position takenPawnPos;
                 takenPawnPos = new Position(fromPos.getRow(), toPos.getColumn());
+                boardSetup.put(takenPawnPos, taken);
+                taken.setPosition(takenPawnPos);
                 pvpGameboard[takenPawnPos.getRow()][takenPawnPos.getColumn()].
                         setImageResource(taken.getDrawableId());
                 pvpGameboard[toPos.getRow()][toPos.getColumn()].setImageResource(0);
-                            } else {
+                boardSetup.put(toPos, null);
+            } else {
                 to.setImageResource(0);
-                            }
-            GameBoard.activeGameBoard.undo();
+                boardSetup.put(toPos,null);
+            }
+            turn = Color.BLACK;
+            GameBoard.activeGameBoard.switchPlayerToMove();
+            prev.getPieceMoved().incrementNumMoves(-1);
+            redoMoves.add(prev);
+            history.remove(last);
         } else {
             Toast toast = Toast.makeText(this, "You can't undo your opponents last move",
                     Toast.LENGTH_SHORT);
@@ -593,7 +669,7 @@ public class PVPGameBoard extends AppCompatActivity {
     }
 
     public void pvpredo1(View v){
-        Stack<Move> redoMoves = GameBoard.activeGameBoard.redoStack;
+
         if (redoMoves.isEmpty()){
             Toast.makeText(PVPGameBoard.this, "Sorry, you can't redo a move when one doesn't" +
                     " exist.", Toast.LENGTH_SHORT).show();
@@ -613,7 +689,8 @@ public class PVPGameBoard extends AppCompatActivity {
             if (prev.getPiecePromoted() != null){
                 promotion = prev;
                 promotePiece();
-                GameBoard.activeGameBoard.redo();
+                turn = Color.BLACK;
+                GameBoard.activeGameBoard.switchPlayerToMove();
                 return;
             }
             boolean enPassantcheck = false;
@@ -628,18 +705,27 @@ public class PVPGameBoard extends AppCompatActivity {
 
             if (taken != null && !GameBoard.activeGameBoard.isCastle(prev) && !enPassantcheck){
                 from.setImageResource(moved.getDrawableId());
+                moved.setPosition(toPos);
+                boardSetup.put(toPos,moved);
                 to.setImageResource(0);
 
-                            } else if (GameBoard.activeGameBoard.isCastle(prev)){
+                boardSetup.put(fromPos,null);
+            } else if (GameBoard.activeGameBoard.isCastle(prev)){
                 to.setImageResource(0);
+                moved.setPosition(toPos);
                 from.setImageResource(moved.getDrawableId());
-                                if (toPos.getColumn() > 4){
+                boardSetup.put(toPos,moved);
+                boardSetup.put(fromPos,null);
+                if (toPos.getColumn() > 4){
                     Position rookSpot = new Position(toPos.getRow(), 7);
                     Position newRookSpot = new Position(toPos.getRow(), 5);
                     ImageView oldRookImage = pvpGameboard[toPos.getRow()][7];
                     oldRookImage.setImageResource(0);
                     ImageView newRookImage = pvpGameboard[toPos.getRow()][5];
                     newRookImage.setImageResource(taken.getDrawableId());
+                    boardSetup.put(newRookSpot,taken);
+                    boardSetup.put(rookSpot, null);
+                    taken.setPosition(newRookSpot);
                 } else {
                     Position rookSpot = new Position(toPos.getRow(), 0);
                     Position newRookSpot = new Position(toPos.getRow(), 3);
@@ -647,17 +733,33 @@ public class PVPGameBoard extends AppCompatActivity {
                     oldRookImage.setImageResource(0);
                     ImageView newRookImage = pvpGameboard[toPos.getRow()][3];
                     newRookImage.setImageResource(taken.getDrawableId());
+                    boardSetup.put(newRookSpot,taken);
+                    boardSetup.put(rookSpot, null);
+                    taken.setPosition(newRookSpot);
                 }
             } else if(enPassantcheck){
                 from.setImageResource(moved.getDrawableId());
                 to.setImageResource(0);
+                boardSetup.put(fromPos,null);
+                boardSetup.put(toPos,moved);
+                moved.setPosition(toPos);
                 Position pawnTaken = new Position(fromPos.getRow(),toPos.getColumn());
+                boardSetup.put(pawnTaken,null);
                 pvpGameboard[fromPos.getRow()][toPos.getColumn()].setImageResource(0);
             } else {
                 from.setImageResource(moved.getDrawableId());
                 to.setImageResource(0);
+                moved.setPosition(toPos);
+                boardSetup.put(toPos,moved);
+                boardSetup.put(fromPos,null);
             }
-            GameBoard.activeGameBoard.redo();
+
+            prev.getPieceMoved().incrementNumMoves(1);
+            turn = Color.BLACK;
+            GameBoard.activeGameBoard.addMove(prev);
+            GameBoard.activeGameBoard.switchPlayerToMove();
+            redoMoves.remove(last);
+
         } else {
             Toast.makeText(PVPGameBoard.this, "You can't redo your opponents last move.",
                     Toast.LENGTH_SHORT).show();
@@ -674,7 +776,6 @@ public class PVPGameBoard extends AppCompatActivity {
     }
 
     public void pvpredo2(View v){
-        Stack<Move> redoMoves = GameBoard.activeGameBoard.redoStack;
         if (redoMoves.isEmpty()){
             Toast toast = Toast.makeText(this, "Sorry, you can't redo a move when one doesn't exist",
                     Toast.LENGTH_SHORT);
@@ -699,7 +800,8 @@ public class PVPGameBoard extends AppCompatActivity {
             if (prev.getPiecePromoted() != null){
                 promotion = prev;
                 promotePiece();
-                GameBoard.activeGameBoard.redo();
+                turn = Color.WHITE;
+                GameBoard.activeGameBoard.switchPlayerToMove();
                 return;
             }
 
@@ -714,19 +816,28 @@ public class PVPGameBoard extends AppCompatActivity {
 
             if (taken != null && !GameBoard.activeGameBoard.isCastle(prev) && !enPassantcheck){
                 from.setImageResource(moved.getDrawableId());
+                moved.setPosition(toPos);
+                boardSetup.put(toPos,moved);
                 to.setImageResource(0);
 
-                
+                boardSetup.put(fromPos,null);
+
             } else if (GameBoard.activeGameBoard.isCastle(prev)){
                 to.setImageResource(0);
+                moved.setPosition(toPos);
                 from.setImageResource(moved.getDrawableId());
-                                if (toPos.getColumn() > 4){
+                boardSetup.put(toPos,moved);
+                boardSetup.put(fromPos,null);
+                if (toPos.getColumn() > 4){
                     Position rookSpot = new Position(toPos.getRow(), 7);
                     Position newRookSpot = new Position(toPos.getRow(), 5);
                     ImageView oldRookImage = pvpGameboard[toPos.getRow()][7];
                     oldRookImage.setImageResource(0);
                     ImageView newRookImage = pvpGameboard[toPos.getRow()][5];
                     newRookImage.setImageResource(taken.getDrawableId());
+                    boardSetup.put(newRookSpot,taken);
+                    boardSetup.put(rookSpot, null);
+                    taken.setPosition(newRookSpot);
                 } else {
                     Position rookSpot = new Position(toPos.getRow(), 0);
                     Position newRookSpot = new Position(toPos.getRow(), 3);
@@ -734,17 +845,32 @@ public class PVPGameBoard extends AppCompatActivity {
                     oldRookImage.setImageResource(0);
                     ImageView newRookImage = pvpGameboard[toPos.getRow()][3];
                     newRookImage.setImageResource(taken.getDrawableId());
+                    boardSetup.put(newRookSpot,taken);
+                    boardSetup.put(rookSpot, null);
+                    taken.setPosition(newRookSpot);
                 }
             } else if(enPassantcheck){
                 from.setImageResource(moved.getDrawableId());
                 to.setImageResource(0);
+                boardSetup.put(fromPos,null);
+                boardSetup.put(toPos,moved);
+                moved.setPosition(toPos);
                 Position pawnTaken = new Position(fromPos.getRow(),toPos.getColumn());
+                boardSetup.put(pawnTaken,null);
                 pvpGameboard[fromPos.getRow()][toPos.getColumn()].setImageResource(0);
             } else {
                 from.setImageResource(moved.getDrawableId());
                 to.setImageResource(0);
+                moved.setPosition(toPos);
+                boardSetup.put(toPos,moved);
+                boardSetup.put(fromPos,null);
             }
-            GameBoard.activeGameBoard.redo();
+
+            prev.getPieceMoved().incrementNumMoves(1);
+            turn = Color.WHITE;
+            GameBoard.activeGameBoard.addMove(prev);
+            GameBoard.activeGameBoard.switchPlayerToMove();
+            redoMoves.remove(last);
         } else {
             Toast toast = Toast.makeText(this, "You can't redo your opponents last move",
                     Toast.LENGTH_SHORT);
@@ -906,7 +1032,7 @@ public class PVPGameBoard extends AppCompatActivity {
         //AsyncTask task = new AIMoveTask().execute(GameBoard.activeGameBoard);
 
         //Toast.makeText(PVPGameBoard.this, "Sorry, this function is still being worked on.",
-                //Toast.LENGTH_SHORT).show();
+        //Toast.LENGTH_SHORT).show();
 
         return;
     }
@@ -1043,13 +1169,13 @@ public class PVPGameBoard extends AppCompatActivity {
         }
     }
 
-    public void addCustomSetup(Map<Position,Piece> boardSetup){
+    public void addCustomSetup(){
         for (int x = 0; x < 8; x++){
             for (int y = 0; y < 8; y++){
                 pvpGameboard[x][y].setImageResource(customBoardResources[x][y]);
                 Position saving = imagePositions.get(pvpGameboard[x][y]);
                 if (boardSetup.containsKey(saving)){
-                    Piece pieceSave = GameBoard.activeGameBoard.gameBoard.get(saving);
+                    Piece pieceSave = boardSetup.get(saving);
                     pvpGameboard[x][y].setImageResource(pieceSave.getDrawableId());
                     pvpGameboard[x][y].setTag(pieceSave);
                 }
@@ -1171,6 +1297,7 @@ public class PVPGameBoard extends AppCompatActivity {
                     if (newPiece.getColor() == Color.BLACK){
                         newPiece.setDrawableId(getFlippedId(newPiece));
                     }
+                    GameBoard.activeGameBoard.switchPlayerToMove();
                     promotePiece();
                     return;
                 }
@@ -1181,10 +1308,13 @@ public class PVPGameBoard extends AppCompatActivity {
     private void promotePiece(){
         Piece moved = promotion.getPieceMoved();
         Piece promoted = promotion.getPiecePromoted();
+        promoted.setPosition(promotion.getTo());
         pvpGameboard[promotion.getTo().getRow()][promotion.getTo().getColumn()]
                 .setImageResource(promoted.getDrawableId());
         pvpGameboard[promotion.getFrom().getRow()][promotion.getFrom().getColumn()]
                 .setImageResource(0);
+        boardSetup.put(promotion.getFrom(),null);
+        boardSetup.put(promotion.getTo(),promoted);
         promotion = null;
 
         if (checkBlack.getDrawable() != null || checkWhite.getDrawable() != null){

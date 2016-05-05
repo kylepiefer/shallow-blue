@@ -29,7 +29,7 @@ public class CustomGame extends AppCompatActivity {
     int blackkingid;
     List<Piece> pieces;
     Map<Piece, String> pieceType;
-    NonNullMap<Position,Piece> boardSetup;
+    Map<Position, Piece> boardSetup;
     List<Piece> blackPieces;
     List<Piece> whitePieces;
     Position[][] availPos;
@@ -49,7 +49,7 @@ public class CustomGame extends AppCompatActivity {
         imagePositions = new HashMap<ImageView, Position>();
         ImageView[][] boardImages = new ImageView[8][8];
         boardImages = setupImageViewArray(boardImages);
-        boardSetup = new NonNullMap<Position,Piece>();
+        boardSetup = new HashMap<Position, Piece>();
         availPos = new Position[8][8];
 
         Intent intent = getIntent();
@@ -196,6 +196,7 @@ public class CustomGame extends AppCompatActivity {
         PVPGameBoard.customGameBoard = gameboard;
         PVPGameBoard.customBoardResources = boardResources;
 
+        PVPGameBoard.boardSetup = boardSetup;
         PVPGameBoard.availPos = availPos;
 
         GameBoard.activeGameBoard = new GameBoard();
@@ -240,6 +241,7 @@ public class CustomGame extends AppCompatActivity {
             PVPGameBoard.customGameBoard = gameboard;
             PVPGameBoard.customBoardResources = boardResources;
 
+            PVPGameBoard.boardSetup = boardSetup;
             PVPGameBoard.availPos = availPos;
             startPvpGame.putExtra("start",game);
             startActivity(startPvpGame);
