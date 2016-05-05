@@ -24,17 +24,32 @@
         android:layout_height="wrap_content"
         android:id="@+id/listView"
         android:layout_below="@+id/textView"
-        android:layout_centerHorizontal="true"
-        android:layout_above="@+id/lgloadgame" />
+        android:layout_centerHorizontal="true"/>
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/lgloadgame"
-        android:onClick="loadSavedGame"
-        android:src="@drawable/lg_load_game_button"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center|bottom">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/lgloadgame"
+            android:onClick="loadSavedGame"
+            android:src="@drawable/lg_load_game_button"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="5dp"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/delete_saved_game_button"
+            android:onClick="deleteSavedGame"
+            android:src="@drawable/lg_delete_button"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="5dp"/>
+
+    </LinearLayout>
 
 </RelativeLayout>
