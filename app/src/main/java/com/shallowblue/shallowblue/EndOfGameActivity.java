@@ -31,8 +31,10 @@ public class EndOfGameActivity extends AppCompatActivity {
         int winner = check.getInt("winner");
         if (winner == 0){
             reason.setText("Black Wins!");
-        } else {
+        } else if (winner == 1) {
             reason.setText("White Wins!");
+        } else {
+            reason.setText("Draw!");
         }
 
     }
