@@ -112,6 +112,7 @@ public class PVPGameBoard extends AppCompatActivity {
             initializeBoard();
             addCustomSetup();
         }
+        GameBoard.activeGameBoard.gameBoard = boardSetup;
         GameBoard.activeGameBoard.playerToMove = Color.WHITE;
         GameBoard.activeGameBoard.findKings();
 
@@ -355,7 +356,7 @@ public class PVPGameBoard extends AppCompatActivity {
         move.getPieceMoved().incrementNumMoves(1);
         GameBoard.activeGameBoard.move(move);
         GameBoard.activeGameBoard.addMove(move);
-        //GameBoard.activeGameBoard.switchPlayerToMove();
+        GameBoard.activeGameBoard.switchPlayerToMove();
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
