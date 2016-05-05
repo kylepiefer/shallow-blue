@@ -56,6 +56,11 @@ public class SaveGame extends AppCompatActivity {
             if (result) finish();
             return;
         }
+        if (this.gameMode != null && this.gameMode.equals("PVP")){
+            boolean result = savedGameManager.saveGame(this, filename, GameBoard.activeGameBoard);
+            if (result) finish();
+            return;
+        }
         File path = getFilesDir();
         if (filename.length() < 5){
             Toast.makeText(SaveGame.this, "Please enter a name more than 5 characters.",

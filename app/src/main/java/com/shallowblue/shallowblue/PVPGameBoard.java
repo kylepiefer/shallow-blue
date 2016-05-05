@@ -72,7 +72,12 @@ public class PVPGameBoard extends AppCompatActivity {
         Intent gather = getIntent();
         Bundle temp = new Bundle();
         temp = gather.getBundleExtra("start");
-        int count = temp.getInt("game");
+        int count;
+        if (temp == null){
+            count = 0;
+        } else {
+            count = temp.getInt("game");
+        }
         imagePositions = new HashMap<ImageView, Position>();
         doneWithPrev = true;
         redoMoves = new ArrayList<>();
@@ -80,30 +85,53 @@ public class PVPGameBoard extends AppCompatActivity {
         checkBlack = (ImageView) findViewById(R.id.player2Check);
         selLegal = new ArrayList<>();
 
-        GameBoard.activeGameBoard = new GameBoard();
 
-        GameBoard.activeGameBoard.gameHistory = new ArrayList<Move>();
+
+
 
         pvpGameboard = new ImageView[8][8];
         selMoves = new ArrayList<>();
         turn = Color.WHITE;
 
-        if (count == 1){
+        if (count == 0){
+            boardSetup = GameBoard.activeGameBoard.gameBoard;
+            availPos = new Position[8][8];
+            initializeBoard();
+            loadPreviousSetup();
+        } else if (count == 1){
+            GameBoard.activeGameBoard = new GameBoard();
+            GameBoard.activeGameBoard.gameHistory = new ArrayList<Move>();
             boardSetup = new HashMap<Position, Piece>();
             availPos = new Position[8][8];
             createPositionArray();
             initializeBoard();
             startNewPvpGame();
-        }
-
-        if (count == 2){
+        } else if (count == 2){
+            GameBoard.activeGameBoard = new GameBoard();
+            GameBoard.activeGameBoard.gameHistory = new ArrayList<Move>();
             initializeBoard();
             addCustomSetup();
         }
-        GameBoard.activeGameBoard.gameBoard = boardSetup;
         GameBoard.activeGameBoard.playerToMove = Color.WHITE;
         GameBoard.activeGameBoard.findKings();
 
+    }
+
+    private void loadPreviousSetup(){
+        for (int x = 0; x < 8; x++){
+            for (int y = 0; y < 8; y++){
+                Position currPos = new Position(x,y);
+                Piece currPiece = boardSetup.get(currPos);
+                if (currPiece != null){
+                    if (currPiece.getColor() == Color.BLACK){
+                        flipBlackPieces(currPiece);
+                    }
+                    pvpGameboard[x][y].setImageResource(currPiece.getDrawableId());
+                    pvpGameboard[x][y].setTag(currPiece);
+                }
+                imagePositions.put(pvpGameboard[x][y],currPos);
+            }
+        }
     }
 
     private void createPositionArray() {
@@ -232,7 +260,7 @@ public class PVPGameBoard extends AppCompatActivity {
                     if (GameBoard.activeGameBoard.playerToMove == Color.BLACK){
                         Toast toast = Toast.makeText(this, "There are not any moves available" +
                                 " for this piece", Toast.LENGTH_SHORT);
-                        toast.setGravity(Gravity.TOP,0,10);
+                        toast.setGravity(Gravity.TOP,0,50);
                         toast.getView().setRotation(180);
                         //toast.setView(message);
                         //if( message != null) message.setGravity(Gravity.TOP);
@@ -422,11 +450,13 @@ public class PVPGameBoard extends AppCompatActivity {
 
     public void pvpoptionsScreen1(View v){
         Intent openOptions = new Intent(getApplicationContext(),OptionsPopUpWindow.class);
+        openOptions.putExtra("Game Mode", "PVP");
         startActivity(openOptions);
     }
 
     public void pvpoptionsScreen2(View v){
         Intent openOptions = new Intent(getApplicationContext(),OptionsPopUpWindow.class);
+        openOptions.putExtra("Game Mode", "PVP");
         startActivity(openOptions);
     }
 
@@ -539,7 +569,7 @@ public class PVPGameBoard extends AppCompatActivity {
         if (history.isEmpty()){
             Toast toast = Toast.makeText(this, "Sorry, you can't undo a move when one doesn't exist",
                     Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.TOP,0,10);
+            toast.setGravity(Gravity.TOP,0,50);
             toast.getView().setRotation(180);
             //toast.setView(message);
             //if( message != null) message.setGravity(Gravity.TOP);
@@ -620,7 +650,7 @@ public class PVPGameBoard extends AppCompatActivity {
         } else {
             Toast toast = Toast.makeText(this, "You can't undo your opponents last move",
                     Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.TOP,0,10);
+            toast.setGravity(Gravity.TOP,0,50);
             toast.getView().setRotation(180);
             //toast.setView(message);
             //if( message != null) message.setGravity(Gravity.TOP);
@@ -742,7 +772,7 @@ public class PVPGameBoard extends AppCompatActivity {
         if (redoMoves.isEmpty()){
             Toast toast = Toast.makeText(this, "Sorry, you can't redo a move when one doesn't exist",
                     Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.TOP,0,10);
+            toast.setGravity(Gravity.TOP,0,50);
             toast.getView().setRotation(180);
             //toast.setView(message);
             //if( message != null) message.setGravity(Gravity.TOP);
@@ -831,7 +861,7 @@ public class PVPGameBoard extends AppCompatActivity {
         } else {
             Toast toast = Toast.makeText(this, "You can't redo your opponents last move",
                     Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.TOP,0,10);
+            toast.setGravity(Gravity.TOP,0,50);
             toast.getView().setRotation(180);
             //toast.setView(message);
             //if( message != null) message.setGravity(Gravity.TOP);
@@ -909,7 +939,7 @@ public class PVPGameBoard extends AppCompatActivity {
         if (suggestedBlackMoves == null){
             Toast toast = Toast.makeText(this, "To get alternate suggested moves, " +
                     "tap the 'Start Helper' button first.", Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.TOP,0,10);
+            toast.setGravity(Gravity.TOP,0,50);
             toast.getView().setRotation(180);
             //toast.setView(message);
             //if( message != null) message.setGravity(Gravity.TOP);
@@ -999,7 +1029,7 @@ public class PVPGameBoard extends AppCompatActivity {
         if (GameBoard.activeGameBoard.playerToMove != Color.BLACK){
             Toast toast = Toast.makeText(this, "Wait until you're turn to activate the AI Helper",
                     Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.TOP,0,10);
+            toast.setGravity(Gravity.TOP,0,50);
             toast.getView().setRotation(180);
             //toast.setView(message);
             //if( message != null) message.setGravity(Gravity.TOP);
