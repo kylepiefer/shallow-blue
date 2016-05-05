@@ -191,7 +191,7 @@ public class CustomGame extends AppCompatActivity {
 
         ImageView[][] settingUp = setupImageViewArray(gameboard);
         gameboard = boardPositions(settingUp);
-        flipBlackPieces();
+        //flipBlackPieces();
 
         PVPGameBoard.customGameBoard = gameboard;
         PVPGameBoard.customBoardResources = boardResources;
@@ -203,6 +203,22 @@ public class CustomGame extends AppCompatActivity {
         GameBoard.activeGameBoard.gameBoard = boardSetup;
         GameBoard.activeGameBoard.playerToMove = Color.WHITE;
         GameBoard.activeGameBoard.findKings();
+
+        for (int x = 0; x < 8; x++){
+            for (int y = 0; y < 8; y++){
+                Position currPos = new Position(x,y);
+                Piece currPiece = boardSetup.get(currPos);
+                if (currPiece instanceof Pawn){
+                    int row = currPiece.getPosition().getRow();
+                    if (row == 0 || row == 7){
+                        Toast.makeText(CustomGame.this,"You can't start a game with a pawn on " +
+                                "either the top row or the bottom row",
+                                Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
+            }
+        }
 
         if (GameBoard.activeGameBoard.inCheck()){
             Toast.makeText(CustomGame.this,"You can't start a game with a king in check.",
@@ -285,7 +301,7 @@ public class CustomGame extends AppCompatActivity {
                 wkingimage.setImageResource(whitekingid);
                 if (!initialPieces.contains(selected)){
                     Position selPos = imagePositions.get(selected);
-                    boardSetup.remove(selPos);
+                    boardSetup.put(selPos,null);
                     selected.setImageResource(0);
                 }
                 selected = null;
@@ -296,7 +312,7 @@ public class CustomGame extends AppCompatActivity {
                 bkingimage.setImageResource(blackkingid);
                 if (!initialPieces.contains(selected)){
                     Position selPos = imagePositions.get(selected);
-                    boardSetup.remove(selPos);
+                    boardSetup.put(selPos,null);
                     selected.setImageResource(0);
                 }
                 selected = null;
@@ -336,7 +352,7 @@ public class CustomGame extends AppCompatActivity {
                 boardSetup.put(newPosition, newPiece);
                 if (!initialPieces.contains(selected)){
                     Position selPos = imagePositions.get(selected);
-                    boardSetup.remove(selPos);
+                    boardSetup.put(selPos,null);
                     selected.setImageResource(0);
                 }
                 selected = null;
@@ -355,7 +371,7 @@ public class CustomGame extends AppCompatActivity {
                 boardSetup.put(newPosition, newPiece);
                 if (!initialPieces.contains(selected)){
                     Position selPos = imagePositions.get(selected);
-                    boardSetup.remove(selPos);
+                    boardSetup.put(selPos,null);
                     selected.setImageResource(0);
                 }
                 currSelected.setImageResource(0);
@@ -373,7 +389,7 @@ public class CustomGame extends AppCompatActivity {
                 boardSetup.put(newPosition, newPiece);
                 if (!initialPieces.contains(selected)){
                     Position selPos = imagePositions.get(selected);
-                    boardSetup.remove(selPos);
+                    boardSetup.put(selPos,null);
                     selected.setImageResource(0);
                 }
                 selected = null;
@@ -390,7 +406,7 @@ public class CustomGame extends AppCompatActivity {
                 boardSetup.put(newPosition, newPiece);
                 if (!initialPieces.contains(selected)){
                     Position selPos = imagePositions.get(selected);
-                    boardSetup.remove(selPos);
+                    boardSetup.put(selPos,null);
                     selected.setImageResource(0);
                 }
                 currSelected.setImageResource(0);
@@ -456,7 +472,7 @@ public class CustomGame extends AppCompatActivity {
         }
         else{
             Position selPos = imagePositions.get(selected);
-            boardSetup.remove(selPos);
+            boardSetup.put(selPos,null);
             selected.setImageResource(0);
             selected = null;
         }
@@ -634,6 +650,9 @@ public class CustomGame extends AppCompatActivity {
                 Position checkPosition = availPos[x][y];
                 if (boardSetup.containsKey(checkPosition)) {
                     Piece checkPiece = boardSetup.get(checkPosition);
+                    if (checkPiece == null){
+                        continue;
+                    }
                     if (checkPiece.getColor() == Color.BLACK) {
                         String pieceType = checkPiece.toString();
                         switch (pieceType) {

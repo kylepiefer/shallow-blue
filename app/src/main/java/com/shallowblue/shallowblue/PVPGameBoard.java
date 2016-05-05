@@ -1176,6 +1176,9 @@ public class PVPGameBoard extends AppCompatActivity {
                 Position saving = imagePositions.get(pvpGameboard[x][y]);
                 if (boardSetup.containsKey(saving)){
                     Piece pieceSave = boardSetup.get(saving);
+                    if (pieceSave == null){
+                        continue;
+                    }
                     pvpGameboard[x][y].setImageResource(pieceSave.getDrawableId());
                     pvpGameboard[x][y].setTag(pieceSave);
                 }
