@@ -670,18 +670,23 @@ public class GameBoardActivity extends AppCompatActivity {
     private void endGame() {
         movesToRedo = 0;
         movesToUndo = 0;
+        updateHint();
         Intent endGame = new Intent(this, EndOfGameActivity.class);
         Bundle params = new Bundle();
         Color curr = gameBoard.playerToMove;
         int color = 0;
-        if (curr == Color.WHITE){
+        if (getGameBoard().isDraw()) {
+            color = -1;
+        } else if (curr == Color.WHITE && getGameBoard().inCheckMate()){
             color = 0;
         }
         else {
             color = 1;
         }
         params.putInt("winner", color);
-        endGame.putExtra("text",params);
+        String reason = getGameBoard().getLastExplanation();
+        params.putString("reason", reason);
+        endGame.putExtra("text", params);
         startActivityForResult(endGame, END_OF_GAME_REQUEST);
     }
 
