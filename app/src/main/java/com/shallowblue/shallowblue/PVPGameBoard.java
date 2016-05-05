@@ -746,6 +746,12 @@ public class PVPGameBoard extends AppCompatActivity {
                 Position pawnTaken = new Position(fromPos.getRow(),toPos.getColumn());
                 boardSetup.put(pawnTaken,null);
                 pvpGameboard[fromPos.getRow()][toPos.getColumn()].setImageResource(0);
+            } else {
+                from.setImageResource(moved.getDrawableId());
+                to.setImageResource(0);
+                moved.setPosition(toPos);
+                boardSetup.put(toPos,moved);
+                boardSetup.put(fromPos,null);
             }
 
             prev.getPieceMoved().incrementNumMoves(1);
@@ -852,6 +858,12 @@ public class PVPGameBoard extends AppCompatActivity {
                 Position pawnTaken = new Position(fromPos.getRow(),toPos.getColumn());
                 boardSetup.put(pawnTaken,null);
                 pvpGameboard[fromPos.getRow()][toPos.getColumn()].setImageResource(0);
+            } else {
+                from.setImageResource(moved.getDrawableId());
+                to.setImageResource(0);
+                moved.setPosition(toPos);
+                boardSetup.put(toPos,moved);
+                boardSetup.put(fromPos,null);
             }
 
             prev.getPieceMoved().incrementNumMoves(1);
