@@ -17,7 +17,7 @@ public class GameBoard {
     public NonNullMap<Position,Piece> gameBoard;
     public List<Move> gameHistory;
     public Color playerToMove;
-    private Stack<Move> redoStack;
+    public Stack<Move> redoStack;
     private String explanation;
 
     // Caches to speed up calculations. Only calculate the legal moves for a given position ONCE!
@@ -142,7 +142,7 @@ public class GameBoard {
         }
 
         // Clear the redo stack now since we know we are proceeding.
-        if (clearRedoStack) redoStack.clear();
+        if (clearRedoStack) redoStack = new Stack<Move>();
 
         // Handle the GameBoard
         Piece moved = gameBoard.get(m.getFrom());
