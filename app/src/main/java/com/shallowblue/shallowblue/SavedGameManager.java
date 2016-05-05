@@ -179,4 +179,18 @@ public class SavedGameManager {
 
         return savedGameFileNames;
     }
+
+    public boolean removeSavedGame(Context context, String filename) {
+        if (context == null || filename == null) return false;
+
+        try {
+            String directory = context.getFilesDir().getAbsolutePath();
+            File savedGame = new File(directory, filename);
+            savedGame.delete();
+        } catch (Exception exception) {
+            return false;
+        }
+
+        return true;
+    }
 }
