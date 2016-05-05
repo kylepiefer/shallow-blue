@@ -543,11 +543,16 @@ public class GameBoardActivity extends AppCompatActivity {
             showToast("Not available in the secret mode.");
             return;
         }
+
+        ImageView buttonImage = (ImageView) findViewById(R.id.starthelper);
+
         if (helperIsOn) {
             helperIsOn = false;
+            buttonImage.setImageResource(R.drawable.sp_start_helper);
             removeAllSquareHighlights();
         } else {
             helperIsOn = true;
+            buttonImage.setImageResource(R.drawable.stop_helper_button);
             if (playerColor == getGameBoard().playerToMove()) aiMove();
         }
     }
