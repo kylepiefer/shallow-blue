@@ -93,13 +93,13 @@ public class PVPGameBoard extends AppCompatActivity {
             boardSetup = GameBoard.activeGameBoard.gameBoard;
             availPos = new Position[8][8];
             initializeBoard();
-            loadPreviousSetup();
+            loadPreviousSetup(boardSetup);
         } else if (count == 1){
             GameBoard.activeGameBoard = new GameBoard();
             availPos = new Position[8][8];
             createPositionArray();
             initializeBoard();
-            startNewPvpGame();
+            startNewPvpGame(boardSetup);
         } else if (count == 2){
             GameBoard.activeGameBoard = new GameBoard();
             initializeBoard();
@@ -112,7 +112,7 @@ public class PVPGameBoard extends AppCompatActivity {
 
     }
 
-    private void loadPreviousSetup(){
+    private void loadPreviousSetup(NonNullMap<Position,Piece> boardSetup){
         for (int x = 0; x < 8; x++){
             for (int y = 0; y < 8; y++){
                 Position currPos = new Position(x,y);
