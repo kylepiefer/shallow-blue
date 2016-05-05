@@ -174,6 +174,7 @@ public class SavedGameManager {
 
         List<String> savedGameFileNames = new ArrayList<String>();
         for (File savedGameFile : savedGameFiles) {
+            if (savedGameFile.getName().equalsIgnoreCase("instant-run")) continue;
             savedGameFileNames.add(savedGameFile.getName());
         }
 
@@ -186,7 +187,8 @@ public class SavedGameManager {
         try {
             String directory = context.getFilesDir().getAbsolutePath();
             File savedGame = new File(directory, filename);
-            savedGame.delete();
+            boolean result = savedGame.delete();
+            if (!result) return false;
         } catch (Exception exception) {
             return false;
         }
