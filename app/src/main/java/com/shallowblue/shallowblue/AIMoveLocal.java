@@ -105,13 +105,14 @@ public class AIMoveLocal extends AIMove {
     }
 
     //returns a sorted list of moves from best to worst
-    private List<Move> maxAction(GameBoard current, int depth) {
+    private List<Move> maxAction(GameBoard in, int depth) {
         
         List<Entry<Double,Move>> moveGoodness = new ArrayList<Entry<Double,Move>>();
         double best = Double.NEGATIVE_INFINITY;
-        List<Move> moves = current.getAllLegalMoves();
+        List<Move> moves = in.getAllLegalMoves();
         Collections.shuffle(moves);
         for (Move m : moves) {
+            GameBoard current = new GameBoard(in);
             current.move(m);
             double v = minAction(current, depth - 1, best, Double.POSITIVE_INFINITY);
             if(v > best)
@@ -119,32 +120,34 @@ public class AIMoveLocal extends AIMove {
 
             //the sorted map is sorted low-high so we want to negate the value before the put
             moveGoodness.add(new SimpleEntry<Double, Move>(v, m));
-            current.undo();
+            //current.undo();
             positionsExamined++;
         }
-        Collections.sort(moveGoodness, MIN_COMPARATOR);
+        Collections.sort(moveGoodness, MAX_COMPARATOR);
         List<Move> ret = new ArrayList<Move>();
         for(Entry<Double,Move> e : moveGoodness) {
             Log.i("AIMoveLocalMax", "Move: " + e.getValue().toString() + " Score: " + e.getKey().toString());
             ret.add(e.getValue());
+            break;
         }
         return ret;
     }
 
     //returns a sorted list of moves from best to worst
-    private List<Move> minAction(GameBoard current, int depth) {
+    private List<Move> minAction(GameBoard in, int depth) {
         List<Entry<Double,Move>> moveGoodness = new ArrayList<Entry<Double,Move>>();
         double best = Double.POSITIVE_INFINITY;
-        List<Move> moves = current.getAllLegalMoves();
+        List<Move> moves = in.getAllLegalMoves();
         Collections.shuffle(moves);
         for (Move m : moves) {
+            GameBoard current = new GameBoard(in);
             current.move(m);
             double v = maxAction(current, depth - 1, Double.NEGATIVE_INFINITY, best);
             if(v < best)
                 best = v;
 
             moveGoodness.add(new SimpleEntry<Double, Move>(v, m));
-            current.undo();
+            //current.undo();
             positionsExamined++;
         }
 
@@ -153,16 +156,18 @@ public class AIMoveLocal extends AIMove {
         for(Entry<Double,Move> e : moveGoodness) {
             Log.i("AIMoveLocalMin", "Move: " + e.getValue().toString() + " Score: " + e.getKey().toString());
             ret.add(e.getValue());
+            break;
         }
         return ret;
     }
 
-    private double maxAction(GameBoard current, int depth, double alpha, double beta) {
-        if(depth <= 0 || current.gameOver())
-            return sbe(current);
+    private double maxAction(GameBoard in, int depth, double alpha, double beta) {
+        if(depth <= 0 || in.gameOver())
+            return sbe(in);
 
         double v = Double.NEGATIVE_INFINITY;
-        for (Move m : current.getAllLegalMoves()) {
+        for (Move m : in.getAllLegalMoves()) {
+            GameBoard current = new GameBoard(in);
             current.move(m);
             double nextV = minAction(current, depth-1, alpha, beta);
 
@@ -172,18 +177,19 @@ public class AIMoveLocal extends AIMove {
                 alpha = v;
             if(nextV >= beta)
                 return v;
-            current.undo();
+            //current.undo();
             positionsExamined++;
         }
         return v;
     }
 
-    private double minAction(GameBoard current, int depth, double alpha, double beta) {
-        if(depth <= 0 || current.gameOver())
-            return sbe(current);
+    private double minAction(GameBoard in, int depth, double alpha, double beta) {
+        if(depth <= 0 || in.gameOver())
+            return sbe(in);
 
         double v = Double.POSITIVE_INFINITY;
-        for (Move m : current.getAllLegalMoves()) {
+        for (Move m : in.getAllLegalMoves()) {
+            GameBoard current = new GameBoard(in);
             current.move(m);
             double nextV = maxAction(current, depth-1, alpha, beta);
 
@@ -193,7 +199,7 @@ public class AIMoveLocal extends AIMove {
                 return v;
             if(nextV < beta)
                 beta = v;
-            current.undo();
+            //current.undo();
             positionsExamined++;
         }
         return v;
@@ -212,351 +218,247 @@ public class AIMoveLocal extends AIMove {
         }
 
 
-        Piece wking = null;
-        Piece bking = null;
+        int rookC[] = new int[2];
+        int queenC[] = new int[2];
+        int knightC[] = new int[2];
+        int bishopC[] = new int[2];
+        int pawnC[] = new int[2];
+        int kingC[] = new int[2];
 
-        int wrookC = 0;
-        int wqueenC = 0;
-        int wknightC = 0;
-        int wbishopC = 0;
-        int wpawnC = 0;
-        int wkingC = 0;
 
-        int brookC = 0;
-        int bqueenC = 0;
-        int bknightC = 0;
-        int bbishopC = 0;
-        int bpawnC = 0;
-        int bkingC = 0;
-
-        Map<Position, Piece> gameBoard = current.gameBoard;
-
-        List<Piece> allPiecesOnBoard = new ArrayList<>();
-        List<Piece> whitePiece = new ArrayList<>();
-        List<Piece> blackPiece = new ArrayList<>();
         boolean endgame = false;
 
-        if (current.getGameHistory() != null){
-            if (current.getGameHistory().size() > 75){
-                endgame = true;
-            }
-        }
+        if (current.getGameHistory() != null && current.getGameHistory().size() > 75)
+            endgame = true;
 
 
-        for (Position p : gameBoard.keySet()){
-            allPiecesOnBoard.add(gameBoard.get(p));
-            if (gameBoard.get(p).getColor() == Color.WHITE){
-                whitePiece.add(gameBoard.get(p));
-                if (gameBoard.get(p) instanceof King){
-                    wking = gameBoard.get(p);
-                }
-            } else {
-                blackPiece.add(gameBoard.get(p));
-                if (gameBoard.get(p) instanceof King){
-                    bking = gameBoard.get(p);
-                }
-            }
-        }
-
-        if (allPiecesOnBoard.size() < 12){
+        if (current.gameBoard.size() < 12){
             endgame = true;
         }
-        Color first = Color.WHITE;
-        int calibrate = 0;
-        if (current.getGameHistory() == null){
-            if (wking.getPosition().getRow() == 0){
-                calibrate = 7;
-            }
-        } else {
-            Move firstM = current.getGameHistory().get(0);
-            Position firstPos = firstM.getFrom();
-            if (firstPos.getRow() < 2){
-                calibrate = 7;
-            }
-        }
-
 
 
         int sum = 0;
+        int[][] PawnCount = new int[2][8];
 
-        int[] blackPawnCount = new int[8];
-        int[] whitePawnCount = new int[8];
-        for (int i = 0; i < 8; i++){
-            whitePawnCount[i] = 0;
-            blackPawnCount[i] = 0;
-        }
-
-
-        for (Piece p : whitePiece) {
-
-            int pCoord = ((Math.abs(calibrate - p.getPosition().getRow())) * 8) + p.getPosition().getColumn();
+        for (Piece p : current.gameBoard.values()) {
+            int delta = 0;
+            int cIndex;
+            double pMult;
+            int pCoord;
+            if(p.getColor() == Color.WHITE) {
+                pCoord = (7 - p.getPosition().getRow()) * 8 + p.getPosition().getColumn();
+                pMult = aggression;
+                cIndex = 0;
+            }
+            else {
+                pCoord = p.getPosition().getRow()*8 + p.getPosition().getColumn();
+                pMult = 1/aggression;
+                cIndex = 1;
+            }
 
             if (p instanceof Rook) {
-                sum += 500*aggression;
-                wrookC++;
+                delta += 500*pMult;
+                rookC[cIndex]++;
             }
             else if (p instanceof Queen) {
-                sum += 900*aggression;
-                wqueenC++;
+                delta += 900*pMult;
+                queenC[cIndex]++;
             }
             else if (p instanceof Knight) {
-                sum += 300*aggression;
-                sum += KnightTable[pCoord];
+                delta += 300*pMult;
+                delta += KnightTable[pCoord];
                 if (endgame){
-                    sum -= 10;
+                    delta -= 10;
                 }
-                wknightC++;
+                knightC[cIndex]++;
             }
             else if (p instanceof King) {
                 if (endgame){
-                    sum += KingTableEndGame[pCoord];
+                    delta += KingTableEndGame[pCoord];
                 } else {
-                    sum += KingTable[pCoord];
+                    delta += KingTable[pCoord];
                 }
-                wkingC++;
+                kingC[cIndex]++;
             }
             else if (p instanceof Bishop) {
-                 sum += 325*aggression;
-                 sum += BishopTable[pCoord];
+                delta += 325*pMult;
+                delta += BishopTable[pCoord];
                 if (endgame){
-                    sum += 10;
+                    delta += 10;
                 }
-                wbishopC++;
+                bishopC[cIndex]++;
+                if(bishopC[cIndex] == 2)
+                    delta += 10;
             }
             else if (p instanceof Pawn) {
-                whitePawnCount[p.getPosition().getColumn()]++;
-                sum += 100*aggression;
-                sum += PawnTable[pCoord];
-                wpawnC++;
+                PawnCount[cIndex][p.getPosition().getColumn()]++;
+                delta += 100*pMult;
+                delta += PawnTable[pCoord];
+                pawnC[cIndex]++;
             }
             else
-                continue; // null
-        }
+                Log.i("Warning: ", "null pieces in GameBoard"); // null
 
-        if (wbishopC >= 2){
-            sum += 10;
-        }
-
-        if (current.playerToMove != Color.BLACK){
-            if (calibrate == 0){
-                calibrate = 7;
-            } else {
-                calibrate = 0;
-            }
-        }
-
-        for (Piece p : blackPiece){
-            int pCoord = ((Math.abs(calibrate - p.getPosition().getRow())) * 8) + p.getPosition().getColumn();
-            if (p instanceof Rook) {
-                sum -= 500/aggression;
-                brookC++;
-            }
-            else if (p instanceof Queen) {
-                sum -= 900/aggression;
-                bqueenC++;
-            }
-            else if (p instanceof Knight) {
-                sum -= 300/aggression;
-                sum -= KnightTable[pCoord];
-                if (endgame){
-                    sum += 10;
-                }
-                bknightC++;
-            }
-            else if (p instanceof King) {
-                sum -= 10000/aggression;
-                if (endgame){
-                    sum -= KingTableEndGame[pCoord];
-                } else {
-                    sum -= KingTable[pCoord];
-                }
-
-                bkingC++;
-            }
-            else if (p instanceof Bishop) {
-                sum -= 325/aggression;
-                sum -= BishopTable[pCoord];
-                if (endgame){
-                    sum -= 10;
-                }
-                bbishopC++;
-            }
-            else if (p instanceof Pawn) {
-                blackPawnCount[p.getPosition().getColumn()]++;
-                sum -= 100/aggression;
-                sum -= PawnTable[pCoord];
-                bpawnC++;
-            }
+            if(p.getColor() == Color.WHITE)
+                sum += delta;
             else
-                continue; // null
+                sum -= delta;
         }
 
-        if (blackPawnCount[0] >= 1 && blackPawnCount[1] == 0)
+
+        //Black Isolated Pawns
+        if (PawnCount[1][0] >= 1 && PawnCount[1][1] == 0)
         {
             sum += 12;
         }
-        if (blackPawnCount[1] >= 1 && blackPawnCount[0] == 0 &&
-                blackPawnCount[2] == 0)
+        if (PawnCount[1][1] >= 1 && PawnCount[1][0] == 0 &&
+                PawnCount[1][2] == 0)
         {
             sum += 14;
         }
-        if (blackPawnCount[2] >= 1 && blackPawnCount[1] == 0 &&
-                blackPawnCount[3] == 0)
+        if (PawnCount[1][2] >= 1 && PawnCount[1][1] == 0 &&
+                PawnCount[1][3] == 0)
         {
             sum += 16;
         }
-        if (blackPawnCount[3] >= 1 && blackPawnCount[2] == 0 &&
-                blackPawnCount[4] == 0)
+        if (PawnCount[1][3] >= 1 && PawnCount[1][2] == 0 &&
+                PawnCount[1][4] == 0)
         {
             sum += 20;
         }
-        if (blackPawnCount[4] >= 1 && blackPawnCount[3] == 0 &&
-                blackPawnCount[5] == 0)
+        if (PawnCount[1][4] >= 1 && PawnCount[1][3] == 0 &&
+                PawnCount[1][5] == 0)
         {
             sum += 20;
         }
-        if (blackPawnCount[5] >= 1 && blackPawnCount[4] == 0 &&
-                blackPawnCount[6] == 0)
+        if (PawnCount[1][5] >= 1 && PawnCount[1][4] == 0 &&
+                PawnCount[1][6] == 0)
         {
             sum += 16;
         }
-        if (blackPawnCount[6] >= 1 && blackPawnCount[5] == 0 &&
-                blackPawnCount[7] == 0)
+        if (PawnCount[1][6] >= 1 && PawnCount[1][5] == 0 &&
+                PawnCount[1][7] == 0)
         {
             sum += 14;
         }
-        if (blackPawnCount[7] >= 1 && blackPawnCount[6] == 0)
+        if (PawnCount[1][7] >= 1 && PawnCount[1][6] == 0)
         {
             sum += 12;
         }
-//White Isolated Pawns
-        if (whitePawnCount[0] >= 1 && whitePawnCount[1] == 0)
+
+        //White Isolated Pawns
+        if (PawnCount[0][0] >= 1 && PawnCount[0][1] == 0)
         {
             sum -= 12;
         }
-        if (whitePawnCount[1] >= 1 && whitePawnCount[0] == 0 &&
-                whitePawnCount[2] == 0)
+        if (PawnCount[0][1] >= 1 && PawnCount[0][0] == 0 &&
+                PawnCount[0][2] == 0)
         {
             sum -= 14;
         }
-        if (whitePawnCount[2] >= 1 && whitePawnCount[1] == 0 &&
-                whitePawnCount[3] == 0)
+        if (PawnCount[0][2] >= 1 && PawnCount[0][1] == 0 &&
+                PawnCount[0][3] == 0)
         {
             sum -= 16;
         }
-        if (whitePawnCount[3] >= 1 && whitePawnCount[2] == 0 &&
-                whitePawnCount[4] == 0)
+        if (PawnCount[0][3] >= 1 && PawnCount[0][2] == 0 &&
+                PawnCount[0][4] == 0)
         {
             sum -= 20;
         }
-        if (whitePawnCount[4] >= 1 && whitePawnCount[3] == 0 &&
-                whitePawnCount[5] == 0)
+        if (PawnCount[0][4] >= 1 && PawnCount[0][3] == 0 &&
+                PawnCount[0][5] == 0)
         {
             sum -= 20;
         }
-        if (whitePawnCount[5] >= 1 && whitePawnCount[4] == 0 &&
-                whitePawnCount[6] == 0)
+        if (PawnCount[0][5] >= 1 && PawnCount[0][4] == 0 &&
+                PawnCount[0][6] == 0)
         {
             sum -= 16;
         }
-        if (whitePawnCount[6] >= 1 && whitePawnCount[5] == 0 &&
-                whitePawnCount[7] == 0)
+        if (PawnCount[0][6] >= 1 && PawnCount[0][5] == 0 &&
+                PawnCount[0][7] == 0)
         {
             sum -= 14;
         }
-        if (whitePawnCount[7] >= 1 && whitePawnCount[6] == 0)
+        if (PawnCount[0][7] >= 1 && PawnCount[0][6] == 0)
         {
             sum -= 12;
         }
 
 //Black Passed Pawns
-        if (blackPawnCount[0] >= 1 && whitePawnCount[0] == 0)
+        if (PawnCount[1][0] >= 1 && PawnCount[0][0] == 0)
         {
-            sum -= blackPawnCount[0];
+            sum -= PawnCount[1][0];
         }
-        if (blackPawnCount[1] >= 1 && whitePawnCount[1] == 0)
+        if (PawnCount[1][1] >= 1 && PawnCount[0][1] == 0)
         {
-            sum -= blackPawnCount[1];
+            sum -= PawnCount[1][1];
         }
-        if (blackPawnCount[2] >= 1 && whitePawnCount[2] == 0)
+        if (PawnCount[1][2] >= 1 && PawnCount[0][2] == 0)
         {
-            sum -= blackPawnCount[2];
+            sum -= PawnCount[1][2];
         }
-        if (blackPawnCount[3] >= 1 && whitePawnCount[3] == 0)
+        if (PawnCount[1][3] >= 1 && PawnCount[0][3] == 0)
         {
-            sum -= blackPawnCount[3];
+            sum -= PawnCount[1][3];
         }
-        if (blackPawnCount[4] >= 1 && whitePawnCount[4] == 0)
+        if (PawnCount[1][4] >= 1 && PawnCount[0][4] == 0)
         {
-            sum -= blackPawnCount[4];
+            sum -= PawnCount[1][4];
         }
-        if (blackPawnCount[5] >= 1 && whitePawnCount[5] == 0)
+        if (PawnCount[1][5] >= 1 && PawnCount[0][5] == 0)
         {
-            sum -= blackPawnCount[5];
+            sum -= PawnCount[1][5];
         }
-        if (blackPawnCount[6] >= 1 && whitePawnCount[6] == 0)
+        if (PawnCount[1][6] >= 1 && PawnCount[0][6] == 0)
         {
-            sum -= blackPawnCount[6];
+            sum -= PawnCount[1][6];
         }
-        if (blackPawnCount[7] >= 1 && whitePawnCount[7] == 0)
+        if (PawnCount[1][7] >= 1 && PawnCount[0][7] == 0)
         {
-            sum -= blackPawnCount[7];
+            sum -= PawnCount[1][7];
         }
 
 //White Passed Pawns
-        if (whitePawnCount[0] >= 1 && blackPawnCount[1] == 0)
+        if (PawnCount[0][0] >= 1 && PawnCount[1][1] == 0)
         {
-            sum += whitePawnCount[0];
+            sum += PawnCount[0][0];
         }
-        if (whitePawnCount[1] >= 1 && blackPawnCount[1] == 0)
+        if (PawnCount[0][1] >= 1 && PawnCount[1][1] == 0)
         {
-            sum += whitePawnCount[1];
+            sum += PawnCount[0][1];
         }
-        if (whitePawnCount[2] >= 1 && blackPawnCount[2] == 0)
+        if (PawnCount[0][2] >= 1 && PawnCount[1][2] == 0)
         {
-            sum += whitePawnCount[2];
+            sum += PawnCount[0][2];
         }
-        if (whitePawnCount[3] >= 1 && blackPawnCount[3] == 0)
+        if (PawnCount[0][3] >= 1 && PawnCount[1][3] == 0)
         {
-            sum += whitePawnCount[3];
+            sum += PawnCount[0][3];
         }
-        if (whitePawnCount[4] >= 1 && blackPawnCount[4] == 0)
+        if (PawnCount[0][4] >= 1 && PawnCount[1][4] == 0)
         {
-            sum += whitePawnCount[4];
+            sum += PawnCount[0][4];
         }
-        if (whitePawnCount[5] >= 1 && blackPawnCount[5] == 0)
+        if (PawnCount[0][5] >= 1 && PawnCount[1][5] == 0)
         {
-            sum += whitePawnCount[5];
+            sum += PawnCount[0][5];
         }
-        if (whitePawnCount[6] >= 1 && blackPawnCount[6] == 0)
+        if (PawnCount[0][6] >= 1 && PawnCount[1][6] == 0)
         {
-            sum += whitePawnCount[6];
+            sum += PawnCount[0][6];
         }
-        if (whitePawnCount[7] >= 1 && blackPawnCount[7] == 0)
+        if (PawnCount[0][7] >= 1 && PawnCount[1][7] == 0)
         {
-            sum += whitePawnCount[7];
+            sum += PawnCount[0][7];
         }
 
-        if (bbishopC >= 2){
-            sum -= 10;
-        }
-
-        if (current.playerToMove == Color.WHITE){
-            if (current.inCheck()){
+        if(current.inCheck()) {
+            if(current.playerToMove == Color.WHITE)
                 sum -= 175;
-                if (current.getAllLegalMoves().isEmpty()){
-                    sum -= 100000;
-                }
-            }
-
-        } else {
-            if (current.inCheck()){
+            else
                 sum += 175;
-                if (current.getAllLegalMoves().isEmpty()){
-                    sum -= 100000;
-                }
-            }
-
         }
 
         return sum;

@@ -7,16 +7,14 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
 public class GameBoard {
-
     public static GameBoard activeGameBoard;
-    public static Map<Position, Piece> customPositions;
-    public Map<Position, Piece> gameBoard;
+    public static NonNullMap<Position,Piece> customPositions;
+    public NonNullMap<Position,Piece> gameBoard;
     public List<Move> gameHistory;
     public Color playerToMove;
     private Stack<Move> redoStack;
@@ -29,7 +27,7 @@ public class GameBoard {
 
     public GameBoard() {
         if (gameBoard == null) {
-            gameBoard = new HashMap<Position, Piece>();
+            gameBoard = new NonNullMap<Position,Piece>();
             Position p;
             gameBoard.put((p = new Position(0, 0)), new Rook(p, Color.WHITE));
             gameBoard.put((p = new Position(0, 1)), new Knight(p, Color.WHITE));
@@ -83,7 +81,7 @@ public class GameBoard {
     }
 
     public GameBoard(GameBoard in) {
-        gameBoard = new HashMap<Position, Piece>();
+        gameBoard = new NonNullMap<Position,Piece>();
         for (Map.Entry<Position, Piece> e : in.gameBoard.entrySet())
             gameBoard.put(new Position(e.getKey()), Piece.copy(e.getValue()));
         gameHistory = new ArrayList<Move>();
@@ -96,7 +94,7 @@ public class GameBoard {
         legalMovesCache = null;
     }
 
-    public GameBoard(Map<Position, Piece> map) {
+    public GameBoard(NonNullMap<Position,Piece> map) {
         gameBoard = map;
         gameHistory = new ArrayList<Move>();
         playerToMove = Color.WHITE;
@@ -139,7 +137,7 @@ public class GameBoard {
     private synchronized boolean move(Move m, boolean clearRedoStack) {
         // Check that the move is valid.
         if (m == null || gameBoard.get(m.getFrom()) == null) {
-            Log.i("From: ", ""+m.getFrom());
+            Log.i("From: ", ""+gameBoard.get(m.getFrom()));
             return false;
         }
 
@@ -216,8 +214,11 @@ public class GameBoard {
 
     public boolean move(Move m) {
         boolean temp = move(m, true);
-        if(temp == false)
+        if(temp == false) {
             Log.i("GameBoardMove:", "Illegal Move: " + m);
+            for(Map.Entry<Position, Piece> e : gameBoard.entrySet())
+                Log.i("Piece: ", e.getKey()+" " + e.getValue());
+        }
         return temp;
     }
 
@@ -520,7 +521,7 @@ public class GameBoard {
         int whiteKingValue = 0;
         int blackKingValue = 0;
         legalMovesCache = null;
-        gameBoard = new HashMap<Position, Piece>();
+        gameBoard = new NonNullMap<Position,Piece>();
         Position p;
         int i = 0;
         gameHistory = new ArrayList<Move>();
