@@ -20,7 +20,7 @@ public class AIMoveRemote extends AIMove {
         String ret=conn.UrlRequest(packedGameBoard,""+depth,""+aggression);
         if(ret.equals(""))
         {
-            return AIMoveFactory.newAIMove(false, aggression).move(current,depth);
+            return AIMoveFactory.newAIMove(false, aggression).move(current,depth>4?4:depth);
         }
         return current.parseServerOutput(ret);
     }
