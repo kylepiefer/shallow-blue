@@ -7,14 +7,15 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
 public class GameBoard {
     public static GameBoard activeGameBoard;
-    public static NonNullMap<Position,Piece> customPositions;
-    public NonNullMap<Position,Piece> gameBoard;
+    public static Map<Position,Piece> customPositions;
+    public Map<Position,Piece> gameBoard;
     public List<Move> gameHistory;
     public Color playerToMove;
     public Stack<Move> redoStack;
@@ -27,7 +28,7 @@ public class GameBoard {
 
     public GameBoard() {
         if (gameBoard == null) {
-            gameBoard = new NonNullMap<Position,Piece>();
+            gameBoard = new HashMap<Position,Piece>();
             Position p;
             gameBoard.put((p = new Position(0, 0)), new Rook(p, Color.WHITE));
             gameBoard.put((p = new Position(0, 1)), new Knight(p, Color.WHITE));
@@ -81,7 +82,7 @@ public class GameBoard {
     }
 
     public GameBoard(GameBoard in) {
-        gameBoard = new NonNullMap<Position,Piece>();
+        gameBoard = new HashMap<Position,Piece>();
         for (Map.Entry<Position, Piece> e : in.gameBoard.entrySet())
             gameBoard.put(new Position(e.getKey()), Piece.copy(e.getValue()));
         gameHistory = new ArrayList<Move>();
@@ -94,7 +95,7 @@ public class GameBoard {
         legalMovesCache = null;
     }
 
-    public GameBoard(NonNullMap<Position,Piece> map) {
+    public GameBoard(Map<Position,Piece> map) {
         gameBoard = map;
         gameHistory = new ArrayList<Move>();
         playerToMove = Color.WHITE;
@@ -521,7 +522,7 @@ public class GameBoard {
         int whiteKingValue = 0;
         int blackKingValue = 0;
         legalMovesCache = null;
-        gameBoard = new NonNullMap<Position,Piece>();
+        gameBoard = new HashMap<Position,Piece>();
         Position p;
         int i = 0;
         gameHistory = new ArrayList<Move>();
