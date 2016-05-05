@@ -4,11 +4,13 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
@@ -48,6 +50,8 @@ public class GameBoardActivity extends AppCompatActivity {
     private double whiteAIStrategy;
     private double blackAIStrategy;
 
+    private ImageView check;
+
     private Move cachedMoveForPromotion = null;
 
     @Override
@@ -57,6 +61,8 @@ public class GameBoardActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         this.savedGameManager = new SavedGameManager();
+
+        check = (ImageView) findViewById(R.id.check_image);
 
         Intent intent = getIntent();
         Bundle settings;
@@ -406,12 +412,17 @@ public class GameBoardActivity extends AppCompatActivity {
                     }
                 }
 
+                if (getGameBoard().inCheck()) {
+                    //checkAnimationIn();
+                }
+
                 aiMove();
             }
         });
 
         imageCopy.setAnimation(animation);
         animation.start();
+        //checkAnimationOut();
     }
 
     private void aiMove() {
@@ -643,6 +654,24 @@ public class GameBoardActivity extends AppCompatActivity {
         if (!redone) {
             movesToRedo = 0;
         }
+    }
+
+    public void checkAnimationIn(){
+        check.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fadein));
+        check.setImageResource(R.drawable.check_image2);
+    }
+
+    public void checkAnimationOut(){
+        if (check.getDrawable() != null){
+            check.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fadeout));
+        }
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                check.setImageResource(0);
+            }
+        }, 2000);
     }
 
     public void optionsScreen(View v){
