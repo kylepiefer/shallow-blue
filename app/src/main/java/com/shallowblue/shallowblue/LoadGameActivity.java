@@ -94,11 +94,11 @@ public class LoadGameActivity extends AppCompatActivity {
     }
 
     public void startGame() {
-        if (adapter.getCount() > 1) {
-            showToast("You must first select a saved game to load!");
-            return;
-        } else if (adapter.getCount() == 0) {
+        if (adapter.getCount() == 0) {
             showToast("You have not saved any games.");
+            return;
+        } if (!selected) {
+            showToast("You must first select a saved game to load!");
             return;
         }
 
@@ -139,11 +139,11 @@ public class LoadGameActivity extends AppCompatActivity {
     }
 
     public void deleteSavedGame(View button) {
-        if (adapter.getCount() > 1) {
-            showToast("You must first select a saved game to delete!");
-            return;
-        } else if (adapter.getCount() == 0) {
+        if (adapter.getCount() == 0) {
             showToast("You have not saved any games.");
+            return;
+        } else if (!selected) {
+            showToast("You must first select a saved game to delete!");
             return;
         }
 
